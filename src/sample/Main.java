@@ -64,7 +64,7 @@ public class Main extends Application {
         login.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(userField.getText().toString() == user && pwBox.getText().toString() == userPassword){
+                if(userField.getText().toString().equals(user) && pwBox.getText().toString().equals(userPassword)){
                     message.setFill(Color.FIREBRICK);
                     message.setText("successful sign in");
                 } else {

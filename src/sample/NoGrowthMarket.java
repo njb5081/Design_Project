@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Created by Nicholas on 3/7/2016.
  */
 public class NoGrowthMarket extends Application implements MarketSimulation {
-    @Override 
+    @Override
     public float runSimulation(float percentage, ArrayList<equity> EQ, boolean continuous,
                                int stepNum, String timeInterval) {
         float portfolioValue = 0;

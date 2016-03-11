@@ -12,7 +12,7 @@ public class NoGrowthMarket extends Application implements MarketSimulation {
     @Override
     public float runSimulation(float percentage, ArrayList<equity> EQ, boolean continuous,
                                int stepNum, String timeInterval) {
-        float portfolioValue = 0;
+        float portfolioValue = 0; 
         int steps = stepNum;
         //TODO MAKE the simulation able to step through
         for (equity E : EQ) {

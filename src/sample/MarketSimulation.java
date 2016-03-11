@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Nicholas on 3/7/2016.
  */
-public interface MarketSimulation {
+public interface  MarketSimulation {
 
 
     //runs the selected market simulation

@@ -18,12 +18,14 @@ import javafx.scene.text.Text;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
+
+
 public class Main extends Application {
 
     Stage window;
     Scene scene1, scene2;
-    private String user = "mcd4874";
-    private String userPassword = "1234";
+    data userData = new data();
+
     @Override
 
 
@@ -71,11 +73,12 @@ public class Main extends Application {
 
 
 
-        //action for button
+        //action for buttonv
         login.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(userField.getText().equals(user)  && pwBox.getText().equals(userPassword)){
+                User loginUser = new User(userField.getText(),pwBox.getText());
+                if(userData.isUserExist(loginUser)){
                     message.setFill(Color.FIREBRICK);
                     message.setText("successful sign in");
                 } else {
@@ -155,13 +158,17 @@ public class Main extends Application {
         register.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                String pw = pwBox.getText();
-                String username = userField.getText();
 
-                if (pw.equals(confirmPw.getText())){
 
-                    User newAccount = new User(username,pw);
-                    System.out.println("register success");
+                if (pwBox.getText().equals(confirmPw.getText())){
+
+                    User newAccount = new User(userField.getText(),pwBox.getText());
+                    if(!userData.isUserExist(newAccount)) {
+                        userData.saveAccount(newAccount);
+                        message.setText("register sucess");
+                    } else {
+                        message.setText("Account has been created");
+                    }
 
                 } else {
 

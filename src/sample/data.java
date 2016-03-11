@@ -17,14 +17,20 @@ public class data  {
 
     List<User> userList;
 
+    /*
+    * save a new account to data
+    * */
+
     public void saveAccount(User newAccount){
         if (!isUserExist(newAccount)) {
-
+            userList = this.listOfUser();
+            //userList = new ArrayList<User>();
             try {
                 FileOutputStream fileOut = new FileOutputStream("employee.txt");
                 ObjectOutputStream out = new ObjectOutputStream(fileOut);
-
-                out.writeObject(newAccount);
+                //userList.add(newAccount);
+                userList.add(newAccount);
+                out.writeObject(userList);
                 out.close();
                 fileOut.close();
             } catch (FileNotFoundException i) {
@@ -32,10 +38,10 @@ public class data  {
             } catch (IOException i) {
                 i.printStackTrace();
             }
-
-            System.out.println("Done");
+            //System.out.println("Done");
         } else {
             System.out.println("account exists");
+
         }
     }
 
@@ -43,26 +49,26 @@ public class data  {
     * check if the user has made an account before
     * */
     public boolean isUserExist(User checkUser){
-        userList = this.listOfUser();
-        return userList.contains(checkUser);
+
+        return this.listOfUser().contains(checkUser);
 
     }
 
-    /*
+    /*c
     * return list of accounts that have been made
     * */
     public List<User> listOfUser (){
-        List<User> listOfAccount = null;
+        List<User> listOfAccount = new ArrayList<User>();
         try {
             FileInputStream fileOut = new FileInputStream("employee.txt");
-            ObjectInputStream is = new ObjectInputStream(fileOut);
-            //System.out.println(is);
-            if (is.readObject() != null){
-                listOfAccount = (List<User>) is.readObject();
-                System.out.println("sucess get list of account");
+            if(fileOut.available() > 0) {
+                ObjectInputStream is = new ObjectInputStream(fileOut);
+                listOfAccount = (ArrayList<User>) is.readObject();
+//                for (User b: listOfAccount) {
+//                    System.out.println("check username: "+b.username()+". PW: "+b.password());
+//                }
+                is.close();
             }
-            is.close();
-
         } catch (FileNotFoundException i){
             i.printStackTrace();
         }catch(IOException i)
@@ -74,15 +80,17 @@ public class data  {
 
         return listOfAccount;
     }
-    public static void main(String [] args)
-    {
-        User a = new User("mcd4874","1234");
-        data s = new data();
-        s.saveAccount(a);
-        System.out.println("finish");
-
-
-
-    }
+//    public static void main(String [] args)
+//    {
+//        User a = new User("mcd48776","1234");
+//        //User b = new User("mk123","567");
+//        data s = new data();
+//        s.saveAccount(a);
+//        //s.saveAccount(b);
+//        System.out.println("finish");
+//
+//
+//
+//    }
 
 }

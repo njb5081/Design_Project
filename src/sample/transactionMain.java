@@ -28,8 +28,8 @@ import java.util.HashMap;
 
 public class transactionMain extends Application{
 
-    private CashAccount c1 = new CashAccount(100, "Ben");
-    private CashAccount c2 = new CashAccount(50, "Less Than Ben");
+    private CashAccount c1 = new CashAccount(100, "test1");
+    private CashAccount c2 = new CashAccount(50, "test2");
 
     @Override
     public void start(Stage primaryStage) throws Exception{

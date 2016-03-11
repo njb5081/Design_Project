@@ -28,44 +28,31 @@ public class Equity {
         this.totalValue = sharesHeld * sharePrice;
     }
 
+    //Getters
     public String getTickerSymbol () {
         return tickerSymbol;
     }
+    public String getName () { return name; }
+    public String getIndex () { return index; }
+    public String getSector () { return sector; }
 
-    public String getName () {
-        return name;
-    }
+    public Date getDateOfBuy () { return dateOfBuy; }
 
-    public String getSector () {
-        return sector;
-    }
+    public int getSharesHeld () { return sharesHeld; }
+    public int getSharePrice () { return sharePrice; }
+    public int getTotalValue () { return totalValue; }
 
-    public Date getDateOfBuy () {
-        return dateOfBuy;
-    }
-
-    public int getSharesHeld () {
-        return sharesHeld;
-    }
-
+    //Setters
     public void setSharesHeld (int newShares) {
         sharesHeld = newShares;
         totalValue = sharesHeld * sharePrice;
     }
-
-    public int getSharePrice () {
-        return sharePrice;
-    }
-
     public void setSharePrice (int newPrice) {
         sharePrice = newPrice;
         totalValue = sharesHeld * sharePrice;
     }
 
-    public int getTotalValue () {
-        return totalValue;
-    }
-
+    //Other functions
     public String display () {
         //Displays as: "Symbol name sharesHeld $sharePrice $totalValue"
         return tickerSymbol + " " + name + " " + Integer.toString(sharesHeld) + " $" + Integer.toString(sharePrice) + " $" + Integer.toString(totalValue);

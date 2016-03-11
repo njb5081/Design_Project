@@ -1,6 +1,8 @@
 package sample;
+import java.io.Serializable;
 
-public class CashAccount {
+
+public class CashAccount implements  Serializable{
 
     private int balance;
     private String name;

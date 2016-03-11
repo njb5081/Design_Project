@@ -22,14 +22,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import java.util.HashMap;
 
 
 public class transactionMain extends Application{
 
-    private CashAccount c1 = new CashAccount(100, "test1");
-    private CashAccount c2 = new CashAccount(50, "test2");
+    private Logger log = new Logger();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -37,20 +35,24 @@ public class transactionMain extends Application{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Transactions");
 
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.TOP_LEFT);
-        grid.setHgap(1);
-        grid.setVgap(1);
-        grid.setPadding(new Insets(25, 25, 25, 25));
+        final GridPane transferCashGrid = new GridPane();
+        transferCashGrid.setAlignment(Pos.TOP_LEFT);
+        transferCashGrid.setHgap(1);
+        transferCashGrid.setVgap(1);
+        transferCashGrid.setPadding(new Insets(25, 25, 25, 25));
 
-        Scene scene = new Scene(grid, 300, 400);
+
+        final GridPane createCashAccountGrid = new GridPane();
+        createCashAccountGrid.setAlignment(Pos.TOP_LEFT);
+        createCashAccountGrid.setHgap(1);
+        createCashAccountGrid.setVgap(1);
+        createCashAccountGrid.setPadding(new Insets(25, 25, 25, 25));
+
+        final Scene scene = new Scene(transferCashGrid, 300, 400);
 
         final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
 
-        cashAccounts.put(c1.toString(), c1);
-        cashAccounts.put(c2.toString(), c2);
-
-        ObservableList<String> options = FXCollections.observableArrayList();
+        final ObservableList<String> options = FXCollections.observableArrayList();
 
         options.addAll(cashAccounts.keySet());
 
@@ -77,11 +79,39 @@ public class transactionMain extends Application{
         final Label amountLabel = new Label("Amount to transfer: ");
 
         final Label toAccountNameLabel = new Label("     Account Name: None Selected");
-        final Label toAccountBalanceLabel = new Label("     Account Balance: None Selected");
+        final Label toAccountBalanceLabel = new Label("     Account Balance: $0");
         final Label fromAccountNameLabel = new Label("     Account Name: None Selected");
-        final Label fromAccountBalanceLabel = new Label("     Account Balance: None Selected");
+        final Label fromAccountBalanceLabel = new Label("     Account Balance: $0");
 
-        Button transFunds = new Button("Transfer");
+        final Button transFunds = new Button("Transfer");
+        final Button newCashAccount = new Button("Add Cash Account");
+
+
+        final Label newCashAccountLabel = new Label("Enter New Cash Account Details");
+        final Label newCashAccountNameLabel = new Label("Name of New Cash Account: ");
+        final Label newCashAccountBalanceLabel = new Label("Balance of New Cash Account: ");
+
+        final TextField newCashAccountName = new TextField();
+        final TextField newCashAccountBalance = new TextField(){
+
+            @Override
+            public void replaceText(int start, int end, String text) {
+                if (text.matches("[0-9]*")) {
+                    super.replaceText(start, end, text);
+                }
+            }
+
+            @Override
+            public void replaceSelection(String text) {
+                if (text.matches("[0-9]*")) {
+                    super.replaceSelection(text);
+                }
+            }
+        };
+
+
+        final Button createCashAccount = new Button("Create Cash Account");
+        final Button returnTrans = new Button("Return To Transactions");
 
         transFunds.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -98,14 +128,14 @@ public class transactionMain extends Application{
 
                     if(tempFromAccount.getBalance() >= tempAmount) {
 
-                        Transfer cashTransfer = new Transfer(tempAmount, tempToAccount, tempFromAccount);
+                        Transfer cashTransfer = new Transfer(tempAmount, tempToAccount, tempFromAccount, log);
 
                         cashTransfer.execute();
 
                         toAccountNameLabel.setText("     Account Name: " + tempToAccount.toString());
-                        toAccountBalanceLabel.setText("     Account Balance: " + Integer.toString(tempToAccount.getBalance()));
+                        toAccountBalanceLabel.setText("     Account Balance: $" + Integer.toString(tempToAccount.getBalance()));
                         fromAccountNameLabel.setText("     Account Name: " + tempFromAccount.toString());
-                        fromAccountBalanceLabel.setText("     Account Balance: " + Integer.toString(tempFromAccount.getBalance()));
+                        fromAccountBalanceLabel.setText("     Account Balance: $" + Integer.toString(tempFromAccount.getBalance()));
 
 
                     } else{
@@ -118,11 +148,51 @@ public class transactionMain extends Application{
             }
         });
 
+        newCashAccount.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                scene.setRoot(createCashAccountGrid);
+            }
+        });
+
+        returnTrans.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                scene.setRoot(transferCashGrid);
+            }
+        });
+
+        createCashAccount.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                if(!newCashAccountBalance.getText().equals("") &
+                        !newCashAccountName.getText().equals("") &
+                        !cashAccounts.keySet().contains(newCashAccountName.getText())){
+
+                    CashAccount tempNewCashAccount = new CashAccount(Integer.parseInt(newCashAccountBalance.getText()), newCashAccountName.getText());
+
+                    cashAccounts.put(tempNewCashAccount.toString(), tempNewCashAccount);
+
+                    options.add(tempNewCashAccount.toString());
+                    toAccount.setItems(options);
+                    fromAccount.setItems(options);
+
+                }else {
+                    newCashAccountLabel.setText("Invalid Input");
+                }
+
+            }
+        });
+
         toAccount.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
                 toAccountNameLabel.setText("     Account Name: " + toAccount.getValue().toString());
-                toAccountBalanceLabel.setText("     Account Balance: " + Integer.toString(cashAccounts.get(toAccount.getValue()).getBalance()));
+                toAccountBalanceLabel.setText("     Account Balance: $" + Integer.toString(cashAccounts.get(toAccount.getValue()).getBalance()));
             }
         });
 
@@ -130,7 +200,7 @@ public class transactionMain extends Application{
             @Override
             public void handle(ActionEvent event) {
                 fromAccountNameLabel.setText("     Account Name: " + fromAccount.getValue().toString());
-                fromAccountBalanceLabel.setText("     Account Balance: " + Integer.toString(cashAccounts.get(fromAccount.getValue()).getBalance()));
+                fromAccountBalanceLabel.setText("     Account Balance: $" + Integer.toString(cashAccounts.get(fromAccount.getValue()).getBalance()));
             }
         });
 
@@ -162,12 +232,34 @@ public class transactionMain extends Application{
         box4.getChildren().add(transAmount);
 
         box5.getChildren().add(transFunds);
+        box5.getChildren().add(newCashAccount);
 
-        grid.add(box1, 1 , 10);
-        grid.add(box2, 1 , 20);
-        grid.add(box3, 1 , 40);
-        grid.add(box4, 1 , 60);
-        grid.add(box5, 1 , 120);
+        transferCashGrid.add(box1, 1 , 10);
+        transferCashGrid.add(box2, 1 , 20);
+        transferCashGrid.add(box3, 1 , 40);
+        transferCashGrid.add(box4, 1 , 60);
+        transferCashGrid.add(box5, 1 , 120);
+
+        HBox box1CA = new HBox();
+        VBox box2CA = new VBox();
+        VBox box3CA = new VBox();
+        HBox box4CA = new HBox();
+
+        box1CA.getChildren().add(newCashAccountLabel);
+
+        box2CA.getChildren().add(newCashAccountNameLabel);
+        box2CA.getChildren().add(newCashAccountName);
+
+        box3CA.getChildren().add(newCashAccountBalanceLabel);
+        box3CA.getChildren().add(newCashAccountBalance);
+
+        box4CA.getChildren().add(createCashAccount);
+        box4CA.getChildren().add(returnTrans);
+
+        createCashAccountGrid.add(box1CA, 1 ,10);
+        createCashAccountGrid.add(box2CA, 1, 20);
+        createCashAccountGrid.add(box3CA, 1, 40);
+        createCashAccountGrid.add(box4CA, 1, 120);
 
 
         primaryStage.setScene(scene);

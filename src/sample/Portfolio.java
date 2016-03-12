@@ -85,6 +85,7 @@ public class Portfolio {
                 }
             }
             //subtract from cash account
+            largest.subtractFunds(totalPrice);
         }
         String name = "name"; //placeholder
         String index = "index"; //placeholder
@@ -104,13 +105,25 @@ public class Portfolio {
      * @param date date equity was sold
      * @param cash boolean true if money is being deposited into cash account for this sale
      */
-    public void sellEquity(String ticker, int numSold, int pricePerShare, String date, boolean cash){
+    public boolean sellEquity(String ticker, int numSold, double pricePerShare, String date, boolean cash){
         //update arrays and shit
         //update txt file
-        if (cash) {
-            //add cash to cash account
+        Equity equity = equities.get(0);
+        double totalSalePrice = (numSold * pricePerShare);
+        for (Equity e : equities){
+            if (e.getTickerSymbol().equals(ticker)){
+                equity = e;
+            }
+        }
+        equity.setSharesHeld((equity.getSharesHeld() - numSold));
+        if (cash && cashAccounts.isEmpty()){ //There are no cash accounts associated with this portfolio
+            return false;
+        }
+        if (cash && !cashAccounts.isEmpty()) {
+            cashAccounts.get(0).addFunds(totalSalePrice);
         }
         calculateTotalHoldings(); //or just update the holdings
+        return true;
     }
 
     /**
@@ -140,29 +153,33 @@ public class Portfolio {
     }
 
     /**
-     * Checks all Portfolio holdings and updates the Portfolio's total attribute
-     */
-    public void calculateTotalHoldings(){
-        int total = 0;
-        for (CashAccount c : cashAccounts) {
-            //total += cash account total
-        }
-        for (Equity e : equities) {
-            //total += equity total
-        }
-        this.totalHoldings = total;
-    }
-
-    /**
      * import Transactions into this Portfolio
      */
-    public void importTransaction(){}
-
+    public void importTransaction() {
+        return;
+    }
     /**
      * Transfer funds to a cash account
      */
     public void transferFundsToCashAccount(){
         return;
+    }
+
+    /**
+     * Checks all Portfolio holdings and updates the Portfolio's total attribute
+     */
+    public void calculateTotalHoldings(){
+        double holdingTotal = 0;
+        double cashTotal = 0;
+        for (CashAccount c : cashAccounts) {
+            holdingTotal += (c.getBalance());
+            cashTotal += (c.getBalance());
+        }
+        for (Equity e : equities) {
+            holdingTotal += (e.getTotalValue());
+        }
+        this.totalHoldings = holdingTotal;
+        this.totalCash = cashTotal;
     }
 
     /**

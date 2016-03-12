@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class CashAccount implements  Serializable{
 
-    private int balance;
+    private double balance;
     private String name;
 
     public CashAccount(int initialBalance, String name){
@@ -26,7 +26,7 @@ public class CashAccount implements  Serializable{
 
     }
 
-    public int getBalance(){
+    public double getBalance(){
 
         return balance;
 

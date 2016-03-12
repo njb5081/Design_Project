@@ -71,9 +71,7 @@ public class Main extends Application {
         HBox box = new HBox(10);
         box.setAlignment(Pos.BOTTOM_RIGHT);
 
-
-
-        //action for buttonv
+        //action for button
         login.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {

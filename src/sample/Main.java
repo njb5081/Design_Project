@@ -19,11 +19,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 
 public class Main extends Application {
 
     Stage window;
-    Scene scene1, scene2;
+    Scene scene1, scene2, scene3;
     data userData = new data();
 
     @Override
@@ -79,6 +82,8 @@ public class Main extends Application {
                 if(userData.isUserExist(loginUser)){
                     message.setFill(Color.FIREBRICK);
                     message.setText("successful sign in");
+                    simulationScene(window);
+
                 } else {
 
                     message.setText("Please enter correct information");
@@ -201,6 +206,138 @@ public class Main extends Application {
 
         window.show();
 
+    }
+
+    public void simulationScene (Stage mainStage){
+        window = mainStage;
+        window.setTitle("Market simulation");
+
+
+//        System.out.println("IN GUI CODE");
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.TOP_LEFT);
+        grid.setHgap(1);
+        grid.setVgap(1);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+        Scene scene3 = new Scene(grid, 300, 300);
+
+        final Label interval = new Label("Time interval: (d,m,y)");
+        grid.add(interval,0,1);
+        final TextField IntervalField = new TextField();
+        grid.add(IntervalField, 1, 1);
+
+        final Label steps = new Label("Number of steps: ");
+        grid.add(steps, 0, 30);
+        final TextField stepField = new TextField();
+        grid.add(stepField, 1, 30);
+
+        final Label percent = new Label("Equity Percentage (%): ");
+        grid.add(percent, 0, 60);
+        final TextField percentage = new TextField();
+        grid.add(percentage, 1, 60);
+
+
+        Button simulation = new Button("bull market");
+        HBox box3 = new HBox(10);
+        box3.setAlignment(Pos.BOTTOM_LEFT);
+        box3.getChildren().add(simulation);
+        grid.add(box3, 0, 100);
+
+        Button bearSimulation = new Button("bear");
+        HBox box = new HBox(10);
+        box.setAlignment(Pos.BASELINE_CENTER);
+        box.getChildren().add(bearSimulation);
+        grid.add(box, 1, 100);
+
+        Button noSimulation = new Button("No growth");
+        HBox box5 = new HBox(10);
+//        box5.setAlignment(Pos.BASELINE_LEFT);
+        box5.getChildren().add(noSimulation);
+        grid.add(box5, 0, 120);
+
+        Button reset = new Button("Reset");
+        HBox box4 = new HBox(10);
+        box4.setAlignment(Pos.BOTTOM_RIGHT);
+        box4.getChildren().add(reset);
+        grid.add(box4, 1, 120);
+
+        final Label Value = new Label("Portfolio Value: ");
+        grid.add(Value, 0, 125);
+        final TextField Val = new TextField();
+        grid.add(Val, 1, 125);
+
+
+
+        simulation.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                MarketSimulation bull = new BullMarket();
+
+                float tempPercent = Float.parseFloat(percentage.getText());
+                int tempSteps = Integer.parseInt(stepField.getText());
+                String tempInterval = IntervalField.getText();
+                ArrayList<Equity> equities = new ArrayList<Equity>();
+                Equity eq = new Equity("t","test","id1","sec1",3,50);
+//                eq.setSharePrice(30);
+                Equity eq2 = new Equity("t2","test1","id2","sec4",1,100);
+//                eq2.setSharePrice(10);
+                equities.add(eq);
+//                equities.add(eq2);
+//                for (Equity EEE : equities) {
+//                    System.out.println(EEE.EquityPrice + " before simulation");
+//                }
+                ArrayList<Equity> tempList = new ArrayList<Equity>();
+                equities = bull.runSimulation(tempPercent, equities, true, tempSteps, tempInterval);
+                for (Equity ppp : equities){
+                    System.out.println(ppp.getSharePrice() + "AFter sim");
+                }
+                //todo RESET FUNCTION NOT WORKING CORRECTLY
+                // tempList = bull.reset(equities);
+                //todo Calling reset on wrong thing should be portfolio???
+                for (Equity EEE : tempList) {
+                    System.out.println(EEE.getSharePrice() + " After reset");
+                }
+
+            }
+
+        });
+
+        bearSimulation.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                MarketSimulation bear = new BearMarket();
+
+                float tempPercent = Float.parseFloat(percentage.getText());
+                int tempSteps = Integer.parseInt(stepField.getText());
+                String tempInterval = IntervalField.getText();
+                ArrayList<Equity> equities = new ArrayList<Equity>();
+                Equity eq = new Equity("t", "test", "id1", "sec1", 3, 50);
+//                eq.setSharePrice(30);
+                Equity eq2 = new Equity("t2", "test1", "id2", "sec4", 1, 100);
+//                eq2.setSharePrice(10);
+                equities.add(eq);
+                equities.add(eq2);
+//                for (Equity EEE : equities) {
+//                    System.out.println(EEE.EquityPrice + " before simulation");
+//                }
+                ArrayList<Equity> tempList = new ArrayList<Equity>();
+                equities = bear.runSimulation(tempPercent, equities, true, tempSteps, tempInterval);
+                for (Equity ppp : equities) {
+                    System.out.println(ppp.getSharePrice() + "After sim");
+                }
+                //todo RESET FUNCTION NOT WORKING CORRECTLY
+                // tempList = bear.reset(equities);
+                //todo Calling reset on wrong thing should be portfolio???
+                for (Equity EEE : tempList) {
+                    System.out.println(EEE.getSharePrice() + " After reset");
+                }
+
+            }
+
+        });
+
+        window.setScene(scene3);
+        window.show();
     }
     public static void main(String[] args) {
         launch(args);

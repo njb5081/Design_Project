@@ -19,6 +19,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 
+import java.util.ArrayList;
+
 
 public class Main extends Application {
 
@@ -35,6 +37,9 @@ public class Main extends Application {
 
     }
 
+    /*
+    * create login scene
+    * */
     public void loginScene(Stage mainStage){
         window = mainStage;
         window.setTitle("Login page");
@@ -113,6 +118,9 @@ public class Main extends Application {
         window.show();
     }
 
+    /*
+    * create register scene
+    * */
     public void registerScene(Stage mainStage){
         //scene 2 register
         window = mainStage;
@@ -165,6 +173,8 @@ public class Main extends Application {
                     User newAccount = new User(userField.getText(),pwBox.getText());
                     if(!userData.isUserExist(newAccount)) {
                         userData.saveAccount(newAccount);
+                        Portfolio newPortpolio = new Portfolio(new ArrayList<Equity>(),new ArrayList<CashAccount>());
+
                         message.setText("register sucess");
                     } else {
                         message.setText("Account has been created");

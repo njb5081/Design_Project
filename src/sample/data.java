@@ -19,16 +19,20 @@ public class data  {
 
     /*
     * save a new account to data
-    * */
+    */
 
     public void saveAccount(User newAccount){
+        //check wthether the account has been created or not
         if (!isUserExist(newAccount)) {
+            //get the list of User account from the text file
             userList = this.listOfUser();
-            //userList = new ArrayList<User>();
+            //open the text file and save the new account
             try {
                 FileOutputStream fileOut = new FileOutputStream("employee.txt");
                 ObjectOutputStream out = new ObjectOutputStream(fileOut);
-                //userList.add(newAccount);
+                //userList.add(newAccount);h
+                int userID = userList.size();
+                newAccount.setUserID(userID);
                 userList.add(newAccount);
                 out.writeObject(userList);
                 out.close();
@@ -46,6 +50,14 @@ public class data  {
     }
 
     /*
+    * pre-condition: the user account is created before the fortfolio account is created
+    * Post-condition: save the Portfolio account into the array in the text file
+    * */
+    public void savePortfolioAccount(Portfolio p){
+
+    }
+
+    /*
     * check if the user has made an account before
     * */
     public boolean isUserExist(User checkUser){
@@ -55,18 +67,16 @@ public class data  {
     }
 
     /*c
-    * return list of accounts that have been made
+    * return list of accounts that have been made from the text file
     * */
     public List<User> listOfUser (){
         List<User> listOfAccount = new ArrayList<User>();
+        //access the text file employee.text
         try {
             FileInputStream fileOut = new FileInputStream("employee.txt");
             if(fileOut.available() > 0) {
                 ObjectInputStream is = new ObjectInputStream(fileOut);
                 listOfAccount = (ArrayList<User>) is.readObject();
-//                for (User b: listOfAccount) {
-//                    System.out.println("check username: "+b.username()+". PW: "+b.password());
-//                }
                 is.close();
             }
         } catch (FileNotFoundException i){
@@ -80,17 +90,7 @@ public class data  {
 
         return listOfAccount;
     }
-//    public static void main(String [] args)
-//    {
-//        User a = new User("mcd48776","1234");
-//        //User b = new User("mk123","567");
-//        data s = new data();
-//        s.saveAccount(a);
-//        //s.saveAccount(b);
-//        System.out.println("finish");
-//
-//
-//
-//    }
+
+
 
 }

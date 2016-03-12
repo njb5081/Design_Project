@@ -17,7 +17,7 @@ public class Equity {
     private double sharePrice;
     private double totalValue;
 
-    public Equity (String tickerSymbol, String name, String index, String sector, int sharesHeld, int sharePrice) {
+    public Equity (String tickerSymbol, String name, String index, String sector, int sharesHeld, double sharePrice) {
 
         this.tickerSymbol = tickerSymbol;
         this.name = name;
@@ -29,6 +29,7 @@ public class Equity {
         this.sharesHeld = sharesHeld;
         this.sharePrice = sharePrice;
         this.totalValue = sharesHeld * sharePrice;
+
     }
 
     //Getters

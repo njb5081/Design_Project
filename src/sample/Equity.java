@@ -76,7 +76,7 @@ public class Equity {
         return this.equityList;
     }
 
-    public EquityMemento saveToMemento(){
+    public EquityMemento saveToMemento(){ 
         System.out.println("Orginator saving to memento");
         return new EquityMemento(this.equityList);
     }

@@ -14,6 +14,7 @@ public class Portfolio {
     private double totalCash;
     private ArrayList<Equity> equities;
     private ArrayList<CashAccount> cashAccounts;
+    private CashAccount largest;
 
     /**
      * Constructor creates new Portfolio
@@ -81,11 +82,11 @@ public class Portfolio {
             for (CashAccount c : cashAccounts){
                 if (c.getBalance() > max) {
                     max = c.getBalance();
-                    largest = c;
+                    this.largest = c;
                 }
             }
             //subtract from cash account
-            largest.subtractFunds(totalPrice);
+            this.largest.subtractFunds(totalPrice);
         }
         String name = "name"; //placeholder
         String index = "index"; //placeholder
@@ -180,6 +181,10 @@ public class Portfolio {
         }
         this.totalHoldings = holdingTotal;
         this.totalCash = cashTotal;
+    }
+
+    public void setEquities(ArrayList<Equity> updatedEquities){
+       this.equities = updatedEquities;
     }
 
     /**

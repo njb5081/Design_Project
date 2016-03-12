@@ -237,10 +237,10 @@ public class Main extends Application {
         grid.add(percentage, 1, 60);
 
 
-        Button simulation = new Button("bull market");
+        Button bullSimulation = new Button("bull market");
         HBox box3 = new HBox(10);
         box3.setAlignment(Pos.BOTTOM_LEFT);
-        box3.getChildren().add(simulation);
+        box3.getChildren().add(bullSimulation);
         grid.add(box3, 0, 100);
 
         Button bearSimulation = new Button("bear");
@@ -269,7 +269,7 @@ public class Main extends Application {
 
 
 
-        simulation.setOnAction(new EventHandler<ActionEvent>() {
+        bullSimulation.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 ArrayList<Equity> equities = new ArrayList<Equity>();
@@ -290,11 +290,12 @@ public class Main extends Application {
 //                    System.out.println(EEE.EquityPrice + " before simulation");
 //                }
                 ArrayList<Equity> tempList = new ArrayList<Equity>();
-                equities = bull.runSimulation(tempPercent, port.getportfolioEquity(), true, tempSteps, tempInterval);
+                port.setEquities(bull.runSimulation(tempPercent, port.getportfolioEquity(), true, tempSteps, tempInterval));
                 System.out.println(String.valueOf(port.getTotalHoldings() + " total value of PORTFOLIO"));
+                port.calculateTotalHoldings();
                 portValue.setText(String.valueOf(port.getTotalHoldings()));
-                for (Equity ppp : equities){
-                    System.out.println(ppp.getSharePrice() + "AFter sim");
+                for (Equity ppp : port.getportfolioEquity()){
+                    System.out.println(ppp.getSharePrice() + " each equity value After sim");
                 }
                 //todo RESET FUNCTION NOT WORKING CORRECTLY
                 // tempList = bull.reset(equities);
@@ -316,28 +317,32 @@ public class Main extends Application {
                 int tempSteps = Integer.parseInt(stepField.getText());
                 String tempInterval = IntervalField.getText();
                 ArrayList<Equity> equities = new ArrayList<Equity>();
-                Equity eq = new Equity("t", "test", "id1", "sec1", 3, 50);
+                ArrayList<CashAccount> cash = new ArrayList<CashAccount>();
+                Portfolio port = new Portfolio("njb5081",equities,cash);
+//                Equity eq = new Equity("t", "test", "id1", "sec1", 3, 50);
 //                eq.setSharePrice(30);
-                Equity eq2 = new Equity("t2", "test1", "id2", "sec4", 1, 100);
+//                Equity eq2 = new Equity("t2", "test1", "id2", "sec4", 1, 100);
 //                eq2.setSharePrice(10);
-                equities.add(eq);
-                equities.add(eq2);
+                port.addEquity("t",3,50,"3/10/16",false);
+                for (Equity pfkn : port.getportfolioEquity()){
+                    System.out.println(pfkn.getSharePrice() + "equities in portfolio");
+                }
 //                for (Equity EEE : equities) {
 //                    System.out.println(EEE.EquityPrice + " before simulation");
 //                }
-                ArrayList<Equity> tempList = new ArrayList<Equity>();
-                equities = bear.runSimulation(tempPercent, equities, true, tempSteps, tempInterval);
-                for (Equity ppp : equities) {
+                port.setEquities(bear.runSimulation(tempPercent, port.getportfolioEquity(), true, tempSteps, tempInterval));
+                for (Equity pfkn : port.getportfolioEquity()){
+                    System.out.println(pfkn.getSharePrice() + "equities in portfolio after simulation");
+                }
+                port.calculateTotalHoldings();
+                portValue.setText(String.valueOf(port.getTotalHoldings()));
+                for (Equity ppp : port.getportfolioEquity()) {
                     System.out.println(ppp.getSharePrice() + "After sim");
                 }
                 //todo RESET FUNCTION NOT WORKING CORRECTLY
                 // tempList = bear.reset(equities);
                 //todo Calling reset on wrong thing should be portfolio???
-                for (Equity EEE : tempList) {
-                    System.out.println(EEE.getSharePrice() + " After reset");
-                }
-
-            }
+                            }
 
         });
 

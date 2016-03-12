@@ -30,7 +30,7 @@ public class BearMarket implements MarketSimulation {
         for (Equity E : EQ) {
             System.out.println(E.getSharePrice() + " intial share price of equity");
             equityValue = E.getSharePrice();
-            double percentagePaid = Math.floor(E.getSharePrice()) * (percentage / 100);
+            double percentagePaid = (E.getSharePrice()) * (percentage / 100);
 
             System.out.println(percentagePaid + " percent paid on equity");
             if (timeInterval.equals("m")) {
@@ -43,7 +43,7 @@ public class BearMarket implements MarketSimulation {
                 //  System.out.println(stepNum + " step num");
                 // System.out.println(E.equityPrice + " Price");
                 equityValue -= (percentagePaid);
-                if (equityValue <0){
+                if (equityValue < 0){
                     equityValue = 0;
                 }
                 steps -= 1;
@@ -51,7 +51,7 @@ public class BearMarket implements MarketSimulation {
             }
             E.setSharePrice(equityValue);
             equityValue *= E.getSharesHeld();
-            equityValue = Math.floor(equityValue);
+
             porfolioValue += equityValue;
 
             System.out.println(equityValue + " final equity value of ALL shares of " + E.getName());

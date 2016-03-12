@@ -6,14 +6,13 @@ import java.util.ArrayList;
  * Created by Nicholas on 3/8/2016.
  */
 public class EquityMemento {
-    private ArrayList<equity> equityList;
+    private ArrayList<Equity> equityList;
 
-    public EquityMemento(ArrayList<equity> equityList){
-
+    public EquityMemento(ArrayList<Equity> equityList){
         this.equityList = equityList;
     }
 
-    public ArrayList<equity> getEquityList(){
-        return equityList;
+    public ArrayList<Equity> getEquityList(){
+        return this.equityList;
     }
 }

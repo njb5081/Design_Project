@@ -21,143 +21,64 @@ import java.util.ArrayList;
  */
 
 //equity increases
-public class BullMarket extends Application implements MarketSimulation {
+public class BullMarket implements MarketSimulation {
     public BullMarket bull;
-    //EquityOriginator originator = new EquityOriginator();
+    //Equity equityOriginator; //have to use a portfolio
     EquityCaretaker caretaker = new EquityCaretaker();
 
     @Override
-    public float runSimulation(float percentage, ArrayList<equity> EQ, boolean continuous, int stepNum, String timeInterval) {
+    public ArrayList<Equity> runSimulation(float percentage, ArrayList<Equity> EQ, boolean continuous, int stepNum, String timeInterval) {
 
-        //originator.setEquityList(EQ);
-      //  caretaker.addMemento(originator.saveToMemento());
-        float portfolioValue = 0;
+//        equityOriginator.setEquityList(EQ);
+     //   caretaker.addMemento(equityOriginator.saveToMemento());
+        float porfolioValue = 0;
+        double equityValue = 0;
         int steps = stepNum;
         //TODO MAKE the simulation able to step through
-        for (equity E : EQ) {
-            float percentagePaid = E.equityPrice * (percentage / 100);
-            if (timeInterval.equals("month")) {
+        for (Equity E : EQ) {
+            System.out.println(E.getSharePrice() + " intial share price of equity");
+            equityValue = E.getSharePrice();
+            double percentagePaid = E.getSharePrice() * (percentage / 100);
+            System.out.println(percentagePaid + " percent paid on equity");
+            if (timeInterval.equals("m")) {
                 percentagePaid = percentagePaid * 30;
-            } else if (timeInterval.equals("year")) {
+            } else if (timeInterval.equals("y")) {
                 percentagePaid = percentagePaid * 365;
             }
             //System.out.println(percentagePaid + " Percent paid");
             while (steps > 0) {
               //  System.out.println(stepNum + " step num");
                // System.out.println(E.equityPrice + " Price");
-                E.equityPrice += (percentagePaid);
+                equityValue += (percentagePaid);
                 steps -= 1;
+
             }
+            E.setSharePrice(equityValue);
+            equityValue *= E.getSharesHeld();
+            equityValue = Math.floor(equityValue);
+            porfolioValue += equityValue;
+
+            System.out.println(equityValue + " final equity value of ALL shares of " + E.getName());
             steps = stepNum;
-            portfolioValue += E.equityPrice;
+            //equityValue += E.getSharePrice();
+            for (Equity lll : EQ){
+                System.out.println(lll.getSharePrice() + " price after sim");
+            }
         }
-        return portfolioValue;
+        System.out.println(porfolioValue + " final portfolio Value of ALL equity and shares");
+        return EQ;
     }
 
     @Override
-    public ArrayList<equity> reset (ArrayList<equity> EQ) {
+    public ArrayList<Equity> reset (ArrayList<Equity> EQ) {
 
       //  originator.RestoreFromEquityMemento(caretaker.getMemento());
        // EQ = originator.getState();
-        for (equity EEE : EQ) {
-            System.out.println(EEE.equityPrice + " attempted reset");
+        for (Equity EEE : EQ) {
+            System.out.println(EEE.getSharePrice() + " attempted reset");
         }
 
         return EQ;
     }
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Bull Market simulation");
-//        System.out.println("IN GUI CODE");
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.TOP_LEFT);
-        grid.setHgap(1);
-        grid.setVgap(1);
-        grid.setPadding(new Insets(25, 25, 25, 25));
-        Scene scene = new Scene(grid, 300, 300);
-
-        final Label interval = new Label("Time interval: (day,month, year)");
-        grid.add(interval,0,1);
-        final TextField IntervalField = new TextField();
-        grid.add(IntervalField, 1, 1);
-
-        final Label steps = new Label("Number of steps: ");
-        grid.add(steps, 0, 30);
-        final TextField stepField = new TextField();
-        grid.add(stepField, 1, 30);
-
-        final Label percent = new Label("Equity Percentage (%): ");
-        grid.add(percent, 0, 60);
-        final TextField percentage = new TextField();
-        grid.add(percentage, 1, 60);
-
-
-        Button simulation = new Button("bull market");
-        HBox box3 = new HBox(10);
-        box3.setAlignment(Pos.BOTTOM_LEFT);
-        box3.getChildren().add(simulation);
-        grid.add(box3, 0, 100);
-
-        Button reset = new Button("Reset");
-        HBox box4 = new HBox(10);
-        box4.setAlignment(Pos.BOTTOM_RIGHT);
-        box4.getChildren().add(reset);
-        grid.add(box4, 1, 100);
-
-        final Label Value = new Label("Portfolio Value: ");
-        grid.add(Value, 0, 125);
-        final TextField Val = new TextField();
-        grid.add(Val, 1, 125);
-
-        simulation.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                MarketSimulation bull = new BullMarket();
-
-                float tempPercent = Float.parseFloat(percentage.getText());
-                int tempSteps = Integer.parseInt(stepField.getText());
-                String tempInterval = IntervalField.getText();
-                ArrayList<equity> equities = new ArrayList<equity>();
-                equity eq = new equity();
-                eq.equityPrice = 30;
-                equity eq2 = new equity();
-                eq2.equityPrice = 10;
-                equities.add(eq);
-                equities.add(eq2);
-//                for (equity EEE : equities) {
-//                    System.out.println(EEE.equityPrice + " before simulation");
-//                }
-                ArrayList<equity> tempList = new ArrayList<equity>();
-                System.out.println(bull.runSimulation(tempPercent, equities, true, tempSteps, tempInterval) + " After simulation");
-                //todo RESET FUNCTION NOT WORKING CORRECTLY
-                tempList = bull.reset(equities);
-                //todo Calling reset on wrong thing should be portfolio???
-//                for (equity EEE : tempList) {
-//                    System.out.println(EEE.equityPrice + " After reset");
-//                }
-
-            }
-
-        });
-
-        //todo THIS IS BREAKING
-        reset.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-          //      bull.reset();
-            }
-
-            });
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-
-    public static void main(String[] args) {
-
-        launch(args);
-
-
-    }
 }

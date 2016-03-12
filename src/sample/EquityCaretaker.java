@@ -10,19 +10,24 @@ public class EquityCaretaker {
 
     public void addMemento(EquityMemento m){
         savedEquities.add(m);
-        ArrayList<equity> gh = savedEquities.get(0).getEquityList();
-        for (equity fv : gh){
-            System.out.println(fv.equityPrice + " things saved in list in caretaker");
+        ArrayList<Equity> gh;
+        gh = savedEquities.get(0).getEquityList();
+        for (Equity fv : gh){
+            System.out.println(fv.getSharePrice() + " things saved in list in caretaker");
         }
 
 
     }
 
     public EquityMemento getMemento(){
-        ArrayList<equity> fgd = savedEquities.get(0).getEquityList();
-        for (equity ffjn : fgd){
-            System.out.println(ffjn.equityPrice + " in get memento");
+        ArrayList<Equity> fgd = savedEquities.get(0).getEquityList();
+        for (Equity ffjn : fgd){
+            System.out.println(ffjn.getSharePrice()+ " in get memento");
         }
         return savedEquities.get(0);
+    }
+
+    public void removeMemento(){
+        savedEquities.remove(savedEquities.size()-1);
     }
 }

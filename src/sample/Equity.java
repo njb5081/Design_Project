@@ -32,9 +32,7 @@ public class Equity {
     }
 
     //Getters
-    public String getTickerSymbol () {
-        return tickerSymbol;
-    }
+    public String getTickerSymbol () { return tickerSymbol; }
     public String getName () { return name; }
     public String getIndex () { return index; }
     public String getSector () { return sector; }

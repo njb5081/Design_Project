@@ -65,7 +65,7 @@ public class Portfolio implements Serializable {
      * @param date date equity was acquired
      * @param cash boolean true if equity is purchased with money in an account associated with this Portfolio
      */
-    public boolean addEquity(Double ticker, int numShares, double pricePerShare, String date, boolean cash) {
+    public boolean addEquity(String ticker, int numShares, double pricePerShare, String date, boolean cash) {
         //change to boolean, false if not enough money in account?
         //create new equity object?
         //add to total holdings

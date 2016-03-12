@@ -7,30 +7,29 @@ import java.util.ArrayList;
  * Created by Nick on 3/9/2016.
  */
 public class Portfolio {
-    //private String userid;
-    private User user;
+    private String userid;
     //private String password?
     //private list of transactions
-    private int totalHoldings;
-    private int totalCash;
+    private double totalHoldings;
+    private double totalCash;
     private ArrayList<Equity> equities;
     private ArrayList<CashAccount> cashAccounts;
 
     /**
      * Constructor creates new Portfolio
-     * @param id userid that links the Portfolio to a user
+     * @param userid userid that links the Portfolio to a user
      * @param importedEquities any equities being imported to a new Portfolio
      * @param importedCashAccounts any cash accounts being imported
      */
-    public Portfolio(User user, ArrayList<Equity> importedEquities, ArrayList<CashAccount> importedCashAccounts){
-        this.user = user;
+    public Portfolio(String userid, ArrayList<Equity> importedEquities, ArrayList<CashAccount> importedCashAccounts){
+        this.userid = userid;
 
         this.equities = new ArrayList<Equity>();
         this.cashAccounts = new ArrayList<CashAccount>();
-        int holdings = 0;
+        double holdings = 0;
         for (Equity e : importedEquities) {
             equities.add(e);
-            holdings += (e.getSharesHeld() *e.getSharePrice());
+            holdings += (e.getSharesHeld() * e.getSharePrice());
         }
         for (CashAccount c : importedCashAccounts) {
             cashAccounts.add(c);
@@ -45,13 +44,17 @@ public class Portfolio {
      * Gets the total holdings of all holdings in the Portfolio
      * @return int total holdings in all accounts
      */
-    public int getTotalHoldings(){
+    public double getTotalHoldings(){
         return this.totalHoldings;
     }
 
-//    public String getUserID(){
-//        return this.userid;
-//    }
+    public String getUserID(){
+        return this.userid;
+    }
+
+    public double getTotalCash(){
+        return this.totalCash;
+    }
 
     /**
      * Add an equity to this Portfolio
@@ -61,17 +64,32 @@ public class Portfolio {
      * @param date date equity was acquired
      * @param cash boolean true if equity is purchased with money in an account associated with this Portfolio
      */
-    public boolean addEquity(String ticker, int numShares, int pricePerShare, String date, boolean cash) {
+    public boolean addEquity(String ticker, int numShares, double pricePerShare, String date, boolean cash) {
         //change to boolean, false if not enough money in account?
         //create new equity object?
         //add to total holdings
         //add info to txt file
-        int totalPrice = (numShares * pricePerShare);
+        double totalPrice = (numShares * pricePerShare);
         if (cash && (totalPrice > this.totalCash)) { //if purchasing equity with a cash account
             return false;
         }
-        String name = "name";
-        //Equity e = new Equity(ticker, )
+        if (cash) {
+            double max = 0;
+            CashAccount largest;
+            for (CashAccount c : cashAccounts){
+                if (c.getBalance() > max) {
+                    max = c.getBalance();
+                    largest = c;
+                }
+            }
+            //subtract from cash account
+        }
+        String name = "name"; //placeholder
+        String index = "index"; //placeholder
+        String sector = "sector"; //placeholder
+
+        Equity e = new Equity(ticker, name, index, sector, numShares, pricePerShare);
+        this.equities.add(e);
         calculateTotalHoldings(); //or just update the holdings
         return true;
     }

@@ -28,14 +28,11 @@ public class Main extends Application {
     Stage window;
     Scene scene1, scene2, scene3;
     data userData = new data();
+    TextField portValue;
 
     @Override
-
-
     public void start(Stage primaryStage) throws Exception{
         loginScene(primaryStage);
-
-
     }
 
     public void loginScene(Stage mainStage){
@@ -211,6 +208,7 @@ public class Main extends Application {
     }
 
     public void simulationScene (Stage mainStage){
+
         window = mainStage;
         window.setTitle("Market simulation");
 
@@ -263,9 +261,10 @@ public class Main extends Application {
         box4.getChildren().add(reset);
         grid.add(box4, 1, 120);
 
-        final Label Value = new Label("Portfolio Value: ");
+        Label Value = new Label("Portfolio Value: ");
         grid.add(Value, 0, 125);
-        final TextField Val = new TextField();
+        TextField Val = new TextField();
+        portValue = Val;
         grid.add(Val, 1, 125);
 
 
@@ -273,23 +272,27 @@ public class Main extends Application {
         simulation.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                ArrayList<Equity> equities = new ArrayList<Equity>();
+                ArrayList<CashAccount> cash = new ArrayList<CashAccount>();
                 MarketSimulation bull = new BullMarket();
-
+                Portfolio port = new Portfolio("njb5081",equities,cash);
                 float tempPercent = Float.parseFloat(percentage.getText());
                 int tempSteps = Integer.parseInt(stepField.getText());
                 String tempInterval = IntervalField.getText();
-                ArrayList<Equity> equities = new ArrayList<Equity>();
+
                 Equity eq = new Equity("t","test","id1","sec1",3,50);
 //                eq.setSharePrice(30);
                 Equity eq2 = new Equity("t2","test1","id2","sec4",1,100);
 //                eq2.setSharePrice(10);
-                equities.add(eq);
+                port.addEquity("t",3,50,"3/10/16",false);
 //                equities.add(eq2);
 //                for (Equity EEE : equities) {
 //                    System.out.println(EEE.EquityPrice + " before simulation");
 //                }
                 ArrayList<Equity> tempList = new ArrayList<Equity>();
-                equities = bull.runSimulation(tempPercent, equities, true, tempSteps, tempInterval);
+                equities = bull.runSimulation(tempPercent, port.getportfolioEquity(), true, tempSteps, tempInterval);
+                System.out.println(String.valueOf(port.getTotalHoldings() + " total value of PORTFOLIO"));
+                portValue.setText(String.valueOf(port.getTotalHoldings()));
                 for (Equity ppp : equities){
                     System.out.println(ppp.getSharePrice() + "AFter sim");
                 }

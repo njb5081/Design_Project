@@ -56,6 +56,8 @@ public class Portfolio {
         return this.totalCash;
     }
 
+    public ArrayList<Equity> getportfolioEquity(){ return this.equities;}
+
     /**
      * Add an equity to this Portfolio
      * @param ticker equity ticker symbol
@@ -154,9 +156,7 @@ public class Portfolio {
     /**
      * import Transactions into this Portfolio
      */
-    public void importTransaction(){
-        return;
-    }
+    public void importTransaction(){}
 
     /**
      * Transfer funds to a cash account

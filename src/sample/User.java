@@ -14,7 +14,7 @@ public class User implements Serializable {
     private String username;
     private String encryption = "1234";
     private int portfolioID;
-    private int id;
+    //private int id;
 
     /*
     * Initial the object with information
@@ -39,19 +39,19 @@ public class User implements Serializable {
         return this.portfolioID;
     }
 
-    /*
-    * set a new ID for user
-    * */
-    public void setUserID(int ID){
-        this.id = ID;
-    }
-
-    /*
-    * return userID
-    * */
-    public int getUserID(int ID){
-        return this.id;
-    }
+//    /*
+//    * set a new ID for user
+//    * */
+//    public void setUserID(int ID){
+//        this.id = ID;
+//    }
+//
+//    /*
+//    * return userID
+//    * */
+//    public int getUserID(int ID){
+//        return this.id;
+//    }
 
 
     /*

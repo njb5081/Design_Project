@@ -1,12 +1,13 @@
 package sample;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
  * Created by Nick on 3/9/2016.
  */
-public class Portfolio {
+public class Portfolio implements Serializable {
     private String userid;
     //private String password?
     //private list of transactions
@@ -64,7 +65,7 @@ public class Portfolio {
      * @param date date equity was acquired
      * @param cash boolean true if equity is purchased with money in an account associated with this Portfolio
      */
-    public boolean addEquity(String ticker, int numShares, double pricePerShare, String date, boolean cash) {
+    public boolean addEquity(Double ticker, int numShares, double pricePerShare, String date, boolean cash) {
         //change to boolean, false if not enough money in account?
         //create new equity object?
         //add to total holdings
@@ -83,14 +84,14 @@ public class Portfolio {
                 }
             }
             //subtract from cash account
-            largest.subtractFunds(totalPrice);
+            //largest.subtractFunds(totalPrice);
         }
         String name = "name"; //placeholder
         String index = "index"; //placeholder
         String sector = "sector"; //placeholder
 
-        Equity e = new Equity(ticker, name, index, sector, numShares, pricePerShare);
-        this.equities.add(e);
+//        Equity e = new Equity(ticker, name, index, sector, numShares, pricePerShare);
+//        this.equities.add(e);
         calculateTotalHoldings(); //or just update the holdings
         return true;
     }
@@ -118,7 +119,7 @@ public class Portfolio {
             return false;
         }
         if (cash && !cashAccounts.isEmpty()) {
-            cashAccounts.get(0).addFunds(totalSalePrice);
+            //cashAccounts.get(0).addFunds(totalSalePrice);
         }
         calculateTotalHoldings(); //or just update the holdings
         return true;

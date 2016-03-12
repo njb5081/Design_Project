@@ -176,8 +176,6 @@ public class Main extends Application {
                     User newAccount = new User(userField.getText(),pwBox.getText());
                     if(!userData.isUserExist(newAccount)) {
                         userData.saveAccount(newAccount);
-                        Portfolio newPortpolio = new Portfolio(new ArrayList<Equity>(),new ArrayList<CashAccount>());
-
                         message.setText("register sucess");
                     } else {
                         message.setText("Account has been created");

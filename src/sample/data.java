@@ -22,6 +22,7 @@ public class data  {
     * save a new account to data
     */
     public void saveAccount(User newAccount){
+
         //check wthether the account has been created or not
         if (!isUserExist(newAccount)) {
             //get the list of User account from the text file

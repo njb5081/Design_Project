@@ -1,12 +1,13 @@
 package sample;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
  * Created by Nick on 3/9/2016.
  */
-public class Portfolio {
+public class Portfolio implements Serializable {
     private String userid;
     //private String password?
     //private list of transactions
@@ -78,15 +79,15 @@ public class Portfolio {
         }
         if (cash) {
             double max = 0;
-            CashAccount largest;
+            CashAccount largest = cashAccounts.get(0);
             for (CashAccount c : cashAccounts){
                 if (c.getBalance() > max) {
                     max = c.getBalance();
-                    this.largest = c;
+                    largest = c;
                 }
             }
             //subtract from cash account
-            this.largest.subtractFunds(totalPrice);
+            largest.subtractFunds(totalPrice);
         }
         String name = "name"; //placeholder
         String index = "index"; //placeholder

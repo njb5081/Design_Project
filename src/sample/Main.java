@@ -241,6 +241,8 @@ public class Main extends Application {
             }
         }
 
+        final Portfolio innerMyPortfolio = myPortfolio;
+
         final GridPane transactionGrid = new GridPane();
         transactionGrid.setAlignment(Pos.TOP_LEFT);
         transactionGrid.setHgap(1);
@@ -392,7 +394,7 @@ public class Main extends Application {
 
                     if(tempBuyAccount.getBalance() >= tempBuyEquity.getSharePrice() * tempAmount & tempBuyEquity.getSharesHeld() > 0) {
 
-                        BuyEquity equitySale = new BuyEquity(tempAmount, tempBuyAccount, tempBuyEquity, log);
+                        BuyEquity equitySale = new BuyEquity(tempAmount, tempBuyAccount, tempBuyEquity, log,  innerMyPortfolio);
                         equitySale.execute();
 
                         buyTransactionLabel.setText("Purchase Successful");

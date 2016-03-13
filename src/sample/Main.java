@@ -33,7 +33,6 @@ public class Main extends Application {
 
     @Override
 
-
     public void start(Stage primaryStage) throws Exception{
         loginScene(primaryStage);
 
@@ -54,8 +53,6 @@ public class Main extends Application {
         grid.setPadding(new Insets(25, 25, 25, 25));
 
         scene1 = new Scene(grid, 300, 300);
-
-
 
         Text sceneTitle = new Text("welcome");
         sceneTitle.setFont(Font.font("Arial"));
@@ -435,7 +432,7 @@ public class Main extends Application {
                         !newCashAccountName.getText().equals("") &
                         !cashAccounts.keySet().contains(newCashAccountName.getText())){
 
-                    CashAccount tempNewCashAccount = new CashAccount(Integer.parseInt(newCashAccountBalance.getText()), newCashAccountName.getText());
+                    CashAccount tempNewCashAccount = new CashAccount(Double.parseDouble(newCashAccountBalance.getText()), newCashAccountName.getText());
 
                     cashAccounts.put(tempNewCashAccount.toString(), tempNewCashAccount);
 

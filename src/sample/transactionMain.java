@@ -41,19 +41,6 @@ public class transactionMain extends Application{
         transactionGrid.setVgap(1);
         transactionGrid.setPadding(new Insets(25, 25, 25, 25));
 
-        final GridPane buyGrid = new GridPane();
-        buyGrid.setAlignment(Pos.TOP_LEFT);
-        buyGrid.setHgap(1);
-        buyGrid.setVgap(1);
-        buyGrid.setPadding(new Insets(25, 25, 25, 25));
-
-        final GridPane sellGrid = new GridPane();
-        sellGrid.setAlignment(Pos.TOP_LEFT);
-        sellGrid.setHgap(1);
-        sellGrid.setVgap(1);
-        sellGrid.setPadding(new Insets(25, 25, 25, 25));
-
-
         final GridPane createCashAccountGrid = new GridPane();
         createCashAccountGrid.setAlignment(Pos.TOP_LEFT);
         createCashAccountGrid.setHgap(1);
@@ -63,13 +50,16 @@ public class transactionMain extends Application{
         final Scene scene = new Scene(transactionGrid, 900, 450);
 
         final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
+        final HashMap<String, Equity> equities =  new HashMap<String, Equity>();
 
-        final ObservableList<String> options = FXCollections.observableArrayList();
+        final ObservableList<String> optionsCashAccounts = FXCollections.observableArrayList();
+        final ObservableList<String> optionsEquities = FXCollections.observableArrayList();
 
-        options.addAll(cashAccounts.keySet());
+        optionsCashAccounts.addAll(cashAccounts.keySet());
+        optionsEquities.addAll(equities.keySet());
 
-        final ComboBox fromAccount = new ComboBox(options);
-        final ComboBox toAccount = new ComboBox(options);
+        final ComboBox fromAccount = new ComboBox(optionsCashAccounts);
+        final ComboBox toAccount = new ComboBox(optionsCashAccounts);
         final TextField transAmount = new TextField(){
 
             @Override public void replaceText(int start, int end, String text) {
@@ -120,8 +110,8 @@ public class transactionMain extends Application{
             }
         };
 
-        final ComboBox sellCashAccount = new ComboBox(options);
-        final ComboBox sellEquity = new ComboBox(options);
+        final ComboBox sellCashAccount = new ComboBox(optionsCashAccounts);
+        final ComboBox sellEquity = new ComboBox(optionsEquities);
 
         final Label sellTransactionLabel = new Label("Choose Equity to Sell");
         final Label sellEquityNameLabel = new Label("     Equity Name: None Selected");
@@ -152,8 +142,8 @@ public class transactionMain extends Application{
             }
         };
 
-        final ComboBox buyCashAccount = new ComboBox(options);
-        final ComboBox buyEquity = new ComboBox(options);
+        final ComboBox buyCashAccount = new ComboBox(optionsCashAccounts);
+        final ComboBox buyEquity = new ComboBox(optionsEquities);
 
         final Label buyTransactionLabel = new Label("Choose Equity to Buy");
         final Label buyEquityNameLabel = new Label("     Equity Name: None Selected");
@@ -186,6 +176,66 @@ public class transactionMain extends Application{
 
         final Button createCashAccount = new Button("Create Cash Account");
         final Button returnTrans = new Button("Return");
+
+        sellEquityButton.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                if (sellCashAccount.getValue() != null &
+                        sellEquity.getValue() != null &
+                        !sellEquityAmount.getText().equals("")
+                        ) {
+
+                    CashAccount tempSellAccount = cashAccounts.get(toAccount.getValue());
+                    Equity tempSellEquity = equities.get(sellEquity.getValue());
+                    int tempAmount = Integer.parseInt(transAmount.getText());
+
+                    if(tempSellAccount.getBalance() >= tempSellEquity.getSharePrice() * tempAmount) {
+
+                        SellEquity equitySale = new SellEquity(tempAmount, tempSellAccount, tempSellEquity, log);
+                        equitySale.execute();
+
+                        sellTransactionLabel.setText("Sale Successful");
+
+                    } else{
+                        sellTransactionLabel.setText("Invalid Input");
+                    }
+
+                } else {
+                    sellTransactionLabel.setText("Invalid Input");
+                }
+            }
+        });
+
+        buyEquityButton.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                if (buyCashAccount.getValue() != null &
+                        buyEquity.getValue() != null &
+                        !buyEquityAmount.getText().equals("")
+                        ) {
+
+                    CashAccount tempBuyAccount = cashAccounts.get(toAccount.getValue());
+                    Equity tempBuyEquity = equities.get(buyEquity.getValue());
+                    int tempAmount = Integer.parseInt(transAmount.getText());
+
+                    if(tempBuyAccount.getBalance() >= tempBuyEquity.getSharePrice() * tempAmount) {
+
+                        BuyEquity equitySale = new BuyEquity(tempAmount, tempBuyAccount, tempBuyEquity, log);
+                        equitySale.execute();
+
+                        buyTransactionLabel.setText("Purchase Successful");
+
+                    } else{
+                        buyTransactionLabel.setText("Invalid Input");
+                    }
+
+                } else {
+                    buyTransactionLabel.setText("Invalid Input");
+                }
+            }
+        });
 
         transFunds.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -252,9 +302,9 @@ public class transactionMain extends Application{
 
                     cashAccounts.put(tempNewCashAccount.toString(), tempNewCashAccount);
 
-                    options.add(tempNewCashAccount.toString());
-                    toAccount.setItems(options);
-                    fromAccount.setItems(options);
+                    optionsCashAccounts.add(tempNewCashAccount.toString());
+                    toAccount.setItems(optionsCashAccounts);
+                    fromAccount.setItems(optionsCashAccounts);
 
                     newCashAccountLabel.setText("Account Created Successfully");
 

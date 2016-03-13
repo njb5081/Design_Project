@@ -32,9 +32,8 @@ public class Main extends Application {
     private Logger log = new Logger();
     Stage window;
     Scene scene1, scene2, scene3, scene4;
-    data userData = new data();
+    static data userData = new data();
     TextField portValue;
-
     @Override
 
 
@@ -142,8 +141,6 @@ public class Main extends Application {
         grid2.setPadding(new Insets(25, 25, 25, 25));
 
         scene2 = new Scene(grid2, 300, 300);
-
-
 
         Text registerSceneTitle = new Text("");
         registerSceneTitle.setFont(Font.font("Arial"));
@@ -674,7 +671,7 @@ public class Main extends Application {
         transactionButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                transactionScene(mainStage);
+                transactionScene(window);
             }
         });
 
@@ -812,6 +809,18 @@ public class Main extends Application {
         window.show();
     }
     public static void main(String[] args) {
+
+        //Check for admin command line input.
+        if(args.length>0) {
+            if (args[0].equals("-delete")) {
+                for (User u : userData.listOfUser()) {
+                    if (u.username().equals(args[1])) {
+                        //delete the user from the application.
+                        userData.deleteUserAccount(u.username());
+                    }
+                }
+            }
+        }
         launch(args);
     }
 }

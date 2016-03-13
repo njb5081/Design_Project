@@ -75,6 +75,7 @@ public class User implements Serializable {
     }
     /*
     * compare two user whether both are equal or not
+    * Both account need to have the same username and password
     * */
     @Override
     public boolean equals(Object object)

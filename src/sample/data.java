@@ -28,7 +28,7 @@ public class  data  {
             //get the list of User account from the text file
             userList = this.listOfUser();
             userList.add(newAccount);
-            //open the text file and save the new account
+            //open the text file and smave the new account
             this.updateAccountList(userList);
             //create new PortfolioAccount
             this.savePortfolioAccount(newAccount.username());
@@ -108,6 +108,16 @@ public class  data  {
     }
 
 
+    public boolean usernameExist(String username){
+        List<User> list = this.listOfUser();
+        for (User u: list){
+            if (u.username().equals(username)){
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 
     /*
@@ -123,32 +133,16 @@ public class  data  {
     public List<User> listOfUser (){
         List<User> listOfAccount = new ArrayList<User>();
         //access the text file employee.text
-        Object temporary = this.listOfObject("employee.txt");
-        if (temporary != null){
-            listOfAccount = (ArrayList<User>) temporary;
-        }
+//        Object temporary = this.listOfObject("employee.txt");
+//        if (temporary != null){
+//            listOfAccount = (ArrayList<User>) temporary;
+//        }
 
-        return listOfAccount;
-    }
-
-    public List<Portfolio> listOfPortfolio (){
-        List<Portfolio> listOfPortfolio = new ArrayList<Portfolio>();
-        //access the text file portfolio.text
-        Object temporary = this.listOfObject("portfolio.txt");
-        if (temporary != null){
-            listOfPortfolio = (ArrayList<Portfolio>) temporary;
-        }
-
-        return listOfPortfolio;
-    }
-
-    public Object listOfObject(String text){
-        Object list= null;
         try {
-            FileInputStream fileOut = new FileInputStream(text);
+            FileInputStream fileOut = new FileInputStream("employee.txt");
             if(fileOut.available() > 0) {
                 ObjectInputStream is = new ObjectInputStream(fileOut);
-                list = is.readObject();
+                listOfAccount = (ArrayList<User>)is.readObject();
                 is.close();
             }
         } catch (FileNotFoundException i){
@@ -159,9 +153,56 @@ public class  data  {
         } catch (ClassNotFoundException i){
             i.printStackTrace();
         }
-
-        return list;
+        return listOfAccount;
     }
+
+    public List<Portfolio> listOfPortfolio (){
+        List<Portfolio> listOfPortfolio = new ArrayList<Portfolio>();
+        //access the text file portfolio.text
+//        Object temporary = this.listOfObject("portfolio.txt");
+//        if (temporary != null){
+//            listOfPortfolio = (ArrayList<Portfolio>) temporary;
+//        }
+
+
+        try {
+            FileInputStream fileOut = new FileInputStream("portfolio.txt");
+            if(fileOut.available() > 0) {
+                ObjectInputStream is = new ObjectInputStream(fileOut);
+                listOfPortfolio = (ArrayList<Portfolio>)is.readObject();
+                is.close();
+            }
+        } catch (FileNotFoundException i){
+            i.printStackTrace();
+        }catch(IOException i)
+        {
+            i.printStackTrace();
+        } catch (ClassNotFoundException i){
+            i.printStackTrace();
+        }
+        return listOfPortfolio;
+    }
+
+//    public Object listOfObject(String text){
+//        Object list= null;
+//        try {
+//            FileInputStream fileOut = new FileInputStream(text);
+//            if(fileOut.available() > 0) {
+//                ObjectInputStream is = new ObjectInputStream(fileOut);
+//                list = is.readObject();
+//                is.close();
+//            }
+//        } catch (FileNotFoundException i){
+//            i.printStackTrace();
+//        }catch(IOException i)
+//        {
+//            i.printStackTrace();
+//        } catch (ClassNotFoundException i){
+//            i.printStackTrace();
+//        }
+//
+//        return list;
+//    }
 
 
 

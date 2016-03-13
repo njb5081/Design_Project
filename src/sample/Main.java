@@ -796,10 +796,13 @@ public class Main extends Application {
     public static void main(String[] args) {
 
         //Check for admin command line input.
-        if (args[0].equals("-delete")) {
-            for (User u : userData.listOfUser()) {
-                if (u.username().equals(args[1])) {
-                    //delete the user from the application.
+        if(args.length>0) {
+            if (args[0].equals("-delete")) {
+                for (User u : userData.listOfUser()) {
+                    if (u.username().equals(args[1])) {
+                        //delete the user from the application.
+                        userData.deleteUserAccount(u.username());
+                    }
                 }
             }
         }

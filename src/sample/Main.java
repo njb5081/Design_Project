@@ -39,8 +39,6 @@ public class Main extends Application {
 
     public void start(Stage primaryStage) throws Exception{
         loginScene(primaryStage);
-
-
     }
 
     /*
@@ -219,10 +217,18 @@ public class Main extends Application {
 
     }
 
-    public void transactionScene(final Stage mainStage){
+    public void transactionScene(final Stage mainStage, final String userID){
 
         window = mainStage;
         window.setTitle("Transactions");
+
+        List<Portfolio> portList = userData.listOfPortfolio();
+        Portfolio myPortfolio = portList.get(0);
+        for (Portfolio p : portList) {
+            if (p.getUserID().equals(userID)){
+                myPortfolio = p;
+            }
+        }
 
         final GridPane transactionGrid = new GridPane();
         transactionGrid.setAlignment(Pos.TOP_LEFT);
@@ -238,8 +244,8 @@ public class Main extends Application {
 
         scene4 = new Scene(transactionGrid, 900, 600);
 
-        final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
-        final HashMap<String, Equity> equities =  new HashMap<String, Equity>();
+        final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>(); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        final HashMap<String, Equity> equities =  new HashMap<String, Equity>(); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         final ObservableList<String> optionsCashAccounts = FXCollections.observableArrayList();
         final ObservableList<String> optionsEquities = FXCollections.observableArrayList();
@@ -513,20 +519,20 @@ public class Main extends Application {
             }
         });
 
-        //SIMULATION STUFF START
-        final Button simulationButton = new Button("Go to Simulation");
+        //PORTFOLIO STUFF START
+        final Button simulationButton = new Button("Go to Portfolio");
 
         simulationButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                simulationScene(mainStage);
+                portfolioScene(mainStage, userID);
             }
         });
 
         HBox simBox = new HBox();
         simBox.setAlignment(Pos.TOP_LEFT);
         transactionGrid.add(simulationButton, 1, 150);
-        //SIMULATION STUFF END
+        //PORTFOLIO STUFF END
 
         HBox box1Trans = new HBox();
         VBox box2Trans = new VBox();
@@ -667,21 +673,6 @@ public class Main extends Application {
         grid.setPadding(new Insets(25, 25, 25, 25));
         Scene scene3 = new Scene(grid, 350, 450);
 
-        //TRANSACTION STUFF START
-        final Button transactionButton = new Button("Go to Transactions");
-
-        transactionButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                transactionScene(mainStage);
-            }
-        });
-
-        HBox transBox = new HBox();
-        transBox.setAlignment(Pos.TOP_LEFT);
-        grid.add(transactionButton, 1, 200);
-        //TRANSACTION STUFF END
-
         final Label interval = new Label("Time interval: (d,m,y)");
         grid.add(interval,0,1);
         final TextField IntervalField = new TextField();
@@ -801,7 +792,7 @@ public class Main extends Application {
         window.show();
     }
 
-    public void portfolioScene(Stage stage, final String userID){
+    public void portfolioScene(final Stage stage, final String userID){
         window = stage;
         window.setTitle("My Portfolio");
 
@@ -819,6 +810,21 @@ public class Main extends Application {
         }
         Label userName = new Label(myPortfolio.getUserID());
         grid.add(userName, 0, 0);
+
+        //TRANSACTION STUFF START
+        final Button transactionButton = new Button("Go to Transactions");
+
+        transactionButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                transactionScene(stage, userID);
+            }
+        });
+
+        HBox transBox = new HBox();
+        transBox.setAlignment(Pos.TOP_LEFT);
+        grid.add(transactionButton, 1, 200);
+        //TRANSACTION STUFF END
 
         Button addAccount = new Button("Add a Cash Account");
 

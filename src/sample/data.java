@@ -133,7 +133,7 @@ public class  data  {
 
     public List<Portfolio> listOfPortfolio (){
         List<Portfolio> listOfPortfolio = new ArrayList<Portfolio>();
-        //access the text file employee.text
+        //access the text file portfolio.text
         Object temporary = this.listOfObject("portfolio.txt");
         if (temporary != null){
             listOfPortfolio = (ArrayList<Portfolio>) temporary;

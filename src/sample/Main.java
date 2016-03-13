@@ -180,7 +180,7 @@ public class Main extends Application {
                 if (pwBox.getText().equals(confirmPw.getText())){
 
                     User newAccount = new User(userField.getText(),pwBox.getText());
-                    if(!userData.isUserExist(newAccount)) {
+                    if(!userData.usernameExist(newAccount.username())) {
                         userData.saveAccount(newAccount);
                         message.setText("register success");
                     } else {

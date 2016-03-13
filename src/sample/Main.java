@@ -268,7 +268,7 @@ public class Main extends Application {
         final Label fromAccountBalanceLabel = new Label("     Account Balance: $0");
 
         final Button transFunds = new Button("Transfer");
-        final Button newCashAccount = new Button("Add Cash Account");
+        //final Button newCashAccount = new Button("Add Cash Account");
 
         final Label newCashAccountLabel = new Label("Enter New Cash Account Details");
         final Label newCashAccountNameLabel = new Label("Name of New Cash Account: ");
@@ -316,7 +316,7 @@ public class Main extends Application {
 
         final NumberTextField buyEquityAmount = new NumberTextField();
 
-        final Button createCashAccount = new Button("Create Cash Account");
+        //final Button createCashAccount = new Button("Create Cash Account");
         final Button returnTrans = new Button("Return");
 
         sellEquityButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -423,6 +423,7 @@ public class Main extends Application {
             }
         });
 
+        /*
         newCashAccount.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -430,6 +431,7 @@ public class Main extends Application {
                 scene4.setRoot(createCashAccountGrid);
             }
         });
+        */
 
         returnTrans.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -439,6 +441,7 @@ public class Main extends Application {
             }
         });
 
+        /*
         createCashAccount.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -464,6 +467,7 @@ public class Main extends Application {
 
             }
         });
+        */
 
         toAccount.setOnAction(new EventHandler<ActionEvent>(){
             @Override
@@ -564,7 +568,7 @@ public class Main extends Application {
         box4Trans.getChildren().add(transAmount);
 
         box5Trans.getChildren().add(transFunds);
-        box5Trans.getChildren().add(newCashAccount);
+        //box5Trans.getChildren().add(newCashAccount);
 
         transactionGrid.add(box1Trans, 1 , 10);
         transactionGrid.add(box2Trans, 1 , 20);
@@ -633,7 +637,7 @@ public class Main extends Application {
         transactionGrid.add(box3Sell, 100 , 40);
         transactionGrid.add(box4Sell, 100 , 60);
         transactionGrid.add(box5Sell, 100 , 120);
-
+        /*
         HBox box1CA = new HBox();
         VBox box2CA = new VBox();
         VBox box3CA = new VBox();
@@ -647,13 +651,14 @@ public class Main extends Application {
         box3CA.getChildren().add(newCashAccountBalanceLabel);
         box3CA.getChildren().add(newCashAccountBalance);
 
-        box4CA.getChildren().add(createCashAccount);
+        //box4CA.getChildren().add(createCashAccount);
         box4CA.getChildren().add(returnTrans);
 
         createCashAccountGrid.add(box1CA, 1 ,10);
         createCashAccountGrid.add(box2CA, 1, 20);
         createCashAccountGrid.add(box3CA, 1, 40);
         createCashAccountGrid.add(box4CA, 1, 120);
+        */
 
         window.setScene(scene4);
         window.show();

@@ -33,16 +33,15 @@ import java.util.HashMap;
 
 public class Main extends Application {
 
-    private Logger log = new Logger();
+
     Stage window;
     Scene scene1, scene2, scene3, scene4, scene5;
     static data userData = new data();
     TextField portValue;
     String user;
+    private Logger log = userData.getLog();
 
     @Override
-
-
     public void start(Stage primaryStage) throws Exception{
         loginScene(primaryStage);
 
@@ -362,14 +361,6 @@ public class Main extends Application {
         final Label fromAccountBalanceLabel = new Label("     Account Balance: $0");
 
         final Button transFunds = new Button("Transfer");
-        //final Button newCashAccount = new Button("Add Cash Account");
-
-        final Label newCashAccountLabel = new Label("Enter New Cash Account Details");
-        final Label newCashAccountNameLabel = new Label("Name of New Cash Account: ");
-        final Label newCashAccountBalanceLabel = new Label("Balance of New Cash Account: ");
-
-        final TextField newCashAccountName = new TextField();
-        final NumberTextField newCashAccountBalance = new NumberTextField();
 
         final ComboBox sellCashAccount = new ComboBox(optionsCashAccounts);
         final ComboBox sellEquity = new ComboBox(optionsEquitiesOwned);
@@ -410,7 +401,6 @@ public class Main extends Application {
 
         final NumberTextField buyEquityAmount = new NumberTextField();
 
-        //final Button createCashAccount = new Button("Create Cash Account");
         final Button returnTrans = new Button("Return");
 
         sellEquityButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -436,6 +426,7 @@ public class Main extends Application {
                         sellCashAccountNameLabel.setText("      Name: " + sellCashAccount.getValue().toString());
                         sellCashAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(sellCashAccount.getValue()).getBalance()));
                         sellAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(sellCashAccount.getValue()).getOpenDate());
+                        userData.updateLogger(log);
 
                     } else{
                         sellTransactionLabel.setText("Invalid Input");
@@ -470,6 +461,7 @@ public class Main extends Application {
                         buyCashAccountNameLabel.setText("      Name: " + buyCashAccount.getValue().toString());
                         buyCashAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(buyCashAccount.getValue()).getBalance()));
                         buyAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(buyCashAccount.getValue()).getOpenDate());
+                        userData.updateLogger(log);
 
                     } else{
                         buyTransactionLabel.setText("Invalid Input");
@@ -504,6 +496,7 @@ public class Main extends Application {
                         toAccountBalanceLabel.setText("      Balance: $" + Double.toString(tempToAccount.getBalance()));
                         fromAccountNameLabel.setText("      Name: " + tempFromAccount.toString());
                         fromAccountBalanceLabel.setText("      Balance: $" + Double.toString(tempFromAccount.getBalance()));
+                        userData.updateLogger(log);
 
                         transFundsLabel.setText("Transfer Successful");
 
@@ -517,16 +510,6 @@ public class Main extends Application {
             }
         });
 
-        /*
-        newCashAccount.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                scene4.setRoot(createCashAccountGrid);
-            }
-        });
-        */
-
         returnTrans.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -534,34 +517,6 @@ public class Main extends Application {
                 scene4.setRoot(transactionGrid);
             }
         });
-
-        /*
-        createCashAccount.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-
-                if(!newCashAccountBalance.getText().equals("") &
-                        !newCashAccountName.getText().equals("") &
-                        !cashAccounts.keySet().contains(newCashAccountName.getText())){
-
-                    CashAccount tempNewCashAccount = new CashAccount(Double.parseDouble(newCashAccountBalance.getText()), newCashAccountName.getText());
-
-                    cashAccounts.put(tempNewCashAccount.toString(), tempNewCashAccount);
-
-                    optionsCashAccounts.add(tempNewCashAccount.toString());
-                    toAccount.setItems(optionsCashAccounts);
-                    fromAccount.setItems(optionsCashAccounts);
-
-                    newCashAccountLabel.setText("Account Created Successfully");
-
-                }else {
-                    newCashAccountLabel.setText("Invalid Input");
-                }
-
-            }
-        });
-        */
 
         toAccount.setOnAction(new EventHandler<ActionEvent>(){
             @Override
@@ -617,7 +572,7 @@ public class Main extends Application {
             }
         });
 
-        //PORTFOLIO STUFF START
+        //PORTFOLIO NAVIGATION START
         final Button portfolioButton = new Button("Go to Portfolio");
 
         portfolioButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -630,7 +585,7 @@ public class Main extends Application {
         HBox simBox = new HBox();
         simBox.setAlignment(Pos.TOP_LEFT);
         transactionGrid.add(portfolioButton, 1, 150);
-        //PORTFOLIO STUFF END
+        //PORTFOLIO NAVIGATION END
 
         HBox box1Trans = new HBox();
         VBox box2Trans = new VBox();
@@ -662,7 +617,6 @@ public class Main extends Application {
         box4Trans.getChildren().add(transAmount);
 
         box5Trans.getChildren().add(transFunds);
-        //box5Trans.getChildren().add(newCashAccount);
 
         transactionGrid.add(box1Trans, 1 , 10);
         transactionGrid.add(box2Trans, 1 , 20);
@@ -731,28 +685,6 @@ public class Main extends Application {
         transactionGrid.add(box3Sell, 100 , 40);
         transactionGrid.add(box4Sell, 100 , 60);
         transactionGrid.add(box5Sell, 100 , 120);
-        /*
-        HBox box1CA = new HBox();
-        VBox box2CA = new VBox();
-        VBox box3CA = new VBox();
-        HBox box4CA = new HBox();
-
-        box1CA.getChildren().add(newCashAccountLabel);
-
-        box2CA.getChildren().add(newCashAccountNameLabel);
-        box2CA.getChildren().add(newCashAccountName);
-
-        box3CA.getChildren().add(newCashAccountBalanceLabel);
-        box3CA.getChildren().add(newCashAccountBalance);
-
-        //box4CA.getChildren().add(createCashAccount);
-        box4CA.getChildren().add(returnTrans);
-
-        createCashAccountGrid.add(box1CA, 1 ,10);
-        createCashAccountGrid.add(box2CA, 1, 20);
-        createCashAccountGrid.add(box3CA, 1, 40);
-        createCashAccountGrid.add(box4CA, 1, 120);
-        */
 
         window.setScene(scene4);
         window.show();
@@ -772,7 +704,7 @@ public class Main extends Application {
         grid.setPadding(new Insets(25, 25, 25, 25));
         Scene scene3 = new Scene(grid, 350, 450);
 
-        //TRANSACTION STUFF START
+        //TRANSACTION NAVIGATION START
         final Button transactionButton = new Button("Go to Transactions");
 
         transactionButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -785,7 +717,7 @@ public class Main extends Application {
         HBox transBox = new HBox();
         transBox.setAlignment(Pos.TOP_LEFT);
         grid.add(transactionButton, 1, 200);
-        //TRANSACTION STUFF END
+        //TRANSACTION NAVIGATION END
 
         final Button portButton = new Button("Go to Portfolio");
 
@@ -959,7 +891,7 @@ public class Main extends Application {
             i++;
         }
 
-        //LOGGER STUFF START
+        //LOGGER NAVIGATION START
         final Button logButton = new Button("Go to Logger");
 
         logButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -972,9 +904,9 @@ public class Main extends Application {
         HBox logBox = new HBox();
         logBox.setAlignment(Pos.TOP_LEFT);
         grid.add(logButton, 1, 300);
-        //LOGGER STUFF END
+        //LOGGER NAVIGATION END
 
-        //TRANSACTION STUFF START
+        //TRANSACTION NAVIGATION START
         final Button transactionButton = new Button("Go to Transactions");
 
         transactionButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -987,7 +919,7 @@ public class Main extends Application {
         HBox transBox = new HBox();
         transBox.setAlignment(Pos.TOP_LEFT);
         grid.add(transactionButton, 1, 200);
-        //TRANSACTION STUFF END
+        //TRANSACTION NAVIGATION END
 
         Button addAccount = new Button("Add a Cash Account");
         Button marketSimulation = new Button("MarketSimulation");
@@ -1092,7 +1024,6 @@ public class Main extends Application {
         window.setScene(sceneAddAcc);
         window.show();
     }
-
 
     public void addEquityScene(Stage stage, String userid){
 

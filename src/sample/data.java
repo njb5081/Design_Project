@@ -1,12 +1,10 @@
 package sample;
-import javax.sound.sampled.Port;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,6 +85,43 @@ public class  data  {
         } catch (IOException i) {
             i.printStackTrace();
         }
+    }
+
+    /*
+    * update the logger in the text file
+    * */
+    public void updateLogger(Logger log){
+        try {
+            FileOutputStream fileOut = new FileOutputStream("log.txt");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(log);
+            out.close();
+            fileOut.close();
+        } catch (FileNotFoundException i) {
+            i.printStackTrace();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+    public Logger getLog (){
+        Logger log = new Logger();
+
+        try {
+            FileInputStream fileOut = new FileInputStream("log.txt");
+            if(fileOut.available() > 0) {
+                ObjectInputStream is = new ObjectInputStream(fileOut);
+                log = (Logger)is.readObject();
+                is.close();
+            }
+        } catch (FileNotFoundException i){
+            i.printStackTrace();
+        }catch(IOException i)
+        {
+            i.printStackTrace();
+        } catch (ClassNotFoundException i){
+            i.printStackTrace();
+        }
+        return log;
     }
 
     /**

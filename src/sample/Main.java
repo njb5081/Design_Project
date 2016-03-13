@@ -228,7 +228,7 @@ public class Main extends Application {
 
     }
 
-    public void transactionScene(final Stage mainStage, final String userID){
+    public void transactionScene(final Stage mainStage){
 
         window = mainStage;
         window.setTitle("Transactions");
@@ -236,7 +236,7 @@ public class Main extends Application {
         List<Portfolio> portList = userData.listOfPortfolio();
         Portfolio myPortfolio = portList.get(0);
         for (Portfolio p : portList) {
-            if (p.getUserID().equals(userID)){
+            if (p.getUserID().equals(user)){
                 myPortfolio = p;
             }
         }
@@ -256,13 +256,26 @@ public class Main extends Application {
         scene4 = new Scene(transactionGrid, 900, 600);
 
         final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
-        final HashMap<String, Equity> equities =  new HashMap<String, Equity>();
+        final HashMap<String, Equity> equitiesOwned =  new HashMap<String, Equity>();
+        final HashMap<String, Equity> equitiesForSale =  new HashMap<String, Equity>();
+
+        for (int i = 0; i < myPortfolio.getCashAccounts().size(); i++){
+            cashAccounts.put(myPortfolio.getCashAccounts().get(i).toString(),
+                    myPortfolio.getCashAccounts().get(i));
+        }
+
+        for (int i = 0; i < myPortfolio.getEquities().size(); i++){
+            equitiesOwned.put(myPortfolio.getEquities().get(i).toString(),
+                    myPortfolio.getEquities().get(i));
+        }
 
         final ObservableList<String> optionsCashAccounts = FXCollections.observableArrayList();
-        final ObservableList<String> optionsEquities = FXCollections.observableArrayList();
+        final ObservableList<String> optionsEquitiesOwned = FXCollections.observableArrayList();
+        final ObservableList<String> optionsEquitiesForSale = FXCollections.observableArrayList();
 
         optionsCashAccounts.addAll(cashAccounts.keySet());
-        optionsEquities.addAll(equities.keySet());
+        optionsEquitiesOwned.addAll(equitiesOwned.keySet());
+        optionsEquitiesForSale.addAll(optionsEquitiesForSale);
 
         final ComboBox fromAccount = new ComboBox(optionsCashAccounts);
         final ComboBox toAccount = new ComboBox(optionsCashAccounts);
@@ -289,7 +302,7 @@ public class Main extends Application {
         final NumberTextField newCashAccountBalance = new NumberTextField();
 
         final ComboBox sellCashAccount = new ComboBox(optionsCashAccounts);
-        final ComboBox sellEquity = new ComboBox(optionsEquities);
+        final ComboBox sellEquity = new ComboBox(optionsEquitiesOwned);
 
         final Label sellTransactionLabel = new Label("Choose Equity to Sell");
         final Label sellEquityNameLabel = new Label("      Name: None");
@@ -306,7 +319,7 @@ public class Main extends Application {
         final NumberTextField sellEquityAmount = new NumberTextField();
 
         final ComboBox buyCashAccount = new ComboBox(optionsCashAccounts);
-        final ComboBox buyEquity = new ComboBox(optionsEquities);
+        final ComboBox buyEquity = new ComboBox(optionsEquitiesForSale);
 
         final Label buyTransactionLabel = new Label("Choose Equity to Buy");
         final Label buyEquityNameLabel = new Label("      Name: None");
@@ -340,7 +353,7 @@ public class Main extends Application {
                         ) {
 
                     CashAccount tempSellAccount = cashAccounts.get(toAccount.getValue());
-                    Equity tempSellEquity = equities.get(sellEquity.getValue());
+                    Equity tempSellEquity = equitiesOwned.get(sellEquity.getValue());
                     int tempAmount = Integer.parseInt(transAmount.getText());
 
                     if(tempSellAccount.getBalance() >= tempSellEquity.getSharePrice() * tempAmount) {
@@ -374,7 +387,7 @@ public class Main extends Application {
                         ) {
 
                     CashAccount tempBuyAccount = cashAccounts.get(toAccount.getValue());
-                    Equity tempBuyEquity = equities.get(buyEquity.getValue());
+                    Equity tempBuyEquity = equitiesForSale.get(buyEquity.getValue());
                     int tempAmount = Integer.parseInt(transAmount.getText());
 
                     if(tempBuyAccount.getBalance() >= tempBuyEquity.getSharePrice() * tempAmount & tempBuyEquity.getSharesHeld() > 0) {
@@ -520,8 +533,8 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
                 buyEquityNameLabel.setText("      Name: " + buyEquity.getValue().toString());
-                buyEquityValueLabel.setText("      Value: $" + Double.toString(equities.get(buyEquity.getValue()).getSharePrice()));
-                buyEquityOwnedLabel.setText("      Amount Owned: " + Double.toString(equities.get(buyEquity.getValue()).getSharesHeld()));
+                buyEquityValueLabel.setText("      Value: $" + Double.toString(equitiesForSale.get(buyEquity.getValue()).getSharePrice()));
+                buyEquityOwnedLabel.setText("      Amount Owned: " + Double.toString(equitiesForSale.get(buyEquity.getValue()).getSharesHeld()));
             }
         });
 
@@ -529,13 +542,13 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
                 sellEquityNameLabel.setText("      Name: " + sellEquity.getValue().toString());
-                sellEquityValueLabel.setText("      Value: $" + Double.toString(equities.get(sellEquity.getValue()).getSharePrice()));
-                sellEquityOwnedLabel.setText("      Amount Owned: " + Double.toString(equities.get(sellEquity.getValue()).getSharesHeld()));
+                sellEquityValueLabel.setText("      Value: $" + Double.toString(equitiesOwned.get(sellEquity.getValue()).getSharePrice()));
+                sellEquityOwnedLabel.setText("      Amount Owned: " + Double.toString(equitiesOwned.get(sellEquity.getValue()).getSharesHeld()));
             }
         });
 
-        //SIMULATION STUFF START
-        final Button simulationButton = new Button("Go to Simulation");
+        //PORTFOLIO STUFF START
+        final Button simulationButton = new Button("Go to Portfolio");
 
         simulationButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -547,7 +560,7 @@ public class Main extends Application {
         HBox simBox = new HBox();
         simBox.setAlignment(Pos.TOP_LEFT);
         transactionGrid.add(simulationButton, 1, 150);
-        //SIMULATION STUFF END
+        //PORTFOLIO STUFF END
 
         HBox box1Trans = new HBox();
         VBox box2Trans = new VBox();
@@ -884,7 +897,7 @@ public class Main extends Application {
         transactionButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                transactionScene(stage, userID);
+                transactionScene(stage);
             }
         });
 
@@ -959,7 +972,6 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 String amount = amountField.getText();
                 String name = nameField.getText();
-                double balance = Double.parseDouble(amount);
                 //double balance = Double.parseDouble(amount);
                 Double balance = Double.parseDouble(amount);
 

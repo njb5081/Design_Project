@@ -7,36 +7,74 @@ import java.io.Serializable;
  */
 public class User implements Serializable {
 
+    /*
+    * Private variable to support the User object
+    * */
     private String password;
     private String username;
+    private String encryption = "1234";
+    private int portfolioID;
+    //private int id;
 
+    /*
+    * Initial the object with information
+    * */
     public User(String username, String password) {
         this.username = username;
-        this.password = password;
+        // encrypte the password
+        this.password = password+encryption;
     }
 
-    public String User123(User a){
-        return a.username;
+    /*
+    * connect with the associate portfolio id
+    * */
+    public void setPortfolioID(int ID){
+        this.portfolioID = ID;
     }
 
-
-    public void check (){
-
+    /*
+    * return the associate portforlio id
+    * */
+    public int getPortfolioID(){
+        return this.portfolioID;
     }
 
+//    /*
+//    * set a new ID for user
+//    * */
+//    public void setUserID(int ID){
+//        this.id = ID;
+//    }
+//
+//    /*
+//    * return userID
+//    * */
+//    public int getUserID(int ID){
+//        return this.id;
+//    }
+
+
+    /*
+    * return username
+    * */
     public String username(){
         return this.username;
     }
 
+    /*
+    * return a password after decrypte
+    * */
     public String password(){
-        return this.password;
+        int finalIndex = this.password.length()-this.encryption.length()+1;
+        String temporalPW = this.password.substring(0,finalIndex);
+        return temporalPW;
     }
 
     public void changePassword(String newPassword){
 
     }
     /*
-    * compare two user
+    * compare two user whether both are equal or not
     * */
     @Override
     public boolean equals(Object object)

@@ -38,6 +38,9 @@ public class Main extends Application {
 
     }
 
+    /*
+    * create login scene
+    * */
     public void loginScene(Stage mainStage){
         window = mainStage;
         window.setTitle("Login page");
@@ -116,6 +119,9 @@ public class Main extends Application {
         window.show();
     }
 
+    /*
+    * create register scene
+    * */
     public void registerScene(Stage mainStage){
         //scene 2 register
         window = mainStage;

@@ -35,7 +35,7 @@ public class Main extends Application {
 
     private Logger log = new Logger();
     Stage window;
-    Scene scene1, scene2, scene3, scene4;
+    Scene scene1, scene2, scene3, scene4, scene5;
     static data userData = new data();
     TextField portValue;
     String user;
@@ -228,6 +228,74 @@ public class Main extends Application {
 
     }
 
+    public void loggerScene(final Stage mainStage){
+        window = mainStage;
+        window.setTitle("Logger");
+
+        final GridPane logGrid = new GridPane();
+        logGrid.setAlignment(Pos.TOP_LEFT);
+        logGrid.setHgap(1);
+        logGrid.setVgap(1);
+        logGrid.setPadding(new Insets(25, 25, 25, 25));
+
+        final Label logDescription = new Label("Choose Entry to View");
+        final Label entryDescription = new Label("     Entry Description:");
+
+        //PORTFOLIO STUFF START
+        final Button portButton = new Button("Go to Portfolio");
+
+        portButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                portfolioScene(mainStage, user);
+            }
+        });
+        //PORTFOLIO STUFF END
+
+        scene5 = new Scene(logGrid, 600, 250);
+
+        final HashMap<String, Entry> entries =  new HashMap<String, Entry>();
+
+        for(int i = 0; i < log.getEntries().size(); i++){
+            //entries.put(log.getEntries().get(i).getUser(), log.getEntries().get(i));
+            if(log.getEntries().get(i).getUser().equals(user)){
+                entries.put(log.getEntries().get(i).getDate(), log.getEntries().get(i));
+            }
+
+        }
+
+        final ObservableList<String> optionsLog = FXCollections.observableArrayList();
+        optionsLog.addAll(entries.keySet());
+
+        VBox logBox = new VBox();
+        HBox portBox = new HBox();
+
+        final ComboBox chooseLog = new ComboBox(optionsLog);
+
+        chooseLog.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+
+                entryDescription.setText("     Entry Description: " + entries.get(chooseLog.getValue()));
+
+            }
+
+        });
+
+        logBox.getChildren().add(logDescription);
+        logBox.getChildren().add(chooseLog);
+        logBox.getChildren().add(entryDescription);
+
+        portBox.getChildren().add(portButton);
+
+        logGrid.add(logBox,1,25);
+        logGrid.add(portBox,1,100);
+
+        window.setScene(scene5);
+        window.show();
+    }
+
     public void transactionScene(final Stage mainStage){
 
         window = mainStage;
@@ -360,7 +428,7 @@ public class Main extends Application {
 
                     if(tempSellAccount.getBalance() >= tempSellEquity.getSharePrice() * tempAmount) {
 
-                        SellEquity equitySale = new SellEquity(tempAmount, tempSellAccount, tempSellEquity, log);
+                        SellEquity equitySale = new SellEquity(tempAmount, tempSellAccount, tempSellEquity, log, innerMyPortfolio);
                         equitySale.execute();
 
                         sellTransactionLabel.setText("Sale Successful");
@@ -428,7 +496,7 @@ public class Main extends Application {
 
                     if(tempFromAccount.getBalance() >= tempAmount) {
 
-                        Transfer cashTransfer = new Transfer(tempAmount, tempToAccount, tempFromAccount, log);
+                        Transfer cashTransfer = new Transfer(tempAmount, tempToAccount, tempFromAccount, log, user);
 
                         cashTransfer.execute();
 
@@ -550,18 +618,18 @@ public class Main extends Application {
         });
 
         //PORTFOLIO STUFF START
-        final Button simulationButton = new Button("Go to Portfolio");
+        final Button portfolioButton = new Button("Go to Portfolio");
 
-        simulationButton.setOnAction(new EventHandler<ActionEvent>() {
+        portfolioButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                simulationScene(mainStage);
+                portfolioScene(mainStage, user);
             }
         });
 
         HBox simBox = new HBox();
         simBox.setAlignment(Pos.TOP_LEFT);
-        transactionGrid.add(simulationButton, 1, 150);
+        transactionGrid.add(portfolioButton, 1, 150);
         //PORTFOLIO STUFF END
 
         HBox box1Trans = new HBox();
@@ -892,6 +960,21 @@ public class Main extends Application {
             grid.add(balDesc, 1, i);
             i++;
         }
+
+        //LOGGER STUFF START
+        final Button logButton = new Button("Go to Logger");
+
+        logButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                loggerScene(stage);
+            }
+        });
+
+        HBox logBox = new HBox();
+        logBox.setAlignment(Pos.TOP_LEFT);
+        grid.add(logButton, 1, 300);
+        //LOGGER STUFF END
 
         //TRANSACTION STUFF START
         final Button transactionButton = new Button("Go to Transactions");

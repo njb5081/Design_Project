@@ -530,10 +530,6 @@ public class Main extends Application {
             }
         });
 
-
-        
-        
-       
         //SIMULATION STUFF START
         final Button simulationButton = new Button("Go to Simulation");
 
@@ -833,7 +829,7 @@ public class Main extends Application {
                 //todo RESET FUNCTION NOT WORKING CORRECTLY
                 // tempList = bear.reset(equities);
                 //todo Calling reset on wrong thing should be portfolio???
-                            
+
 
             }
 
@@ -859,8 +855,23 @@ public class Main extends Application {
                 myPortfolio = p;
             }
         }
+        Label welcome = new Label("Welcome, ");
+        grid.add(welcome, 0, 0);
         Label userName = new Label(myPortfolio.getUserID());
-        grid.add(userName, 0, 0);
+        grid.add(userName, 1, 0);
+        int i = 2;
+        for (CashAccount c : myPortfolio.getCashAccounts()){
+            Label name = new Label("Account Name: ");
+            grid.add(name, 0, i);
+            Label nameDesc = new Label(c.toString());
+            grid.add(nameDesc, 1, i);
+            i++;
+            Label bal = new Label("Balance: ");
+            grid.add(bal, 0, i);
+            Label balDesc = new Label(String.valueOf(c.getBalance()));
+            grid.add(balDesc, 1, i);
+            i++;
+        }
 
         //TRANSACTION STUFF START
         final Button transactionButton = new Button("Go to Transactions");
@@ -920,7 +931,7 @@ public class Main extends Application {
         grid.add(accName, 0,0);
         final TextField nameField = new TextField();
         grid.add(nameField,1,0);
-        final Label accAmount = new Label("Enter Account Balance:");
+        final Label accAmount = new Label("Enter Account Balance: (format: $$$.$$)");
         grid.add(accAmount, 0, 1);
         final TextField amountField = new TextField();
         grid.add(amountField, 1, 1);
@@ -943,9 +954,10 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 String amount = amountField.getText();
                 String name = nameField.getText();
+                double balance = Double.parseDouble(amount);
                 //double balance = Double.parseDouble(amount);
                 Double balance = Double.parseDouble(amount);
-               
+
                 CashAccount acc = new CashAccount(balance, name);
                 //Find correct portfolio in list of portfolios from text file
                 //Should i just pass the portfolio object into the scene method instead of userid?
@@ -956,7 +968,10 @@ public class Main extends Application {
                         myPortfolio = p;
                     }
                 }
-                portfolioScene(window, user);
+                myPortfolio.addCashAccount(name, balance);
+                userData.updatePortfolioList(portList);
+                portfolioScene(window, userid);
+
             }
         });
         grid.add(addAcc, 1, 3);

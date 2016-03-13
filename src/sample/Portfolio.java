@@ -71,7 +71,6 @@ public class Portfolio implements Serializable {
         //change to boolean, false if not enough money in account?
         //create new equity object?
         //add to total holdings
-        //add info to txt file
         double totalPrice = (numShares * pricePerShare);
         if (cash && (totalPrice > this.totalCash)) { //if purchasing equity with a cash account
             return false;
@@ -131,10 +130,10 @@ public class Portfolio implements Serializable {
      * Add a cash account to this Portfolio
      * @param name name of the cash account
      * @param amount intital amount in the account
-     * @param date date account was added
      */
-    public void addCashAccount(String name, int amount, String date){
-        //CashAccount newAcc = new CashAccount(name, amount, date);
+    public void addCashAccount(String name, double amount){
+        CashAccount newAcc = new CashAccount(amount, name);
+        cashAccounts.add(newAcc);
         //add info to txt file
         calculateTotalHoldings(); //or just update the holdings
     }
@@ -182,6 +181,14 @@ public class Portfolio implements Serializable {
         }
         this.totalHoldings = holdingTotal;
         this.totalCash = cashTotal;
+    }
+
+    public ArrayList<CashAccount> getCashAccounts(){
+        return this.cashAccounts;
+    }
+
+    public ArrayList<Equity> getEquities(){
+        return this.equities;
     }
 
     public void setEquities(ArrayList<Equity> updatedEquities){

@@ -10,12 +10,12 @@ import java.util.ArrayList;
  */
 public class NoGrowthMarket extends Application implements MarketSimulation {
     @Override
-    public ArrayList<Equity> runSimulation(float percentage, ArrayList<Equity> EQ, boolean continuous,
+    public ArrayList<Equity> runSimulation(float percentage, Portfolio EQ, boolean continuous,
                                int stepNum, String timeInterval) {
         float portfolioValue = 0;
         int steps = stepNum;
         //TODO MAKE the simulation able to step through
-        for (Equity E : EQ) {
+        for (Equity E : EQ.getportfolioEquity()) {
             float percentagePaid = 0;
             while (steps > 0) {
 
@@ -24,11 +24,11 @@ public class NoGrowthMarket extends Application implements MarketSimulation {
             steps = stepNum;
 
         }
-        return EQ;
+        return EQ.getportfolioEquity();
     }
 
     @Override
-    public ArrayList<Equity> reset(ArrayList<Equity> EQ) {
+    public Portfolio reset(Portfolio EQ) {
         return EQ;
     }
 

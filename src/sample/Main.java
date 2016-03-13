@@ -38,13 +38,11 @@ public class Main extends Application {
     Scene scene1, scene2, scene3, scene4;
     static data userData = new data();
     TextField portValue;
+    String user;
+
     @Override
-
-
     public void start(Stage primaryStage) throws Exception{
         loginScene(primaryStage);
-
-
     }
 
     /*
@@ -93,6 +91,7 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
                 User loginUser = new User(userField.getText(),pwBox.getText());
+                user = userField.getText();
                 if(userData.isUserExist(loginUser)){
                     message.setFill(Color.FIREBRICK);
                     message.setText("successful sign in");
@@ -690,6 +689,19 @@ public class Main extends Application {
         grid.add(transactionButton, 1, 200);
         //TRANSACTION STUFF END
 
+        final Button portButton = new Button("Go to Portfolio");
+
+        portButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                portfolioScene(window, user);
+            }
+        });
+
+        HBox simBox = new HBox();
+        simBox.setAlignment(Pos.TOP_LEFT);
+        grid.add(portButton, 1, 150);
+
         final Label interval = new Label("Time interval: (d,m,y)");
         grid.add(interval,0,1);
         final TextField IntervalField = new TextField();
@@ -706,10 +718,10 @@ public class Main extends Application {
         grid.add(percentage, 1, 60);
 
 
-        Button simulation = new Button("bull market");
+        Button bullSimulation = new Button("bull market");
         HBox box3 = new HBox(10);
         box3.setAlignment(Pos.BOTTOM_LEFT);
-        box3.getChildren().add(simulation);
+        box3.getChildren().add(bullSimulation);
         grid.add(box3, 0, 100);
 
         Button bearSimulation = new Button("bear");
@@ -758,8 +770,8 @@ public class Main extends Application {
 //                for (Equity EEE : equities) {
 //                    System.out.println(EEE.EquityPrice + " before simulation");
 //                }
-                ArrayList<Equity> tempList = new ArrayList<Equity>();
-                port.setEquities(bull.runSimulation(tempPercent, port.getportfolioEquity(), true, tempSteps, tempInterval));
+
+                port.setEquities(bull.runSimulation(tempPercent, port, true, tempSteps, tempInterval));
                 System.out.println(String.valueOf(port.getTotalHoldings() + " total value of PORTFOLIO"));
                 port.calculateTotalHoldings();
                 portValue.setText(String.valueOf(port.getTotalHoldings()));
@@ -769,9 +781,7 @@ public class Main extends Application {
                 //todo RESET FUNCTION NOT WORKING CORRECTLY
                 // tempList = bull.reset(equities);
                 //todo Calling reset on wrong thing should be portfolio???
-                for (Equity EEE : tempList) {
-                    System.out.println(EEE.getSharePrice() + " After reset");
-                }
+
 
             }
 
@@ -799,7 +809,7 @@ public class Main extends Application {
 //                for (Equity EEE : equities) {
 //                    System.out.println(EEE.EquityPrice + " before simulation");
 //                }
-                port.setEquities(bear.runSimulation(tempPercent, port.getportfolioEquity(), true, tempSteps, tempInterval));
+                port.setEquities(bear.runSimulation(tempPercent, port, true, tempSteps, tempInterval));
                 for (Equity pfkn : port.getportfolioEquity()){
                     System.out.println(pfkn.getSharePrice() + "equities in portfolio after simulation");
                 }
@@ -839,7 +849,14 @@ public class Main extends Application {
         grid.add(userName, 0, 0);
 
         Button addAccount = new Button("Add a Cash Account");
-
+        Button marketSimulation = new Button("MarketSimulation");
+        grid.add(marketSimulation, 0, 200);
+        marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                simulationScene(window);
+            }
+        });
         addAccount.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -898,7 +915,7 @@ public class Main extends Application {
                 String amount = amountField.getText();
                 String name = nameField.getText();
                 //double balance = Double.parseDouble(amount);
-                int balance = Integer.parseInt(amount);
+                double balance = Double.parseDouble(amount);
                 CashAccount acc = new CashAccount(balance, name);
                 //Find correct portfolio in list of portfolios from text file
                 //Should i just pass the portfolio object into the scene method instead of userid?
@@ -909,8 +926,7 @@ public class Main extends Application {
                         myPortfolio = p;
                     }
                 }
-
-
+                portfolioScene(window, user);
             }
         });
         grid.add(addAcc, 1, 3);

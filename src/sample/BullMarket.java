@@ -22,20 +22,23 @@ import java.util.ArrayList;
 
 //equity increases
 public class BullMarket implements MarketSimulation {
+
+    Portfolio tempPort;
     public BullMarket bull;
     //Equity equityOriginator; //have to use a portfolio
     EquityCaretaker caretaker = new EquityCaretaker();
 
     @Override
-    public ArrayList<Equity> runSimulation(float percentage, ArrayList<Equity> EQ, boolean continuous, int stepNum, String timeInterval) {
+    public ArrayList<Equity> runSimulation(float percentage, Portfolio EQ, boolean continuous, int stepNum, String timeInterval) {
 
 //        equityOriginator.setEquityList(EQ);
      //   caretaker.addMemento(equityOriginator.saveToMemento());
         float porfolioValue = 0;
         double equityValue = 0;
         int steps = stepNum;
+        tempPort = EQ;
         //TODO MAKE the simulation able to step through
-        for (Equity E : EQ) {
+        for (Equity E : EQ.getportfolioEquity()) {
             System.out.println(E.getSharePrice() + " intial share price of equity");
             equityValue = E.getSharePrice();
             double percentagePaid = E.getSharePrice() * (percentage / 100);
@@ -61,24 +64,21 @@ public class BullMarket implements MarketSimulation {
             System.out.println(equityValue + " final equity value of ALL shares of " + E.getName());
             steps = stepNum;
             //equityValue += E.getSharePrice();
-            for (Equity lll : EQ){
+            for (Equity lll : EQ.getportfolioEquity()){
                 System.out.println(lll.getSharePrice() + " price after sim");
             }
         }
         System.out.println(porfolioValue + " final portfolio Value of ALL equity and shares");
-        return EQ;
+        return EQ.getportfolioEquity();
     }
 
     @Override
-    public ArrayList<Equity> reset (ArrayList<Equity> EQ) {
-
+    public Portfolio reset (Portfolio port) {
+            port = tempPort;
       //  originator.RestoreFromEquityMemento(caretaker.getMemento());
        // EQ = originator.getState();
-        for (Equity EEE : EQ) {
-            System.out.println(EEE.getSharePrice() + " attempted reset");
-        }
 
-        return EQ;
+        return port;
     }
 
 }

@@ -11,7 +11,7 @@ public class CashAccount implements  Serializable{
     private String name;
     private String openDate;
 
-    public CashAccount(int initialBalance, String name){
+    public CashAccount(double initialBalance, String name){
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();

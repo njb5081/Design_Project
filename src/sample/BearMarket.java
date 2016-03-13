@@ -20,14 +20,14 @@ import java.util.ArrayList;
  */
 public class BearMarket implements MarketSimulation {
     @Override
-    public ArrayList<Equity> runSimulation(float percentage, ArrayList<Equity> EQ, boolean continuous, int stepNum, String timeInterval) {
+    public ArrayList<Equity> runSimulation(float percentage, Portfolio EQ, boolean continuous, int stepNum, String timeInterval) {
         //originator.setEquityList(EQ);
         //  caretaker.addMemento(originator.saveToMemento());
         float porfolioValue = 0;
         double equityValue = 0;
         int steps = stepNum;
         //TODO MAKE the simulation able to step through
-        for (Equity E : EQ) {
+        for (Equity E : EQ.getportfolioEquity()) {
             System.out.println(E.getSharePrice() + " intial share price of equity");
             equityValue = E.getSharePrice();
             double percentagePaid = (E.getSharePrice()) * (percentage / 100);
@@ -59,19 +59,19 @@ public class BearMarket implements MarketSimulation {
             //equityValue += E.getSharePrice();
         }
         System.out.println(porfolioValue + " final portfolio Value of ALL equity and shares");
-        return EQ;
+        return EQ.getportfolioEquity();
     }
 
     @Override
-    public ArrayList<Equity> reset(ArrayList<Equity> EQ) {
+    public Portfolio reset(Portfolio port) {
 
         //  originator.RestoreFromEquityMemento(caretaker.getMemento());
         // EQ = originator.getState();
-        for (Equity EEE : EQ) {
+        for (Equity EEE : port.getportfolioEquity()) {
             System.out.println(EEE.getSharePrice() + " attempted reset");
         }
 
-        return EQ;
+        return port;
     }
 
 

@@ -9,13 +9,15 @@ public class Transfer {
     private CashAccount fromAccount;
     private double amount;
     private Logger log;
+    private String user;
 
-    public Transfer(double amount, CashAccount toAccount, CashAccount fromAccount, Logger log){
+    public Transfer(double amount, CashAccount toAccount, CashAccount fromAccount, Logger log, String user){
 
         this.toAccount = toAccount;
         this.fromAccount = fromAccount;
         this.amount = amount;
         this.log = log;
+        this.user = user;
 
     }
 
@@ -27,8 +29,8 @@ public class Transfer {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
 
-        log.addEntry(dateFormat.format(date), "Transfer $" + Double.toString(amount) +
-                " from " + fromAccount.toString() + " to " + toAccount.toString());
+        log.addEntry("Transfer $" + Double.toString(amount) +
+                " from " + fromAccount.toString() + " to " + toAccount.toString(), user);
 
     }
 

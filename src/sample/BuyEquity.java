@@ -32,12 +32,19 @@ public class BuyEquity {
         if(!port.getEquities().contains(asset)){
             port.addEquity(asset.getTickerSymbol(), amount, asset.getSharePrice(), dateFormat.format(date), true);
         }else{
-            
+
         }
 
-        log.addEntry(dateFormat.format(date), "Bought " + Integer.toString(amount) +
-                " shares of " + asset.getName() + " at " + Double.toString(asset.getSharePrice()) +
-                " using " + funds.toString() + " cash account");
+        log.addEntry("Bought " +
+                Integer.toString(amount) +
+                " shares of " +
+                asset.getName() +
+                " at " +
+                Double.toString(asset.getSharePrice()) +
+                " using " +
+                funds.toString() +
+                " cash account",
+                port.getUserID());
     }
 
     public void undo(){
@@ -45,7 +52,7 @@ public class BuyEquity {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
 
-        log.addEntry("", "");
+        log.addEntry("", port.getUserID());
 
     }
 

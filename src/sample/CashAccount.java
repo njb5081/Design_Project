@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class CashAccount implements  Serializable, Account{
+public class CashAccount implements  Serializable{
 
     private Double balance;
     private String name;

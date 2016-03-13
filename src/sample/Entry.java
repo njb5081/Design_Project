@@ -8,14 +8,16 @@ public class Entry implements Serializable{
 
     private String date;
     private String description;
+    private String user;
 
-    public Entry(String description){
+    public Entry(String description, String user){
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
 
         this.date = dateFormat.format(date);
         this.description = description;
+        this.user = user;
 
     }
 
@@ -35,6 +37,10 @@ public class Entry implements Serializable{
 
         return date + ": " + description;
 
+    }
+
+    public String getUser(){
+        return user;
     }
 
 }

@@ -917,8 +917,6 @@ public class Main extends Application {
                 //todo RESET FUNCTION NOT WORKING CORRECTLY
                 // tempList = bear.reset(equities);
                 //todo Calling reset on wrong thing should be portfolio???
-
-
             }
 
         });
@@ -1070,9 +1068,22 @@ public class Main extends Application {
                         myPortfolio = p;
                     }
                 }
-                myPortfolio.addCashAccount(name, balance);
-                userData.updatePortfolioList(portList);
-                portfolioScene(window, userid);
+
+                int hold = 0;
+
+                for(int i = 0; i < myPortfolio.getCashAccounts().size(); i++){
+                    if(myPortfolio.getCashAccounts().get(i).toString().equals(name)){
+                        myPortfolio.getCashAccounts().get(i).addFunds(balance);
+                        userData.updatePortfolioList(portList);
+                        portfolioScene(window, userid);
+                        hold = 1;
+                    }
+                }
+                if(hold == 0) {
+                    myPortfolio.addCashAccount(name, balance);
+                    userData.updatePortfolioList(portList);
+                    portfolioScene(window, userid);
+                }
 
             }
         });

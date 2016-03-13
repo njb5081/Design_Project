@@ -8,9 +8,9 @@ public class Logger implements Serializable{
 
     public Logger(){}
 
-    public void addEntry(String date, String description){
+    public void addEntry(String description, String user){
 
-        entryList.add(new Entry(description));
+        entryList.add(new Entry(description, user));
 
     }
 

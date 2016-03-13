@@ -49,6 +49,12 @@ public class Equity {
         sharesHeld = newShares;
         totalValue = sharesHeld * sharePrice;
     }
+
+    public void addSharesHeld (int addShares) {
+        sharesHeld += addShares;
+        totalValue = sharesHeld * sharePrice;
+    }
+
     public void setSharePrice (double newPrice) {
         sharePrice = newPrice;
         totalValue = sharesHeld * sharePrice;

@@ -24,7 +24,12 @@ public class SellEquity {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
 
-        log.addEntry("","");
+        funds.addFunds(asset.getSharePrice() * ((double)amount));
+        asset.addSharesHeld(-amount);
+
+        log.addEntry(dateFormat.format(date), "Sold " + Integer.toString(amount) +
+                " shares of " + asset.getName() + " at " + Double.toString(asset.getSharePrice()) +
+                " deposited into " + funds.toString() + " cash account");
     }
 
     public void undo(){

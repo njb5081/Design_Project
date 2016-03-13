@@ -208,8 +208,6 @@ public class Main extends Application {
         window.setScene(scene2);
         window.show();
 
-
-
         window.show();
 
     }
@@ -231,7 +229,7 @@ public class Main extends Application {
         createCashAccountGrid.setVgap(1);
         createCashAccountGrid.setPadding(new Insets(25, 25, 25, 25));
 
-        scene4 = new Scene(transactionGrid, 900, 500);
+        scene4 = new Scene(transactionGrid, 900, 600);
 
         final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
         final HashMap<String, Equity> equities =  new HashMap<String, Equity>();
@@ -244,29 +242,16 @@ public class Main extends Application {
 
         final ComboBox fromAccount = new ComboBox(optionsCashAccounts);
         final ComboBox toAccount = new ComboBox(optionsCashAccounts);
-        final TextField transAmount = new TextField(){
-
-            @Override public void replaceText(int start, int end, String text) {
-                if (text.matches("[0-9]*")) {
-                    super.replaceText(start, end, text);
-                }
-            }
-
-            @Override public void replaceSelection(String text) {
-                if (text.matches("[0-9]*")) {
-                    super.replaceSelection(text);
-                }
-            }
-        };
+        final NumberTextField transAmount = new NumberTextField();
 
         final Label transFundsLabel = new Label("Choose Cash Accounts");
         final Label toAccountLabel = new Label("Add funds to: ");
         final Label fromAccountLabel = new Label("Take funds from: ");
         final Label amountLabel = new Label("Amount to transfer: ");
 
-        final Label toAccountNameLabel = new Label("     Account Name: None Selected");
+        final Label toAccountNameLabel = new Label("     Account Name: None");
         final Label toAccountBalanceLabel = new Label("     Account Balance: $0");
-        final Label fromAccountNameLabel = new Label("     Account Name: None Selected");
+        final Label fromAccountNameLabel = new Label("     Account Name: None ");
         final Label fromAccountBalanceLabel = new Label("     Account Balance: $0");
 
         final Button transFunds = new Button("Transfer");
@@ -277,86 +262,46 @@ public class Main extends Application {
         final Label newCashAccountBalanceLabel = new Label("Balance of New Cash Account: ");
 
         final TextField newCashAccountName = new TextField();
-        final TextField newCashAccountBalance = new TextField(){
-
-            @Override
-            public void replaceText(int start, int end, String text) {
-                if (text.matches("[0-9]*")) {
-                    super.replaceText(start, end, text);
-                }
-            }
-
-            @Override
-            public void replaceSelection(String text) {
-                if (text.matches("[0-9]*")) {
-                    super.replaceSelection(text);
-                }
-            }
-        };
+        final NumberTextField newCashAccountBalance = new NumberTextField();
 
         final ComboBox sellCashAccount = new ComboBox(optionsCashAccounts);
         final ComboBox sellEquity = new ComboBox(optionsEquities);
 
         final Label sellTransactionLabel = new Label("Choose Equity to Sell");
-        final Label sellEquityNameLabel = new Label("     Equity Name: None Selected");
-        final Label sellEquityValueLabel = new Label("     Equity Value: None Selected");
-        final Label sellEquityOwnedLabel = new Label("     Amount Owned: None Selected");
-        final Label sellCashAccountNameLabel = new Label("     Account Name: None Selected");
-        final Label sellCashAccountBalanceLabel = new Label("     Account Balance: None Selected");
+        final Label sellEquityNameLabel = new Label("      Name: None");
+        final Label sellEquityValueLabel = new Label("      Value: None");
+        final Label sellEquityOwnedLabel = new Label("      Amount Owned: None");
+        final Label sellCashAccountNameLabel = new Label("      Name: None");
+        final Label sellCashAccountBalanceLabel = new Label("      Balance: None");
         final Label sellCashAccountLabel = new Label("Add funds to:");
         final Label sellEquityLabel = new Label("Sell this equity:");
         final Label sellAmountLabel = new Label("Amount of selected equity to sell:");
 
         final Button sellEquityButton = new Button("Sell");
 
-        final TextField sellEquityAmount = new TextField(){
-
-            @Override
-            public void replaceText(int start, int end, String text) {
-                if (text.matches("[0-9]*")) {
-                    super.replaceText(start, end, text);
-                }
-            }
-
-            @Override
-            public void replaceSelection(String text) {
-                if (text.matches("[0-9]*")) {
-                    super.replaceSelection(text);
-                }
-            }
-        };
+        final NumberTextField sellEquityAmount = new NumberTextField();
 
         final ComboBox buyCashAccount = new ComboBox(optionsCashAccounts);
         final ComboBox buyEquity = new ComboBox(optionsEquities);
 
         final Label buyTransactionLabel = new Label("Choose Equity to Buy");
-        final Label buyEquityNameLabel = new Label("     Equity Name: None Selected");
-        final Label buyEquityValueLabel = new Label("     Equity Value: None Selected");
-        final Label buyEquityOwnedLabel = new Label("     Amount Owned: None Selected");
-        final Label buyCashAccountNameLabel = new Label("     Account Name: None Selected");
-        final Label buyCashAccountBalanceLabel = new Label("     Account Balance: None Selected");
+        final Label buyEquityNameLabel = new Label("      Name: None");
+        final Label buyEquityValueLabel = new Label("      Value: None");
+        final Label buyEquityOwnedLabel = new Label("      Amount Owned: None");
+        final Label buyCashAccountNameLabel = new Label("      Name: None");
+        final Label buyCashAccountBalanceLabel = new Label("      Balance: None");
         final Label buyCashAccountLabel = new Label("Deduct funds from:");
         final Label buyEquityLabel = new Label("Buy this equity:");
         final Label buyAmountLabel = new Label("Amount of selected equity to buy:");
 
+        final Label toAccountOpenDateLabel = new Label("     Open Date: None");
+        final Label fromAccountOpenDateLabel = new Label("     Open Date: None");
+        final Label buyAccountOpenDateLabel = new Label("      Open Date: None");
+        final Label sellAccountOpenDateLabel = new Label("      Open Date: None");
+
         final Button buyEquityButton = new Button("Buy");
 
-        final TextField buyEquityAmount = new TextField(){
-
-            @Override
-            public void replaceText(int start, int end, String text) {
-                if (text.matches("[0-9]*")) {
-                    super.replaceText(start, end, text);
-                }
-            }
-
-            @Override
-            public void replaceSelection(String text) {
-                if (text.matches("[0-9]*")) {
-                    super.replaceSelection(text);
-                }
-            }
-        };
+        final NumberTextField buyEquityAmount = new NumberTextField();
 
         final Button createCashAccount = new Button("Create Cash Account");
         final Button returnTrans = new Button("Return");
@@ -381,6 +326,10 @@ public class Main extends Application {
 
                         sellTransactionLabel.setText("Sale Successful");
 
+                        sellCashAccountNameLabel.setText("      Name: " + sellCashAccount.getValue().toString());
+                        sellCashAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(sellCashAccount.getValue()).getBalance()));
+                        sellAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(sellCashAccount.getValue()).getOpenDate());
+
                     } else{
                         sellTransactionLabel.setText("Invalid Input");
                     }
@@ -404,12 +353,16 @@ public class Main extends Application {
                     Equity tempBuyEquity = equities.get(buyEquity.getValue());
                     int tempAmount = Integer.parseInt(transAmount.getText());
 
-                    if(tempBuyAccount.getBalance() >= tempBuyEquity.getSharePrice() * tempAmount) {
+                    if(tempBuyAccount.getBalance() >= tempBuyEquity.getSharePrice() * tempAmount & tempBuyEquity.getSharesHeld() > 0) {
 
                         BuyEquity equitySale = new BuyEquity(tempAmount, tempBuyAccount, tempBuyEquity, log);
                         equitySale.execute();
 
                         buyTransactionLabel.setText("Purchase Successful");
+
+                        buyCashAccountNameLabel.setText("      Name: " + buyCashAccount.getValue().toString());
+                        buyCashAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(buyCashAccount.getValue()).getBalance()));
+                        buyAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(buyCashAccount.getValue()).getOpenDate());
 
                     } else{
                         buyTransactionLabel.setText("Invalid Input");
@@ -440,10 +393,10 @@ public class Main extends Application {
 
                         cashTransfer.execute();
 
-                        toAccountNameLabel.setText("     Account Name: " + tempToAccount.toString());
-                        toAccountBalanceLabel.setText("     Account Balance: $" + Double.toString(tempToAccount.getBalance()));
-                        fromAccountNameLabel.setText("     Account Name: " + tempFromAccount.toString());
-                        fromAccountBalanceLabel.setText("     Account Balance: $" + Double.toString(tempFromAccount.getBalance()));
+                        toAccountNameLabel.setText("      Name: " + tempToAccount.toString());
+                        toAccountBalanceLabel.setText("      Balance: $" + Double.toString(tempToAccount.getBalance()));
+                        fromAccountNameLabel.setText("      Name: " + tempFromAccount.toString());
+                        fromAccountBalanceLabel.setText("      Balance: $" + Double.toString(tempFromAccount.getBalance()));
 
                         transFundsLabel.setText("Transfer Successful");
 
@@ -502,16 +455,54 @@ public class Main extends Application {
         toAccount.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
-                toAccountNameLabel.setText("     Account Name: " + toAccount.getValue().toString());
-                toAccountBalanceLabel.setText("     Account Balance: $" + Double.toString(cashAccounts.get(toAccount.getValue()).getBalance()));
+                toAccountNameLabel.setText("      Name: " + toAccount.getValue().toString());
+                toAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(toAccount.getValue()).getBalance()));
+                toAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(toAccount.getValue()).getOpenDate());
             }
         });
 
         fromAccount.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
-                fromAccountNameLabel.setText("     Account Name: " + fromAccount.getValue().toString());
-                fromAccountBalanceLabel.setText("     Account Balance: $" + Double.toString(cashAccounts.get(fromAccount.getValue()).getBalance()));
+                fromAccountNameLabel.setText("      Name: " + fromAccount.getValue().toString());
+                fromAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(fromAccount.getValue()).getBalance()));
+                fromAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(fromAccount.getValue()).getOpenDate());
+            }
+        });
+
+        sellCashAccount.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                sellCashAccountNameLabel.setText("      Name: " + sellCashAccount.getValue().toString());
+                sellCashAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(sellCashAccount.getValue()).getBalance()));
+                sellAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(sellCashAccount.getValue()).getOpenDate());
+            }
+        });
+
+        buyCashAccount.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                buyCashAccountNameLabel.setText("      Name: " + buyCashAccount.getValue().toString());
+                buyCashAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(buyCashAccount.getValue()).getBalance()));
+                buyAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(buyCashAccount.getValue()).getOpenDate());
+            }
+        });
+
+        buyEquity.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                buyEquityNameLabel.setText("      Name: " + buyEquity.getValue().toString());
+                buyEquityValueLabel.setText("      Value: $" + Double.toString(equities.get(buyEquity.getValue()).getSharePrice()));
+                buyEquityOwnedLabel.setText("      Amount Owned: " + Double.toString(equities.get(buyEquity.getValue()).getSharesHeld()));
+            }
+        });
+
+        sellEquity.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                sellEquityNameLabel.setText("      Name: " + sellEquity.getValue().toString());
+                sellEquityValueLabel.setText("      Value: $" + Double.toString(equities.get(sellEquity.getValue()).getSharePrice()));
+                sellEquityOwnedLabel.setText("      Amount Owned: " + Double.toString(equities.get(sellEquity.getValue()).getSharesHeld()));
             }
         });
 
@@ -548,11 +539,13 @@ public class Main extends Application {
         box2Trans.getChildren().add(fromAccount);
         box2Trans.getChildren().add(fromAccountNameLabel);
         box2Trans.getChildren().add(fromAccountBalanceLabel);
+        box2Trans.getChildren().add(fromAccountOpenDateLabel);
 
         box3Trans.getChildren().add(toAccountLabel);
         box3Trans.getChildren().add(toAccount);
         box3Trans.getChildren().add(toAccountNameLabel);
         box3Trans.getChildren().add(toAccountBalanceLabel);
+        box3Trans.getChildren().add(toAccountOpenDateLabel);
 
         box4Trans.getChildren().add(amountLabel);
         box4Trans.getChildren().add(transAmount);
@@ -584,6 +577,7 @@ public class Main extends Application {
         box3Buy.getChildren().add(buyCashAccount);
         box3Buy.getChildren().add(buyCashAccountNameLabel);
         box3Buy.getChildren().add(buyCashAccountBalanceLabel);
+        box3Buy.getChildren().add(buyAccountOpenDateLabel);
 
         box4Buy.getChildren().add(buyAmountLabel);
         box4Buy.getChildren().add(buyEquityAmount);
@@ -614,6 +608,7 @@ public class Main extends Application {
         box3Sell.getChildren().add(sellCashAccount);
         box3Sell.getChildren().add(sellCashAccountNameLabel);
         box3Sell.getChildren().add(sellCashAccountBalanceLabel);
+        box3Sell.getChildren().add(sellAccountOpenDateLabel);
 
         box4Sell.getChildren().add(sellAmountLabel);
         box4Sell.getChildren().add(sellEquityAmount);

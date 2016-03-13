@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class CashAccount implements  Serializable, Account{
 
-    private double balance;
+    private Double balance;
     private String name;
     private String openDate;
 
@@ -22,19 +22,19 @@ public class CashAccount implements  Serializable, Account{
 
     }
 
-    public void addFunds(double amount){
+    public void addFunds(Double amount){
 
         balance += amount;
 
     }
 
-    public void subtractFunds(double amount){
+    public void subtractFunds(Double amount){
 
         balance -= amount;
 
     }
 
-    public double getBalance(){
+    public Double getBalance(){
 
         return balance;
 

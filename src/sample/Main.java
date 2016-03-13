@@ -880,7 +880,7 @@ public class Main extends Application {
                 String amount = amountField.getText();
                 String name = nameField.getText();
                 //double balance = Double.parseDouble(amount);
-                int balance = Integer.parseInt(amount);
+                Double balance = Double.parseDouble(amount);
                 CashAccount acc = new CashAccount(balance, name);
                 //Find correct portfolio in list of portfolios from text file
                 //Should i just pass the portfolio object into the scene method instead of userid?

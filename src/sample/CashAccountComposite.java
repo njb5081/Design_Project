@@ -5,8 +5,7 @@ import java.util.HashMap;
 
 public class CashAccountComposite implements Account{
 
-    //private ArrayList<CashAccount> accounts = new ArrayList<CashAccount>();
-    private HashMap<String, CashAccount> accounts = new HashMap<String, CashAccount>();
+    private HashMap<String, Account> accounts = new HashMap<String, Account>();
 
     public CashAccountComposite(){
 
@@ -16,11 +15,19 @@ public class CashAccountComposite implements Account{
         if(newAccount instanceof CashAccount){
 
             if(!accounts.keySet().contains(newAccount.toString())){
-
+                accounts.put(newAccount.toString(), newAccount);
             }
 
         }else if(newAccount instanceof CashAccountComposite){
 
+            for(int i = 0; i < ((CashAccountComposite) newAccount).accounts.size(); i++){
+
+                Account currAccount = ((CashAccountComposite) newAccount).accounts.get(((CashAccountComposite) newAccount).accounts.keySet().toArray()[i]);
+
+                if(!accounts.keySet().contains(currAccount.toString())){
+                    accounts.put(newAccount.toString(), newAccount);
+                }
+            }
         }
     }
 

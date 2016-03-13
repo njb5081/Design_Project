@@ -29,7 +29,7 @@ public class Main extends Application {
     private Logger log = new Logger();
     Stage window;
     Scene scene1, scene2, scene3, scene4;
-    data userData = new data();
+    static data userData = new data();
 
     @Override
 
@@ -794,6 +794,15 @@ public class Main extends Application {
         window.show();
     }
     public static void main(String[] args) {
+
+        //Check for admin command line input.
+        if (args[0].equals("-delete")) {
+            for (User u : userData.listOfUser()) {
+                if (u.username().equals(args[1])) {
+                    //delete the user from the application.
+                }
+            }
+        }
         launch(args);
     }
 }

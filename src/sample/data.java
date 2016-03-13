@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by minhduong on 3/4/16.
  */
-public class data  {
+public class  data  {
 
     List<User> userList;
 

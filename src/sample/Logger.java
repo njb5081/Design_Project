@@ -10,7 +10,7 @@ public class Logger implements Serializable{
 
     public void addEntry(String date, String description){
 
-        entryList.add(new Entry(date, description));
+        entryList.add(new Entry(description));
 
     }
 

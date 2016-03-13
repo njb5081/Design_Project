@@ -41,8 +41,12 @@ public class Main extends Application {
     String user;
 
     @Override
+
+
     public void start(Stage primaryStage) throws Exception{
         loginScene(primaryStage);
+
+
     }
 
     /*
@@ -84,9 +88,7 @@ public class Main extends Application {
         HBox box = new HBox(10);
         box.setAlignment(Pos.BOTTOM_RIGHT);
 
-
-
-        //action for buttonv
+        //action for button
         login.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -184,7 +186,7 @@ public class Main extends Application {
                 if (pwBox.getText().equals(confirmPw.getText())){
 
                     User newAccount = new User(userField.getText(),pwBox.getText());
-                    if(!userData.isUserExist(newAccount)) {
+                    if(!userData.usernameExist(newAccount.username())) {
                         userData.saveAccount(newAccount);
                         message.setText("register success");
                     } else {
@@ -226,10 +228,18 @@ public class Main extends Application {
 
     }
 
-    public void transactionScene(final Stage mainStage){
+    public void transactionScene(final Stage mainStage, final String userID){
 
         window = mainStage;
         window.setTitle("Transactions");
+
+        List<Portfolio> portList = userData.listOfPortfolio();
+        Portfolio myPortfolio = portList.get(0);
+        for (Portfolio p : portList) {
+            if (p.getUserID().equals(userID)){
+                myPortfolio = p;
+            }
+        }
 
         final GridPane transactionGrid = new GridPane();
         transactionGrid.setAlignment(Pos.TOP_LEFT);
@@ -449,7 +459,7 @@ public class Main extends Application {
                         !newCashAccountName.getText().equals("") &
                         !cashAccounts.keySet().contains(newCashAccountName.getText())){
 
-                    CashAccount tempNewCashAccount = new CashAccount(Integer.parseInt(newCashAccountBalance.getText()), newCashAccountName.getText());
+                    CashAccount tempNewCashAccount = new CashAccount(Double.parseDouble(newCashAccountBalance.getText()), newCashAccountName.getText());
 
                     cashAccounts.put(tempNewCashAccount.toString(), tempNewCashAccount);
 
@@ -520,6 +530,10 @@ public class Main extends Application {
             }
         });
 
+
+        
+        
+       
         //SIMULATION STUFF START
         final Button simulationButton = new Button("Go to Simulation");
 
@@ -660,7 +674,7 @@ public class Main extends Application {
         window.show();
     }
 
-    public void simulationScene (Stage mainStage){
+    public void simulationScene (final Stage mainStage){
         window = mainStage;
         window.setTitle("Market simulation");
 
@@ -680,7 +694,7 @@ public class Main extends Application {
         transactionButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                transactionScene(window);
+                transactionScene(mainStage);
             }
         });
 
@@ -781,9 +795,7 @@ public class Main extends Application {
                 //todo RESET FUNCTION NOT WORKING CORRECTLY
                 // tempList = bull.reset(equities);
                 //todo Calling reset on wrong thing should be portfolio???
-
-
-            }
+                          }
 
         });
 
@@ -821,7 +833,9 @@ public class Main extends Application {
                 //todo RESET FUNCTION NOT WORKING CORRECTLY
                 // tempList = bear.reset(equities);
                 //todo Calling reset on wrong thing should be portfolio???
-                            }
+                            
+
+            }
 
         });
 
@@ -829,7 +843,7 @@ public class Main extends Application {
         window.show();
     }
 
-    public void portfolioScene(Stage stage, final String userID){
+    public void portfolioScene(final Stage stage, final String userID){
         window = stage;
         window.setTitle("My Portfolio");
 
@@ -847,6 +861,21 @@ public class Main extends Application {
         }
         Label userName = new Label(myPortfolio.getUserID());
         grid.add(userName, 0, 0);
+
+        //TRANSACTION STUFF START
+        final Button transactionButton = new Button("Go to Transactions");
+
+        transactionButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                transactionScene(stage, userID);
+            }
+        });
+
+        HBox transBox = new HBox();
+        transBox.setAlignment(Pos.TOP_LEFT);
+        grid.add(transactionButton, 1, 200);
+        //TRANSACTION STUFF END
 
         Button addAccount = new Button("Add a Cash Account");
         Button marketSimulation = new Button("MarketSimulation");
@@ -915,7 +944,8 @@ public class Main extends Application {
                 String amount = amountField.getText();
                 String name = nameField.getText();
                 //double balance = Double.parseDouble(amount);
-                double balance = Double.parseDouble(amount);
+                Double balance = Double.parseDouble(amount);
+               
                 CashAccount acc = new CashAccount(balance, name);
                 //Find correct portfolio in list of portfolios from text file
                 //Should i just pass the portfolio object into the scene method instead of userid?

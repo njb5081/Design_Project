@@ -9,7 +9,6 @@ import java.util.ArrayList;
  */
 public class Portfolio implements Serializable {
     private String userid;
-    //private String password?
     //private list of transactions
     private double totalHoldings;
     private double totalCash;
@@ -132,6 +131,7 @@ public class Portfolio implements Serializable {
      * @param date date account was added
      */
     public void addCashAccount(String name, int amount, String date){
+        //CashAccount newAcc = new CashAccount(name, amount, date);
         //add info to txt file
         calculateTotalHoldings(); //or just update the holdings
     }

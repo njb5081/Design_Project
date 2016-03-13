@@ -20,7 +20,11 @@ import javafx.stage.Stage;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.HashMap;
 
 
@@ -87,7 +91,9 @@ public class Main extends Application {
                 if(userData.isUserExist(loginUser)){
                     message.setFill(Color.FIREBRICK);
                     message.setText("successful sign in");
-                    simulationScene(window);
+                    portfolioScene(window, loginUser.username());
+                    //simulationScene(window); //change to portfolio scene
+                    //-------------------------------------------------------------------------------------------------
 
                 } else {
 
@@ -137,6 +143,8 @@ public class Main extends Application {
 
         scene2 = new Scene(grid2, 300, 300);
 
+
+
         Text registerSceneTitle = new Text("");
         registerSceneTitle.setFont(Font.font("Arial"));
         grid2.add(registerSceneTitle, 0 , 0 ,2 ,1);
@@ -174,7 +182,7 @@ public class Main extends Application {
                     User newAccount = new User(userField.getText(),pwBox.getText());
                     if(!userData.isUserExist(newAccount)) {
                         userData.saveAccount(newAccount);
-                        message.setText("register sucess");
+                        message.setText("register success");
                     } else {
                         message.setText("Account has been created");
                     }
@@ -207,6 +215,8 @@ public class Main extends Application {
         grid2.add(box2, 1, 5);
         window.setScene(scene2);
         window.show();
+
+
 
         window.show();
 
@@ -793,6 +803,112 @@ public class Main extends Application {
         window.setScene(scene3);
         window.show();
     }
+
+    public void portfolioScene(Stage stage, final String userID){
+        window = stage;
+        window.setTitle("My Portfolio");
+
+        //System.out.println("Portfolio Scene");
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        Scene portScene = new Scene(grid, 500, 500);
+
+        List<Portfolio> portList = userData.listOfPortfolio();
+        Portfolio myPortfolio = portList.get(0);
+        for (Portfolio p : portList) {
+            if (p.getUserID().equals(userID)){
+                myPortfolio = p;
+            }
+        }
+        Label userName = new Label(myPortfolio.getUserID());
+        grid.add(userName, 0, 0);
+
+        Button addAccount = new Button("Add a Cash Account");
+
+        addAccount.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //String user = userID;
+                addCashAccountScene(window, userID);
+            }
+        });
+
+//        bearSimulation.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+        grid.add(addAccount, 0, 1);
+
+        window.setScene(portScene);
+        window.show();
+    }
+
+    public void addCashAccountScene(Stage stage, final String userid){
+        window = stage;
+        window.setTitle("Add a New Cash Account");
+
+//        final Label username = new Label("username");
+//        grid.add(username, 0, 1);
+//        final TextField userField = new TextField();
+//        grid.add(userField, 1, 1);
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        Scene sceneAddAcc = new Scene(grid, 500, 500);
+
+        final Label accName = new Label("Enter Account Name:");
+        grid.add(accName, 0,0);
+        final TextField nameField = new TextField();
+        grid.add(nameField,1,0);
+        final Label accAmount = new Label("Enter Account Balance:");
+        grid.add(accAmount, 0, 1);
+        final TextField amountField = new TextField();
+        grid.add(amountField, 1, 1);
+
+        String date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
+        //System.out.println(date);
+
+        Button cancelB = new Button("Cancel");
+        cancelB.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                portfolioScene(window, userid);
+            }
+        });
+        grid.add(cancelB, 0, 3);
+
+        Button addAcc = new Button("Add Account");
+        addAcc.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                String amount = amountField.getText();
+                String name = nameField.getText();
+                //double balance = Double.parseDouble(amount);
+                int balance = Integer.parseInt(amount);
+                CashAccount acc = new CashAccount(balance, name);
+                //Find correct portfolio in list of portfolios from text file
+                //Should i just pass the portfolio object into the scene method instead of userid?
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio myPortfolio = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(userid)){
+                        myPortfolio = p;
+                    }
+                }
+
+
+            }
+        });
+        grid.add(addAcc, 1, 3);
+
+        window.setScene(sceneAddAcc);
+        window.show();
+    }
+
+
+    public void addEquityScene(Stage stage, String userid){
+
+    }
+
     public static void main(String[] args) {
 
         //Check for admin command line input.

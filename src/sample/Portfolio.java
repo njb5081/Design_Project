@@ -14,6 +14,7 @@ public class Portfolio implements Serializable {
     private double totalCash;
     private ArrayList<Equity> equities;
     private ArrayList<CashAccount> cashAccounts;
+    private CashAccount largest;
 
     /**
      * Constructor creates new Portfolio
@@ -56,6 +57,8 @@ public class Portfolio implements Serializable {
         return this.totalCash;
     }
 
+    public ArrayList<Equity> getportfolioEquity(){ return this.equities;}
+
     /**
      * Add an equity to this Portfolio
      * @param ticker equity ticker symbol
@@ -68,7 +71,6 @@ public class Portfolio implements Serializable {
         //change to boolean, false if not enough money in account?
         //create new equity object?
         //add to total holdings
-        //add info to txt file
         double totalPrice = (numShares * pricePerShare);
         if (cash && (totalPrice > this.totalCash)) { //if purchasing equity with a cash account
             return false;
@@ -83,14 +85,14 @@ public class Portfolio implements Serializable {
                 }
             }
             //subtract from cash account
-            //largest.subtractFunds(totalPrice);
+            largest.subtractFunds(totalPrice);
         }
         String name = "name"; //placeholder
         String index = "index"; //placeholder
         String sector = "sector"; //placeholder
 
-//        Equity e = new Equity(ticker, name, index, sector, numShares, pricePerShare);
-//        this.equities.add(e);
+        Equity e = new Equity(ticker, name, index, sector, numShares, pricePerShare);
+        this.equities.add(e);
         calculateTotalHoldings(); //or just update the holdings
         return true;
     }
@@ -118,7 +120,7 @@ public class Portfolio implements Serializable {
             return false;
         }
         if (cash && !cashAccounts.isEmpty()) {
-            //cashAccounts.get(0).addFunds(totalSalePrice);
+            cashAccounts.get(0).addFunds(totalSalePrice);
         }
         calculateTotalHoldings(); //or just update the holdings
         return true;
@@ -128,10 +130,10 @@ public class Portfolio implements Serializable {
      * Add a cash account to this Portfolio
      * @param name name of the cash account
      * @param amount intital amount in the account
-     * @param date date account was added
      */
-    public void addCashAccount(String name, int amount, String date){
-        //CashAccount newAcc = new CashAccount(name, amount, date);
+    public void addCashAccount(String name, double amount){
+        CashAccount newAcc = new CashAccount(amount, name);
+        cashAccounts.add(newAcc);
         //add info to txt file
         calculateTotalHoldings(); //or just update the holdings
     }
@@ -179,6 +181,18 @@ public class Portfolio implements Serializable {
         }
         this.totalHoldings = holdingTotal;
         this.totalCash = cashTotal;
+    }
+
+    public ArrayList<CashAccount> getCashAccounts(){
+        return this.cashAccounts;
+    }
+
+    public ArrayList<Equity> getEquities(){
+        return this.equities;
+    }
+
+    public void setEquities(ArrayList<Equity> updatedEquities){
+       this.equities = updatedEquities;
     }
 
     /**

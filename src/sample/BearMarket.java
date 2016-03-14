@@ -19,18 +19,20 @@ import java.util.ArrayList;
  * Created by Nicholas on 3/7/2016.
  */
 public class BearMarket implements MarketSimulation {
+    Portfolio tempPort;
     @Override
-    public ArrayList<Equity> runSimulation(float percentage, Portfolio EQ, boolean continuous, int stepNum, String timeInterval) {
+    public double runSimulation(float percentage, Portfolio EQ, boolean continuous, int stepNum, String timeInterval) {
         //originator.setEquityList(EQ);
         //  caretaker.addMemento(originator.saveToMemento());
         float porfolioValue = 0;
-        double equityValue = 0;
+        double equityValue;
         int steps = stepNum;
+        Portfolio tempPort;
         //TODO MAKE the simulation able to step through
-        for (Equity E : EQ.getportfolioEquity()) {
-            System.out.println(E.getSharePrice() + " intial share price of equity");
-            equityValue = E.getSharePrice();
-            double percentagePaid = (E.getSharePrice()) * (percentage / 100);
+
+            System.out.println(EQ.getTotalEquities() + " intial share price of equity");
+            equityValue = EQ.getTotalEquities();
+            double percentagePaid = (EQ.getTotalEquities()) * (percentage / 100);
 
             System.out.println(percentagePaid + " percent paid on equity");
             if (timeInterval.equals("m")) {
@@ -48,47 +50,35 @@ public class BearMarket implements MarketSimulation {
                 }
                 steps -= 1;
 
-            }
-            E.setSharePrice(equityValue);
-            equityValue *= E.getSharesHeld();
+
+
+
 
             porfolioValue += equityValue;
 
-            System.out.println(equityValue + " final equity value of ALL shares of " + E.getName());
+
             steps = stepNum;
             //equityValue += E.getSharePrice();
         }
         System.out.println(porfolioValue + " final portfolio Value of ALL equity and shares");
-        return EQ.getportfolioEquity();
+        return EQ.getTotalEquities();
     }
 
+//    public Portfolio savePortfolio(Portfolio port){
+//        tempPort = new Portfolio(port.getUserID(),port.getEquities(),port.getCashAccounts());
+//        return tempPort;
+//    }
+
     @Override
-    public Portfolio reset(Portfolio port) {
+    public double reset() {
 
         //  originator.RestoreFromEquityMemento(caretaker.getMemento());
         // EQ = originator.getState();
-        for (Equity EEE : port.getportfolioEquity()) {
-            System.out.println(EEE.getSharePrice() + " attempted reset");
-        }
 
-        return port;
+
+        return tempPort.getTotalHoldings();
     }
-
-
-//                //todo RESET FUNCTION NOT WORKING CORRECTLY
-//                // tempList = bull.reset(equities);
-//                //todo Calling reset on wrong thing should be portfolio???
-//                for (Equity EEE : tempList) {
-//                    System.out.println(EEE.getSharePrice() + " After reset");
-//                }
-//
-//            }
-//
-//        });
-
-
-
-            }
+}
 
 
 

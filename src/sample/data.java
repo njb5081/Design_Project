@@ -22,33 +22,33 @@ public class  data  {
     /*
     * save a new account to data
     */
-//    public void saveAccount(User newAccount){
-//
-//        //check wthether the account has been created or not
-//        if (!isUserExist(newAccount)) {
-//            //get the list of User account from the text file
-//            userList = this.listOfUser();
-//            userList.add(newAccount);
-//            //open the text file and smave the new account
-//            this.updateAccountList(userList);
-//            //create new PortfolioAccount
-//            this.savePortfolioAccount(newAccount.username());
-//        } else {
-//            System.out.println("account exists");
-//
-//        }
-//    }
+    public void saveAccount(User newAccount){
+
+        //check wthether the account has been created or not
+        if (!isUserExist(newAccount)) {
+            //get the list of User account from the text file
+            userList = this.listOfUser();
+            userList.add(newAccount);
+            //open the text file and smave the new account
+            this.updateAccountList(userList);
+            //create new PortfolioAccount
+            this.savePortfolioAccount(newAccount.username());
+        } else {
+            System.out.println("account exists");
+
+        }
+    }
 
     /*
   * pre-condition: the user account is created before the fortfolio account is created
   * Post-condition: save the Portfolio account into the array in the text file
-  * */
-//    public void savePortfolioAccount(String username){
-//        Portfolio newPortfolio = new Portfolio(username,new ArrayList<Equity>(),new ArrayList<CashAccount>());
-//        List<Portfolio> listOfPortfolio = this.listOfPortfolio();
-//        listOfPortfolio.add(newPortfolio);
-//        this.updatePortfolioList(listOfPortfolio);
-//    }
+//  * */
+    public void savePortfolioAccount(String username){
+        Portfolio newPortfolio = new Portfolio(username,new HashMap<String, Integer>(),new ArrayList<CashAccount>(),new HashMap<String, Double>());
+        List<Portfolio> listOfPortfolio = this.listOfPortfolio();
+        listOfPortfolio.add(newPortfolio);
+        this.updatePortfolioList(listOfPortfolio);
+    }
 
     /*
     * delete the account and portfolio with the known username

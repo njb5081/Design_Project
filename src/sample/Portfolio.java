@@ -19,7 +19,7 @@ public class Portfolio implements Serializable {
     private ArrayList<CashAccount> cashAccounts;
     private CashAccount largest;
     private Map<String, Integer> sharesHeld;
-    private Map<String, Double> sharePrices;
+    //private Map<String, Double> sharePrices;
 
     /**
      * Constructor creates new Portfolio
@@ -27,18 +27,19 @@ public class Portfolio implements Serializable {
      * @param importedEquities any equities being imported to a new Portfolio
      * @param importedCashAccounts any cash accounts being imported
      */
-    public Portfolio(String userid, HashMap<String, Integer> importedEquities, ArrayList<CashAccount> importedCashAccounts, HashMap<String, Double> avgSharePrices){
+    public Portfolio(String userid, HashMap<String, Integer> importedEquities, ArrayList<CashAccount> importedCashAccounts){
         this.userid = userid;
+        //this.sharePrices = avgSharePrices;
         this.sharesHeld = new HashMap<String, Integer>();
         this.sharePrices = avgSharePrices;
 
         //this.equities = new ArrayList<Equity>();
         this.cashAccounts = new ArrayList<CashAccount>();
-        for (String s : importedEquities.keySet()) {
-            sharesHeld.put(s, importedEquities.get(s));
-            this.totalHoldings += (importedEquities.get(s) * avgSharePrices.get(s));
-            this.totalEquities += (importedEquities.get(s) * avgSharePrices.get(s));
-        }
+//        for (String s : importedEquities.keySet()) {
+//            sharesHeld.put(s, importedEquities.get(s));
+//            this.totalHoldings += (importedEquities.get(s) * avgSharePrices.get(s));
+//            this.totalEquities += (importedEquities.get(s) * avgSharePrices.get(s));
+//        }
         for (CashAccount c : importedCashAccounts) {
             this.cashAccounts.add(c);
             this.totalHoldings += (c.getBalance());

@@ -106,9 +106,6 @@ public class Main extends Application {
                     message.setFill(Color.FIREBRICK);
                     message.setText("successful sign in");
                     portfolioScene(window, loginUser.username());
-                    //simulationScene(window); //change to portfolio scene
-                    //-------------------------------------------------------------------------------------------------
-
                 } else {
 
                     message.setText("Please enter correct information");
@@ -392,6 +389,7 @@ public class Main extends Application {
         final Label fromAccountBalanceLabel = new Label("     Account Balance: $0");
 
         final Button transFunds = new Button("Transfer");
+
 
         final ComboBox sellCashAccount = new ComboBox(optionsCashAccounts);
         final ComboBox sellEquity = new ComboBox(optionsEquitiesOwned);
@@ -964,19 +962,6 @@ public class Main extends Application {
 //        grid.add(transactionButton, 1, 200);
         //TRANSACTION NAVIGATION END
 
-//        for (CashAccount c : myPortfolio.getCashAccounts()){
-//            Label name = new Label("Account Name: ");
-//            grid.add(name, 0, i);
-//            Label nameDesc = new Label(c.toString());
-//            grid.add(nameDesc, 1, i);
-//            i++;
-//            Label bal = new Label("Balance: ");
-//            grid.add(bal, 0, i);
-//            Label balDesc = new Label(String.valueOf(c.getBalance()));
-//            grid.add(balDesc, 1, i);
-//            i++;
-//        }
-
         Button marketSimulation = new Button("MarketSimulation");
         grid.add(marketSimulation, 1, i);
         marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
@@ -1041,14 +1026,9 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 String amount = amountField.getText();
                 String name = nameField.getText();
-                //double balance = Double.parseDouble(amount);
-                //double balance = Double.parseDouble(amount);
-
                 Double balance = Double.parseDouble(amount);
 
-                //CashAccount acc = new CashAccount(balance, name);
                 //Find correct portfolio in list of portfolios from text file
-                //Should i just pass the portfolio object into the scene method instead of userid?
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio myPortfolio = portList.get(0);
                 for (Portfolio p : portList) {
@@ -1112,10 +1092,6 @@ public class Main extends Application {
         confirm.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //port.deleteCashAccount(account.getValue().toString());
-
-                //userData.updatePortfolioList();
-
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio myPortfolio = portList.get(0);
                 for (Portfolio p : portList) {
@@ -1149,6 +1125,7 @@ public class Main extends Application {
                 }
             }
         }
+        userData.parseEquityFile();
         launch(args);
     }
 }

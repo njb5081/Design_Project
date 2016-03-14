@@ -8,12 +8,14 @@ public class Logger implements Serializable{
 
     public Logger(){}
 
+    //add entry to log
     public void addEntry(String description, String user){
 
         entryList.add(new Entry(description, user));
 
     }
 
+    //get all entries
     public ArrayList<Entry> getEntries(){
 
         return entryList;

@@ -4,7 +4,7 @@ import javafx.scene.control.TextField;
 
 public class NumberTextField extends TextField
 {
-
+    //Creates a text field which only accepts number input
     @Override
     public void replaceText(int start, int end, String text)
     {

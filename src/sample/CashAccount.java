@@ -22,30 +22,35 @@ public class CashAccount implements  Serializable{
 
     }
 
+    //add amount to total funds
     public void addFunds(Double amount){
 
         balance += amount;
 
     }
 
+    //remove amount from total funds
     public void subtractFunds(Double amount){
 
         balance -= amount;
 
     }
 
+    //return total balance
     public Double getBalance(){
 
         return balance;
 
     }
 
+    //return date account was opened
     public String getOpenDate(){
 
         return openDate;
 
     }
 
+    //get name of string
     public String toString(){
 
         return name;

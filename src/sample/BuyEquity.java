@@ -21,6 +21,7 @@ public class BuyEquity {
 
     }
 
+    //Executes the command
     public void execute(){
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -32,6 +33,7 @@ public class BuyEquity {
 
         port.addEquity(asset, amount);
 
+        //create log entry
         log.addEntry("Bought " +
                 Integer.toString(amount) +
                 " shares of " +

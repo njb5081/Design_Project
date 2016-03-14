@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class Main extends Application {
@@ -39,6 +40,9 @@ public class Main extends Application {
     TextField portValue;
     String user;
     private Logger log = userData.getLog();
+
+    Map<String, List<String>> indexMap = userData.getIndexMap();
+    Map<String, Equity> equityMap = userData.getEquityMap();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -305,6 +309,28 @@ public class Main extends Application {
 
         final Portfolio innerMyPortfolio = myPortfolio;
 
+        final HashMap<String, Asset> availableAssets = new HashMap<String, Asset>();
+
+        for(String equityName : equityMap.keySet()){
+
+            availableAssets.put(equityName, equityMap.get(equityName));
+
+        }
+
+        for(String indexName : indexMap.keySet()){
+
+            ArrayList<Equity> tempEquities = new ArrayList<Equity>();
+
+            for(String equityName : indexMap.get(indexName)){
+                tempEquities.add(equityMap.get(equityName));
+            }
+
+            Asset tempIndexSector = new IndexSector(indexName, tempEquities);
+            availableAssets.put(tempIndexSector.getName(), tempIndexSector);
+
+        }
+
+
         final GridPane transactionGrid = new GridPane();
         transactionGrid.setAlignment(Pos.TOP_LEFT);
         transactionGrid.setHgap(1);
@@ -339,7 +365,7 @@ public class Main extends Application {
 
         optionsCashAccounts.addAll(cashAccounts.keySet());
         optionsEquitiesOwned.addAll(equitiesOwned.keySet());
-        optionsEquitiesForSale.addAll(optionsEquitiesForSale);
+        optionsEquitiesForSale.addAll(availableAssets.keySet());
 
         final ComboBox fromAccount = new ComboBox(optionsCashAccounts);
         final ComboBox toAccount = new ComboBox(optionsCashAccounts);
@@ -554,8 +580,8 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
                 buyEquityNameLabel.setText("      Name: " + buyEquity.getValue().toString());
-                buyEquityValueLabel.setText("      Value: $" + Double.toString(equitiesForSale.get(buyEquity.getValue()).getSharePrice()));
-                buyEquityOwnedLabel.setText("      Amount Owned: " + Double.toString(equitiesForSale.get(buyEquity.getValue()).getSharesHeld()));
+                buyEquityValueLabel.setText("      Value: $" + availableAssets.get(buyEquity.getValue().toString()).getSharePrice());
+                buyEquityOwnedLabel.setText("      Amount Owned: " );
             }
         });
 

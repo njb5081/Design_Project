@@ -177,7 +177,7 @@ public class Portfolio implements Serializable {
             cashTotal += (c.getBalance());
         }
         for (Equity e : equities) {
-            holdingTotal += (e.getTotalValue());
+            holdingTotal += (e.getSharesHeld() * e.getSharePrice());
         }
         this.totalHoldings = holdingTotal;
         this.totalCash = cashTotal;

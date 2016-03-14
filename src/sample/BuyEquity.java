@@ -6,12 +6,12 @@ import java.util.Date;
 public class BuyEquity {
 
     private CashAccount funds;
-    private Equity asset;
+    private Asset asset;
     private int amount;
     private Logger log;
     private Portfolio port;
 
-    public BuyEquity(int amount, CashAccount funds, Equity asset, Logger log, Portfolio port){
+    public BuyEquity(int amount, CashAccount funds, Asset asset, Logger log, Portfolio port){
 
         this.funds = funds;
         this.asset = asset;
@@ -29,11 +29,11 @@ public class BuyEquity {
         funds.subtractFunds(asset.getSharePrice() * ((double)amount));
         //asset.addSharesHeld(amount);
 
-        if(!port.getEquities().contains(asset)){
-            port.addEquity(asset.getTickerSymbol(), amount, asset.getSharePrice(), dateFormat.format(date), true);
-        }else{
-
-        }
+//        if(!port.getEquities().contains(asset)){
+//            port.addEquity(asset.getTickerSymbol(), amount, asset.getSharePrice(), dateFormat.format(date), true);
+//        }else{
+//
+//        }
 
         log.addEntry("Bought " +
                 Integer.toString(amount) +

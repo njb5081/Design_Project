@@ -24,61 +24,60 @@ import java.util.ArrayList;
 public class BullMarket implements MarketSimulation {
 
     Portfolio tempPort;
-    public BullMarket bull;
+
     //Equity equityOriginator; //have to use a portfolio
-    EquityCaretaker caretaker = new EquityCaretaker();
+  //  EquityCaretaker caretaker = new EquityCaretaker();
 
     @Override
-    public ArrayList<Equity> runSimulation(float percentage, Portfolio EQ, boolean continuous, int stepNum, String timeInterval) {
+    public double runSimulation(float percentage, Portfolio EQ, boolean continuous, int stepNum, String timeInterval) {
 
-//        equityOriginator.setEquityList(EQ);
-     //   caretaker.addMemento(equityOriginator.saveToMemento());
+//      equityOriginator.setEquityList(EQ);
+//      caretaker.addMemento(equityOriginator.saveToMemento());
         float porfolioValue = 0;
-        double equityValue = 0;
+        double equityValue;
         int steps = stepNum;
         tempPort = EQ;
         //TODO MAKE the simulation able to step through
-        for (Equity E : EQ.getportfolioEquity()) {
-            System.out.println(E.getSharePrice() + " intial share price of equity");
-            equityValue = E.getSharePrice();
-            double percentagePaid = E.getSharePrice() * (percentage / 100);
+            EQ.getTotalHoldings(); {
+            System.out.println(EQ.getTotalEquities() + " intial share price of equity");
+            equityValue = EQ.getTotalEquities();
+            double percentagePaid = EQ.getTotalEquities() * (percentage / 100);
             System.out.println(percentagePaid + " percent paid on equity");
             if (timeInterval.equals("m")) {
                 percentagePaid = percentagePaid * 30;
             } else if (timeInterval.equals("y")) {
                 percentagePaid = percentagePaid * 365;
             }
-            //System.out.println(percentagePaid + " Percent paid");
             while (steps > 0) {
-              //  System.out.println(stepNum + " step num");
-               // System.out.println(E.equityPrice + " Price");
                 equityValue += (percentagePaid);
                 steps -= 1;
-
             }
-            E.setSharePrice(equityValue);
+
             //equityValue *= E.getSharesHeld();
             equityValue = Math.floor(equityValue);
             porfolioValue += equityValue;
 
-            System.out.println(equityValue + " final equity value of ALL shares of " + E.getName());
+            System.out.println(equityValue + " final equity value of ALL shares of ");
             steps = stepNum;
-            //equityValue += E.getSharePrice();
-            for (Equity lll : EQ.getportfolioEquity()){
-                System.out.println(lll.getSharePrice() + " price after sim");
-            }
+
         }
         System.out.println(porfolioValue + " final portfolio Value of ALL equity and shares");
-        return EQ.getportfolioEquity();
+        return EQ.getTotalEquities();
     }
 
+//    public Portfolio savePortfolio(Portfolio port){
+//
+//        tempPort = new Portfolio(port.getUserID(),port.getTotalEquities(),port.getCashAccounts());
+//        return tempPort;
+//    }
+
     @Override
-    public Portfolio reset (Portfolio port) {
-            port = tempPort;
+    public double reset() {
+
       //  originator.RestoreFromEquityMemento(caretaker.getMemento());
        // EQ = originator.getState();
 
-        return port;
+        return tempPort.getTotalHoldings();
     }
 
 }

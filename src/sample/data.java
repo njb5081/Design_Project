@@ -42,7 +42,16 @@ public class  data implements subject {
   * Post-condition: save the Portfolio account into the array in the text file
   * */
     public void savePortfolioAccount(String username){
-        Portfolio newPortfolio = new Portfolio(username,new ArrayList<Equity>(),new ArrayList<CashAccount>());
+        Map<String,List<String>> sectors = this.getIndexMap();
+        Map<String,Equity> equities = this.getEquityMap();
+        HashMap<String, Integer> shares = new HashMap<String, Integer>();
+        for (String s : sectors.keySet()){
+            shares.put(s, 0);
+        }
+        double cumulative = 0;
+        double numEq = 0;
+
+        Portfolio newPortfolio = new Portfolio(username,shares,new ArrayList<CashAccount>());
         List<Portfolio> listOfPortfolio = this.listOfPortfolio();
         listOfPortfolio.add(newPortfolio);
         this.updatePortfolioList(listOfPortfolio);
@@ -286,16 +295,16 @@ public class  data implements subject {
     * return the hashmap contain the index or sector
     * the key will be the index or sector, the value will be the list of ticket symbol
     * */
-    public Map getIndexMap(){
-        return this.getMap().get(0);
+    public Map<String,List<String>> getIndexMap(){
+        return (Map<String,List<String>>)this.getMap().get(0);
     }
 
     /*
     * return the hashmap contain the ticket symbol and Equity object
     * the key will be the ticket symbol, the value will be the Equity object associate with the ticket symbol
     * */
-    public Map getEquityMap(){
-        return this.getMap().get(1);
+    public Map<String,Equity> getEquityMap(){
+        return (Map<String,Equity>) this.getMap().get(1);
     }
 
     /*

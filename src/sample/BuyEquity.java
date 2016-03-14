@@ -35,6 +35,8 @@ public class BuyEquity {
 //
 //        }
 
+        port.addEquity(asset, amount);
+
         log.addEntry("Bought " +
                 Integer.toString(amount) +
                 " shares of " +

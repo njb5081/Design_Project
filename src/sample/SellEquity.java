@@ -3,21 +3,15 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/*
-* this class will be resposible for selling the equity
-* */
 public class SellEquity {
 
     private CashAccount funds;
-    private Equity asset;
+    private Asset asset;
     private int amount;
     private Logger log;
     private Portfolio port;
 
-    /*
-    * Initial the constructor
-    * */
-    public SellEquity(int amount, CashAccount funds, Equity asset, Logger log, Portfolio port){
+    public SellEquity(int amount, CashAccount funds, Asset asset, Logger log, Portfolio port){
 
         this.funds = funds;
         this.asset = asset;
@@ -27,9 +21,6 @@ public class SellEquity {
 
     }
 
-    /*
-    *
-    * */
     public void execute(){
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -37,6 +28,8 @@ public class SellEquity {
 
         funds.addFunds(asset.getSharePrice() * ((double)amount));
         //asset.addSharesHeld(-amount);
+
+        port.subtractEquity(asset, amount);
 
         log.addEntry("Sold " +
                 Integer.toString(amount) +

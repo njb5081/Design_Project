@@ -40,14 +40,21 @@ public class Main extends Application {
     static data userData = new data();
     TextField portValue;
     String user;
+    Portfolio port;
+    Portfolio tempPort;
+    MarketSimulation marketSim;
     private Logger log = userData.getLog();
 
     Map<String, List<String>> indexMap = userData.getIndexMap();
     Map<String, Equity> equityMap = userData.getEquityMap();
 
     @Override
+
+
     public void start(Stage primaryStage) throws Exception{
         loginScene(primaryStage);
+
+
     }
 
     /*
@@ -64,6 +71,8 @@ public class Main extends Application {
         grid.setPadding(new Insets(25, 25, 25, 25));
 
         scene1 = new Scene(grid, 300, 300);
+
+
 
         Text sceneTitle = new Text("welcome");
         sceneTitle.setFont(Font.font("Arial"));
@@ -176,29 +185,29 @@ public class Main extends Application {
         HBox box = new HBox(10);
         box.setAlignment(Pos.BOTTOM_RIGHT);
 
-        //action for button
-//        register.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//
-//
-//                if (pwBox.getText().equals(confirmPw.getText())){
-//
-//                    User newAccount = new User(userField.getText(),pwBox.getText());
-//                    if(!userData.usernameExist(newAccount.username())) {
-//                        userData.saveAccount(newAccount);
-//                        message.setText("register success");
-//                    } else {
-//                        message.setText("Account has been created");
-//                    }
-//
-//                } else {
-//
-//                    message.setText("please confirm the password");
-//
-//                }
-//            }
-//        });
+//        action for button
+        register.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+
+                if (pwBox.getText().equals(confirmPw.getText())){
+
+                    User newAccount = new User(userField.getText(),pwBox.getText());
+                    if(!userData.usernameExist(newAccount.username())) {
+                        userData.saveAccount(newAccount);
+                        message.setText("register success");
+                    } else {
+                        message.setText("Account has been created");
+                    }
+
+                } else {
+
+                    message.setText("please confirm the password");
+
+                }
+            }
+        });
         box.getChildren().add(register);
         grid2.add(box, 1 , 4);
 
@@ -355,10 +364,10 @@ public class Main extends Application {
                     myPortfolio.getCashAccounts().get(i));
         }
 
-        for (int i = 0; i < myPortfolio.getEquities().size(); i++){
-            equitiesOwned.put(myPortfolio.getEquities().get(i).toString(),
-                    myPortfolio.getEquities().get(i));
-        }
+//        for (int i = 0; i < myPortfolio.getEquities().size(); i++){
+//            equitiesOwned.put(myPortfolio.getEquities().get(i).toString(),
+//                    myPortfolio.getEquities().get(i));
+//        }
 
         final ObservableList<String> optionsCashAccounts = FXCollections.observableArrayList();
         final ObservableList<String> optionsEquitiesOwned = FXCollections.observableArrayList();
@@ -383,6 +392,7 @@ public class Main extends Application {
         final Label fromAccountBalanceLabel = new Label("     Account Balance: $0");
 
         final Button transFunds = new Button("Transfer");
+        
 
         final ComboBox sellCashAccount = new ComboBox(optionsCashAccounts);
         final ComboBox sellEquity = new ComboBox(optionsEquitiesOwned);
@@ -713,7 +723,7 @@ public class Main extends Application {
         window.show();
     }
 
-    public void simulationScene (final Stage mainStage){
+    public void simulationScene (final Stage mainStage, final Portfolio port){
         window = mainStage;
         window.setTitle("Market simulation");
 
@@ -733,7 +743,7 @@ public class Main extends Application {
         transactionButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                transactionScene(mainStage, user);
+                transactionScene(mainStage);
             }
         });
 
@@ -801,6 +811,18 @@ public class Main extends Application {
         portValue = Val;
         grid.add(Val, 1, 125);
 
+//        reset.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                for (Equity e : tempPort.getportfolioEquity()){
+//                    System.out.println(e.getSharePrice() + " RIGHT BEFORE ATTEMPTED RESET");
+//                }
+//                port.setEquities(tempPort.getEquities());
+//                for (Equity e : port.getportfolioEquity()){
+//                    System.out.println(e.getSharePrice() + "Value of equity after reset");
+//                }
+//            }
+//        });
 
 
 //        bullSimulation.setOnAction(new EventHandler<ActionEvent>() {
@@ -890,6 +912,7 @@ public class Main extends Application {
         for (Portfolio p : portList) {
             if (p.getUserID().equals(userID)){
                 myPortfolio = p;
+                port = p;
             }
         }
 
@@ -939,7 +962,7 @@ public class Main extends Application {
         transBox.setAlignment(Pos.TOP_LEFT);
         grid.add(transactionButton, 0, i);
         //TRANSACTION STUFF END
-        grid.add(transactionButton, 1, 200);
+//        grid.add(transactionButton, 1, 200);
         //TRANSACTION NAVIGATION END
 
 //        for (CashAccount c : myPortfolio.getCashAccounts()){
@@ -960,7 +983,7 @@ public class Main extends Application {
         marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                simulationScene(window);
+                simulationScene(window, port);
             }
         });
         i++;
@@ -1021,6 +1044,7 @@ public class Main extends Application {
                 String name = nameField.getText();
                 //double balance = Double.parseDouble(amount);
                 //double balance = Double.parseDouble(amount);
+
                 Double balance = Double.parseDouble(amount);
 
                 //CashAccount acc = new CashAccount(balance, name);
@@ -1112,7 +1136,6 @@ public class Main extends Application {
         window.show();
 
     }
-
 
     public static void main(String[] args) {
 

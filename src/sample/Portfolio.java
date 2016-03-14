@@ -29,6 +29,7 @@ public class Portfolio implements Serializable {
      */
     public Portfolio(String userid, HashMap<String, Integer> importedEquities, ArrayList<CashAccount> importedCashAccounts, HashMap<String, Double> avgSharePrices){
         this.userid = userid;
+        this.sharesHeld = new HashMap<String, Integer>();
         this.sharePrices = avgSharePrices;
 
         //this.equities = new ArrayList<Equity>();
@@ -134,7 +135,7 @@ public class Portfolio implements Serializable {
         CashAccount newAcc = new CashAccount(amount, name);
         cashAccounts.add(newAcc);
         //add info to txt file
-        calculateTotalHoldings(); //or just update the holdings
+//        calculateTotalHoldings(); //or just update the holdings
     }
 
     /**
@@ -145,7 +146,7 @@ public class Portfolio implements Serializable {
         for (CashAccount c : cashAccounts) {
             if (c.toString().equals(name)) {
                 this.cashAccounts.remove(c);
-                calculateTotalHoldings(); //or just update the holdings
+//                calculateTotalHoldings(); //or just update the holdings
                 return;
             }
         }
@@ -175,11 +176,12 @@ public class Portfolio implements Serializable {
             holdingTotal += (c.getBalance());
             cashTotal += (c.getBalance());
         }
-        for (String s : this.sharesHeld.keySet()) {
-            holdingTotal += (sharesHeld.get(s) * sharePrices.get(s));
-            equityTotal += (sharesHeld.get(s) * sharePrices.get(s));
+        if (!this.sharesHeld.isEmpty()) {
+            for (String s : this.sharesHeld.keySet()) {
+                holdingTotal += (sharesHeld.get(s) * sharePrices.get(s));
+                equityTotal += (sharesHeld.get(s) * sharePrices.get(s));
+            }
         }
-
         this.totalHoldings = holdingTotal;
         this.totalCash = cashTotal;
         this.totalEquities = equityTotal;

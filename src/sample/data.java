@@ -7,15 +7,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import javax.sound.sampled.Port;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by minhduong on 3/4/16.
  */
-public class  data  {
+public class  data implements subject {
 
     List<User> userList;
 
@@ -33,6 +30,7 @@ public class  data  {
             this.updateAccountList(userList);
             //create new PortfolioAccount
             this.savePortfolioAccount(newAccount.username());
+            newAccount.update("created");
         } else {
             System.out.println("account exists");
 
@@ -62,19 +60,19 @@ public class  data  {
     /*
     * delete the account and portfolio with the known username
     * */
-    public void deleteUserAccount(String username){
+    public void deleteUserAccount(User account){
         List<User> listOfAccount = this.listOfUser();
         List<Portfolio> listOfPortfolio = this.listOfPortfolio();
         //loop through the list of account and remove the account user
         for (User user: listOfAccount){
-            if (user.username().equals(username)){
+            if (user.username().equals(account.username())){
                 listOfAccount.remove(user);
                 break;
             }
         }
         //loop through the list of portfolio account and remove the account
         for (Portfolio p : listOfPortfolio){
-            if(p.getUserID().equals(username)){
+            if(p.getUserID().equals(account.username())){
                 listOfPortfolio.remove(p);
                 break;
             }
@@ -82,6 +80,7 @@ public class  data  {
 
         this.updateAccountList(listOfAccount);
         this.updatePortfolioList(listOfPortfolio);
+        account.update("deleted");
 
     }
 
@@ -185,12 +184,7 @@ public class  data  {
     * */
     public List<User> listOfUser (){
         List<User> listOfAccount = new ArrayList<User>();
-        //access the text file employee.text
-//        Object temporary = this.listOfObject("employee.txt");
-//        if (temporary != null){
-//            listOfAccount = (ArrayList<User>) temporary;
-//        }
-
+        //access the text file employee.text to get the list of User account
         try {
             FileInputStream fileOut = new FileInputStream("employee.txt");
             if(fileOut.available() > 0) {
@@ -209,15 +203,12 @@ public class  data  {
         return listOfAccount;
     }
 
+    /*
+    * return the lsit of Portfolio account from the portfolio.txt file
+    * */
     public List<Portfolio> listOfPortfolio (){
         List<Portfolio> listOfPortfolio = new ArrayList<Portfolio>();
-        //access the text file portfolio.text
-//        Object temporary = this.listOfObject("portfolio.txt");
-//        if (temporary != null){
-//            listOfPortfolio = (ArrayList<Portfolio>) temporary;
-//        }
-
-
+        //access the text file portfolio.text to get the lsit of Portfolio account
         try {
             FileInputStream fileOut = new FileInputStream("portfolio.txt");
             if(fileOut.available() > 0) {
@@ -236,31 +227,16 @@ public class  data  {
         return listOfPortfolio;
     }
 
-//    public Object listOfObject(String text){
-//        Object list= null;
-//        try {
-//            FileInputStream fileOut = new FileInputStream(text);
-//            if(fileOut.available() > 0) {
-//                ObjectInputStream is = new ObjectInputStream(fileOut);
-//                list = is.readObject();
-//                is.close();
-//            }
-//        } catch (FileNotFoundException i){
-//            i.printStackTrace();
-//        }catch(IOException i)
-//        {
-//            i.printStackTrace();
-//        } catch (ClassNotFoundException i){
-//            i.printStackTrace();
-//        }
-//
-//        return list;
-//    }
-
+    /*
+    * take the equities.csv file and parse the information into Equity object
+    * Create 2 hashmap to store information about the Equity and its index or sector
+    */
     public void parseEquityFile(){
+        //map contain the sector or index with the list of ticket symbol
         Map<String, List<String>> indexMap = new HashMap<String, List<String>>();
-
+        //map contain the ticket symbol with the associate Equity
         Map<String, Equity> equityMap = new HashMap<String, Equity>();
+        //Open the file and parse data
         FileReader input = null;
         try {
             input = new FileReader("equities.csv");
@@ -272,16 +248,10 @@ public class  data  {
         try {
             while ((myLine = bufRead.readLine()) != null) {
                 List<String> ticketList = new ArrayList<String>();
-                //System.out.println(myLine.substring(1,myLine.length()-1));
                 myLine = myLine.substring(1,myLine.length()-1);
-                //System.out.println(myLine);
                 String[] equity = myLine.split("\",\"");
                 //first map (ticket symbol map to equity)
                 Equity newEquity = new Equity(equity[0],equity[1],Double.parseDouble(equity[2]));
-                //System.out.println(equity);
-                //for (String s : equity){
-                  //  System.out.println(s);
-                //}
                 equityMap.put(equity[0],newEquity);
                 //second map (index or sector to ticket symbol)
                 int size = equity.length;
@@ -302,12 +272,11 @@ public class  data  {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        //Add both hashmap into an array
         List<Map> dataMap = new ArrayList<Map>();
         dataMap.add(indexMap);
         dataMap.add(equityMap);
-
-
+        // serialize the array to store in the equityfile.txt
         try {
             FileOutputStream fileOut = new FileOutputStream("equityfile.txt");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -361,9 +330,4 @@ public class  data  {
         }
         return map;
     }
-    public static void main(String[] args) {
-        data a = new data();
-        a.parseEquityFile();
-    }
-
 }

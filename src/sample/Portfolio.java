@@ -74,37 +74,16 @@ public class Portfolio implements Serializable {
 
     //public ArrayList<Equity> getportfolioEquity(){ return this.equities;}
 
-    /**
-     * Add an equity to this Portfolio
-     * @param ticker equity ticker symbol
-     * @param numShares number of shares of this equity
-     * @param pricePerShare price per share of this equity
-     * @param date date equity was acquired
-     * @param cash boolean true if equity is purchased with money in an account associated with this Portfolio
-     */
-    public boolean addEquity(String ticker, int numShares, double pricePerShare, String date, boolean cash) {
-        double totalPrice = (numShares * pricePerShare);
-        if (cash && (totalPrice > this.totalCash)) { //if purchasing equity with a cash account
-            return false;
-        }
-        if (cash) {
-            double max = 0;
-            CashAccount largest = cashAccounts.get(0);
-            for (CashAccount c : cashAccounts){
-                if (c.getBalance() > max) {
-                    max = c.getBalance();
-                    largest = c;
-                }
-            }
-            //subtract from cash account
-            largest.subtractFunds(totalPrice);
-        }
 
-        int newShares = sharesHeld.get(ticker) + numShares;
-        this.sharesHeld.put(ticker, newShares);
-
-        //calculateTotalHoldings();
-        return true;
+    public void addEquity(Asset asset, int amount) {
+        if(sharesHeld.keySet().contains(asset.getName())){
+            sharesHeld.put(asset.getName(), sharesHeld.get(asset.getName()) + amount);
+        }else{
+            sharesHeld.put(asset.getName(), amount);
+        }
+    }
+    public void subtractEquity(Asset asset, int amount) {
+        sharesHeld.put(asset.getName(), sharesHeld.get(asset.getName()) - amount);
     }
 
     /**

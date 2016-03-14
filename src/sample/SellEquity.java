@@ -6,12 +6,12 @@ import java.util.Date;
 public class SellEquity {
 
     private CashAccount funds;
-    private Equity asset;
+    private Asset asset;
     private int amount;
     private Logger log;
     private Portfolio port;
 
-    public SellEquity(int amount, CashAccount funds, Equity asset, Logger log, Portfolio port){
+    public SellEquity(int amount, CashAccount funds, Asset asset, Logger log, Portfolio port){
 
         this.funds = funds;
         this.asset = asset;
@@ -28,6 +28,8 @@ public class SellEquity {
 
         funds.addFunds(asset.getSharePrice() * ((double)amount));
         //asset.addSharesHeld(-amount);
+
+        port.subtractEquity(asset, amount);
 
         log.addEntry("Sold " +
                 Integer.toString(amount) +

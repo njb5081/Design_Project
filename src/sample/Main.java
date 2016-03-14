@@ -53,8 +53,6 @@ public class Main extends Application {
 
     public void start(Stage primaryStage) throws Exception{
         loginScene(primaryStage);
-
-
     }
 
     /*
@@ -153,8 +151,6 @@ public class Main extends Application {
         grid2.setPadding(new Insets(25, 25, 25, 25));
 
         scene2 = new Scene(grid2, 300, 300);
-
-
 
         Text registerSceneTitle = new Text("");
         registerSceneTitle.setFont(Font.font("Arial"));
@@ -353,18 +349,17 @@ public class Main extends Application {
         scene4 = new Scene(transactionGrid, 900, 600);
 
         final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
-        final HashMap<String, Equity> equitiesOwned =  new HashMap<String, Equity>();
+        final HashMap<String, Asset> equitiesOwned =  new HashMap<String, Asset>();
 
         for (int i = 0; i < myPortfolio.getCashAccounts().size(); i++){
             cashAccounts.put(myPortfolio.getCashAccounts().get(i).toString(),
                     myPortfolio.getCashAccounts().get(i));
         }
-        /*
-        for (int i = 0; i < myPortfolio.getSharesHeld().size(); i++){
-            equitiesOwned.put(myPortfolio.getSharesHeld().toString(),
-                    myPortfolio.getEquities().get(i));
+
+        for (String name : myPortfolio.getSharesHeld().keySet()){
+            equitiesOwned.put(name, availableAssets.get(name));
         }
-        */
+
 
         final ObservableList<String> optionsCashAccounts = FXCollections.observableArrayList();
         final ObservableList<String> optionsEquitiesOwned = FXCollections.observableArrayList();
@@ -441,11 +436,11 @@ public class Main extends Application {
                         !sellEquityAmount.getText().equals("")
                         ) {
 
-                    CashAccount tempSellAccount = cashAccounts.get(sellCashAccount.getValue());
-                    Equity tempSellEquity = equitiesOwned.get(sellEquity.getValue());
+                    CashAccount tempSellAccount = cashAccounts.get(sellCashAccount.getValue()) ;
+                    Asset tempSellEquity = availableAssets.get(sellEquity.getValue());
                     int tempAmount = Integer.parseInt(sellEquityAmount.getText());
 
-                    if(tempSellAccount.getBalance() >= tempSellEquity.getSharePrice() * tempAmount) {
+                    if(tempSellAccount.getBalance() >= tempSellEquity.getSharePrice() * tempAmount & innerMyPortfolio.getSharesHeld().get(tempSellEquity.getName()) > 0) {
 
                         SellEquity equitySale = new SellEquity(tempAmount, tempSellAccount, tempSellEquity, log, innerMyPortfolio);
                         equitySale.execute();
@@ -492,6 +487,13 @@ public class Main extends Application {
                         buyCashAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(buyCashAccount.getValue()).getBalance()));
                         buyAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(buyCashAccount.getValue()).getOpenDate());
                         userData.updateLogger(log);
+
+                        for (String name : innerMyPortfolio.getSharesHeld().keySet()){
+                            equitiesOwned.put(name, availableAssets.get(name));
+                        }
+
+                        optionsEquitiesForSale.addAll(availableAssets.keySet());
+                        sellEquity.setItems(optionsEquitiesForSale);
 
                     } else{
                         buyTransactionLabel.setText("Invalid Input");
@@ -598,7 +600,7 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 sellEquityNameLabel.setText("      Name: " + sellEquity.getValue().toString());
                 sellEquityValueLabel.setText("      Value: $" + Double.toString(equitiesOwned.get(sellEquity.getValue()).getSharePrice()));
-                sellEquityOwnedLabel.setText("      Amount Owned: " + Double.toString(equitiesOwned.get(sellEquity.getValue()).getSharesHeld()));
+                sellEquityOwnedLabel.setText("      Amount Owned: " );
             }
         });
 

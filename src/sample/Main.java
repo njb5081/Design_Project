@@ -30,11 +30,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.HashMap;
 
+/*
+* This class will display all the GUI for the system
+* */
 
 public class Main extends Application {
 
+    /*
+    * Support  variable
+    * */
     Stage window;
+    /*
+    * define multiple scene to display different GUI
+    * */
     Scene scene1, scene2, scene3, scene4, scene5;
+    /*
+    * Initialize the data class to access different function in order to creeate,save, delete account
+    * */
     static data userData = new data();
     TextField portValue;
     String user;
@@ -88,6 +100,7 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 User loginUser = new User(userField.getText(),pwBox.getText());
                 user = userField.getText();
+                //if the user account has been created, then the user can login
                 if(userData.isUserExist(loginUser)){
                     message.setFill(Color.FIREBRICK);
                     message.setText("successful sign in");
@@ -175,20 +188,17 @@ public class Main extends Application {
         register.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
-
+                //confirm the password for registation
                 if (pwBox.getText().equals(confirmPw.getText())){
-
                     User newAccount = new User(userField.getText(),pwBox.getText());
+                    //check whether someone has used this username or not
                     if(!userData.usernameExist(newAccount.username())) {
                         userData.saveAccount(newAccount);
                         message.setText("register success");
                     } else {
                         message.setText("username has been used");
                     }
-
                 } else {
-
                     message.setText("please confirm the password");
 
                 }
@@ -202,6 +212,7 @@ public class Main extends Application {
         needLogin.autosize();
         grid2.add(needLogin, 0, 6);
         Button login = new Button("login");
+        //move to the login scene
         login.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -215,12 +226,8 @@ public class Main extends Application {
         grid2.add(box2, 1, 5);
         window.setScene(scene2);
         window.show();
-
-
-
-        window.show();
-
     }
+
 
     public void loggerScene(final Stage mainStage){
         window = mainStage;
@@ -1033,11 +1040,12 @@ public class Main extends Application {
                 for (User u : userData.listOfUser()) {
                     if (u.username().equals(args[1])) {
                         //delete the user from the application.
-                        userData.deleteUserAccount(u.username());
+                        userData.deleteUserAccount(u);
                     }
                 }
             }
         }
+        userData.parseEquityFile();
         launch(args);
     }
 }

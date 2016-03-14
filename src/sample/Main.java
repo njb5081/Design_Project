@@ -442,6 +442,7 @@ public class Main extends Application {
 
             @Override
             public void handle(ActionEvent event) {
+                //Check to make sure a cash account and equity is selected and an amount is specified
                 if (buyCashAccount.getValue() != null &
                         buyEquity.getValue() != null &
                         !buyEquityAmount.getText().equals("")

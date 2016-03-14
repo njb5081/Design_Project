@@ -831,35 +831,35 @@ public class Main extends Application {
 //        });
 
 
-//        bullSimulation.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-////                ArrayList<Equity> equities = new ArrayList<Equity>();
-////                ArrayList<CashAccount> cash = new ArrayList<CashAccount>();
-//                MarketSimulation bull = new BullMarket();
-//
-//
-//                List<Portfolio> portList = userData.listOfPortfolio();
-//                Portfolio port = portList.get(0);
-//                for (Portfolio p : portList) {
-//                    if (p.getUserID().equals(user)){
-//                        port = p;
-//                    }
-//                }
-//
-//
-//                float tempPercent = Float.parseFloat(percentage.getText());
-//                int tempSteps = Integer.parseInt(stepField.getText());
-//                String tempInterval = IntervalField.getText();
-//
-//
-//                port.setEquities(bull.runSimulation(tempPercent, port, true, tempSteps, tempInterval));
-//                System.out.println(String.valueOf(port.getTotalHoldings() + " total value of PORTFOLIO"));
-//                port.calculateTotalHoldings();
-//                portValue.setText(String.valueOf(port.getTotalHoldings()));
-//                          }
-//
-//        });
+        bullSimulation.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+//                ArrayList<Equity> equities = new ArrayList<Equity>();
+//                ArrayList<CashAccount> cash = new ArrayList<CashAccount>();
+                MarketSimulation bull = new BullMarket();
+
+
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio port = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(user)){
+                        port = p;
+                    }
+                }
+
+
+                float tempPercent = Float.parseFloat(percentage.getText());
+                int tempSteps = Integer.parseInt(stepField.getText());
+                String tempInterval = IntervalField.getText();
+
+
+                double money  = (bull.runSimulation(tempPercent, port, true, tempSteps, tempInterval));
+                System.out.println(String.valueOf(port.getTotalHoldings() + " total value of PORTFOLIO"));
+                money += port.getTotalHoldings();
+                portValue.setText(String.valueOf(money));
+                          }
+
+        });
 //
 //        bearSimulation.setOnAction(new EventHandler<ActionEvent>() {
 //            @Override

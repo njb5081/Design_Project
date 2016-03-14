@@ -17,10 +17,10 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 /**
- * Created by Nicholas on 3/7/2016.
+ * @author Nicholas Baxter
  */
 
-//equity increases
+//equity increases in this simulation
 public class BullMarket implements MarketSimulation {
 
     Portfolio tempPort;
@@ -28,6 +28,15 @@ public class BullMarket implements MarketSimulation {
     //Equity equityOriginator; //have to use a portfolio
   //  EquityCaretaker caretaker = new EquityCaretaker();
 
+    /**
+     * Class to run the simulation, implements Market simulation interface
+     * @param percentage - percent the equity should change by
+     * @param EQ - the portfolio being changed by the simulation
+     * @param continuous - if the simulation is continuous or not
+     * @param stepNum - the number of steps to go through
+     * @param timeInterval - the time interval (day month year)
+     * @return - the updated value of the equities
+     */
     @Override
     public double runSimulation(float percentage, Portfolio EQ, boolean continuous, int stepNum, String timeInterval) {
 
@@ -37,12 +46,11 @@ public class BullMarket implements MarketSimulation {
         double equityValue;
         int steps = stepNum;
         tempPort = EQ;
-        //TODO MAKE the simulation able to step through
             EQ.getTotalHoldings(); {
-            System.out.println(EQ.getTotalEquities() + " intial share price of equity");
+           // System.out.println(EQ.getTotalEquities() + " intial share price of equity");
             equityValue = EQ.getTotalEquities();
             double percentagePaid = EQ.getTotalEquities() * (percentage / 100);
-            System.out.println(percentagePaid + " percent paid on equity");
+          //  System.out.println(percentagePaid + " percent paid on equity");
             if (timeInterval.equals("m")) {
                 percentagePaid = percentagePaid * 30;
             } else if (timeInterval.equals("y")) {
@@ -61,7 +69,7 @@ public class BullMarket implements MarketSimulation {
             steps = stepNum;
 
         }
-        System.out.println(porfolioValue + " final portfolio Value of ALL equity and shares");
+        //System.out.println(porfolioValue + " final portfolio Value of ALL equity and shares");
         return EQ.getTotalEquities();
     }
 

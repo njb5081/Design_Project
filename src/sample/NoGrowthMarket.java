@@ -16,19 +16,19 @@ public class NoGrowthMarket implements MarketSimulation {
                                int stepNum, String timeInterval) {
         float portfolioValue = 0;
         int steps = stepNum;
-        //TODO MAKE the simulation able to step through
-
-            float percentagePaid = 0;
-            while (steps > 0) {
-
-                steps -= 1;
+        float percentagePaid = 0;
+        while (steps > 0) {
+            steps -= 1;
             }
             steps = stepNum;
-
-
         return EQ.getTotalEquities();
     }
 
+    /**
+     *
+     * @param portfolio
+     * @return
+     */
     public Portfolio savePortfolio(Portfolio portfolio){
         this.port = portfolio;
         return this.port;

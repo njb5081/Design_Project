@@ -6,12 +6,12 @@ import java.util.Date;
 public class BuyEquity {
 
     private CashAccount funds;
-    private Equity asset;
+    private Asset asset;
     private int amount;
     private Logger log;
     private Portfolio port;
 
-    public BuyEquity(int amount, CashAccount funds, Equity asset, Logger log, Portfolio port){
+    public BuyEquity(int amount, CashAccount funds, Asset asset, Logger log, Portfolio port){
 
         this.funds = funds;
         this.asset = asset;

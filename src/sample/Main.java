@@ -30,12 +30,25 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 
+/*
+* This class will display all the GUI for the system
+* */
 
 public class Main extends Application {
 
+    /*
+    * Support  variable
+    * */
     Stage window;
+    /*
+    * define multiple scene to display different GUI
+    * */
     Scene scene1, scene2, scene3, scene4, scene5;
+    /*
+    * Initialize the data class to access different function in order to creeate,save, delete account
+    * */
     static data userData = new data();
     TextField portValue;
     String user;
@@ -43,6 +56,9 @@ public class Main extends Application {
     Portfolio tempPort;
     MarketSimulation marketSim;
     private Logger log = userData.getLog();
+
+    Map<String, List<String>> indexMap = userData.getIndexMap();
+    Map<String, Equity> equityMap = userData.getEquityMap();
 
     @Override
 
@@ -98,13 +114,11 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 User loginUser = new User(userField.getText(),pwBox.getText());
                 user = userField.getText();
+                //if the user account has been created, then the user can login
                 if(userData.isUserExist(loginUser)){
                     message.setFill(Color.FIREBRICK);
                     message.setText("successful sign in");
                     portfolioScene(window, loginUser.username());
-                    //simulationScene(window); //change to portfolio scene
-                    //-------------------------------------------------------------------------------------------------
-
                 } else {
 
                     message.setText("Please enter correct information");
@@ -185,20 +199,17 @@ public class Main extends Application {
         register.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
-
+                //confirm the password for registation
                 if (pwBox.getText().equals(confirmPw.getText())){
-
                     User newAccount = new User(userField.getText(),pwBox.getText());
+                    //check whether someone has used this username or not
                     if(!userData.usernameExist(newAccount.username())) {
                         userData.saveAccount(newAccount);
                         message.setText("register success");
                     } else {
                         message.setText("Account has been created");
                     }
-
                 } else {
-
                     message.setText("please confirm the password");
 
                 }
@@ -212,6 +223,7 @@ public class Main extends Application {
         needLogin.autosize();
         grid2.add(needLogin, 0, 6);
         Button login = new Button("login");
+        //move to the login scene
         login.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -225,12 +237,8 @@ public class Main extends Application {
         grid2.add(box2, 1, 5);
         window.setScene(scene2);
         window.show();
-
-
-
-        window.show();
-
     }
+
 
     public void loggerScene(final Stage mainStage){
         window = mainStage;
@@ -315,6 +323,28 @@ public class Main extends Application {
 
         final Portfolio innerMyPortfolio = myPortfolio;
 
+        final HashMap<String, Asset> availableAssets = new HashMap<String, Asset>();
+
+        for(String equityName : equityMap.keySet()){
+
+            availableAssets.put(equityName, equityMap.get(equityName));
+
+        }
+
+        for(String indexName : indexMap.keySet()){
+
+            ArrayList<Equity> tempEquities = new ArrayList<Equity>();
+
+            for(String equityName : indexMap.get(indexName)){
+                tempEquities.add(equityMap.get(equityName));
+            }
+
+            Asset tempIndexSector = new IndexSector(indexName, tempEquities);
+            availableAssets.put(tempIndexSector.getName(), tempIndexSector);
+
+        }
+
+
         final GridPane transactionGrid = new GridPane();
         transactionGrid.setAlignment(Pos.TOP_LEFT);
         transactionGrid.setHgap(1);
@@ -331,17 +361,17 @@ public class Main extends Application {
 
         final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
         final HashMap<String, Equity> equitiesOwned =  new HashMap<String, Equity>();
-        final HashMap<String, Equity> equitiesForSale =  new HashMap<String, Equity>();
 
         for (int i = 0; i < myPortfolio.getCashAccounts().size(); i++){
             cashAccounts.put(myPortfolio.getCashAccounts().get(i).toString(),
                     myPortfolio.getCashAccounts().get(i));
         }
-
-//        for (int i = 0; i < myPortfolio.getEquities().size(); i++){
-//            equitiesOwned.put(myPortfolio.getEquities().get(i).toString(),
-//                    myPortfolio.getEquities().get(i));
-//        }
+        /*
+        for (int i = 0; i < myPortfolio.getSharesHeld().size(); i++){
+            equitiesOwned.put(myPortfolio.getSharesHeld().toString(),
+                    myPortfolio.getEquities().get(i));
+        }
+        */
 
         final ObservableList<String> optionsCashAccounts = FXCollections.observableArrayList();
         final ObservableList<String> optionsEquitiesOwned = FXCollections.observableArrayList();
@@ -349,7 +379,7 @@ public class Main extends Application {
 
         optionsCashAccounts.addAll(cashAccounts.keySet());
         optionsEquitiesOwned.addAll(equitiesOwned.keySet());
-        optionsEquitiesForSale.addAll(optionsEquitiesForSale);
+        optionsEquitiesForSale.addAll(availableAssets.keySet());
 
         final ComboBox fromAccount = new ComboBox(optionsCashAccounts);
         final ComboBox toAccount = new ComboBox(optionsCashAccounts);
@@ -366,7 +396,7 @@ public class Main extends Application {
         final Label fromAccountBalanceLabel = new Label("     Account Balance: $0");
 
         final Button transFunds = new Button("Transfer");
-        
+
 
         final ComboBox sellCashAccount = new ComboBox(optionsCashAccounts);
         final ComboBox sellEquity = new ComboBox(optionsEquitiesOwned);
@@ -418,9 +448,9 @@ public class Main extends Application {
                         !sellEquityAmount.getText().equals("")
                         ) {
 
-                    CashAccount tempSellAccount = cashAccounts.get(toAccount.getValue());
+                    CashAccount tempSellAccount = cashAccounts.get(sellCashAccount.getValue());
                     Equity tempSellEquity = equitiesOwned.get(sellEquity.getValue());
-                    int tempAmount = Integer.parseInt(transAmount.getText());
+                    int tempAmount = Integer.parseInt(sellEquityAmount.getText());
 
                     if(tempSellAccount.getBalance() >= tempSellEquity.getSharePrice() * tempAmount) {
 
@@ -454,11 +484,11 @@ public class Main extends Application {
                         !buyEquityAmount.getText().equals("")
                         ) {
 
-                    CashAccount tempBuyAccount = cashAccounts.get(toAccount.getValue());
-                    Equity tempBuyEquity = equitiesForSale.get(buyEquity.getValue());
-                    int tempAmount = Integer.parseInt(transAmount.getText());
+                    CashAccount tempBuyAccount = cashAccounts.get(buyCashAccount.getValue());
+                    Asset tempBuyEquity = availableAssets.get(buyEquity.getValue());
+                    int tempAmount = Integer.parseInt(buyEquityAmount.getText());
 
-                    if(tempBuyAccount.getBalance() >= tempBuyEquity.getSharePrice() * tempAmount & tempBuyEquity.getSharesHeld() > 0) {
+                    if(tempBuyAccount.getBalance() >= tempBuyEquity.getSharePrice() * tempAmount) {
 
                         BuyEquity equitySale = new BuyEquity(tempAmount, tempBuyAccount, tempBuyEquity, log,  innerMyPortfolio);
                         equitySale.execute();
@@ -565,8 +595,8 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
                 buyEquityNameLabel.setText("      Name: " + buyEquity.getValue().toString());
-                buyEquityValueLabel.setText("      Value: $" + Double.toString(equitiesForSale.get(buyEquity.getValue()).getSharePrice()));
-                buyEquityOwnedLabel.setText("      Amount Owned: " + Double.toString(equitiesForSale.get(buyEquity.getValue()).getSharesHeld()));
+                buyEquityValueLabel.setText("      Value: $" + availableAssets.get(buyEquity.getValue().toString()).getSharePrice());
+                buyEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(innerMyPortfolio.getSharesHeld().get(buyEquity.getValue())));
             }
         });
 
@@ -939,19 +969,6 @@ public class Main extends Application {
 //        grid.add(transactionButton, 1, 200);
         //TRANSACTION NAVIGATION END
 
-//        for (CashAccount c : myPortfolio.getCashAccounts()){
-//            Label name = new Label("Account Name: ");
-//            grid.add(name, 0, i);
-//            Label nameDesc = new Label(c.toString());
-//            grid.add(nameDesc, 1, i);
-//            i++;
-//            Label bal = new Label("Balance: ");
-//            grid.add(bal, 0, i);
-//            Label balDesc = new Label(String.valueOf(c.getBalance()));
-//            grid.add(balDesc, 1, i);
-//            i++;
-//        }
-
         Button marketSimulation = new Button("MarketSimulation");
         grid.add(marketSimulation, 1, i);
         marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
@@ -1016,14 +1033,9 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 String amount = amountField.getText();
                 String name = nameField.getText();
-                //double balance = Double.parseDouble(amount);
-                //double balance = Double.parseDouble(amount);
-
                 Double balance = Double.parseDouble(amount);
 
-                //CashAccount acc = new CashAccount(balance, name);
                 //Find correct portfolio in list of portfolios from text file
-                //Should i just pass the portfolio object into the scene method instead of userid?
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio myPortfolio = portList.get(0);
                 for (Portfolio p : portList) {
@@ -1087,10 +1099,6 @@ public class Main extends Application {
         confirm.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //port.deleteCashAccount(account.getValue().toString());
-
-                //userData.updatePortfolioList();
-
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio myPortfolio = portList.get(0);
                 for (Portfolio p : portList) {
@@ -1119,11 +1127,12 @@ public class Main extends Application {
                 for (User u : userData.listOfUser()) {
                     if (u.username().equals(args[1])) {
                         //delete the user from the application.
-                        userData.deleteUserAccount(u.username());
+                        userData.deleteUserAccount(u);
                     }
                 }
             }
         }
+        userData.parseEquityFile();
         launch(args);
     }
 }

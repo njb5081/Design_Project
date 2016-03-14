@@ -5,25 +5,19 @@ import java.util.Date;
 import java.util.DoubleSummaryStatistics;
 import java.util.zip.DeflaterOutputStream;
 
-public class Equity implements Serializable{
+public class Equity implements Serializable, Asset{
 
     private String tickerSymbol;
     private String name;
-    //private String index;
-    //private String sector;
 
     private Date dateOfBuy;
 
-    //private int sharesHeld;
     private double sharePrice;
-    private double totalValue;
 
     public Equity (String tickerSymbol, String name, double sharePrice) {
 
         this.tickerSymbol = tickerSymbol;
         this.name = name;
-//        this.index = index;
-//        this.sector = sector;
 
         this.dateOfBuy = new Date();
 
@@ -35,6 +29,7 @@ public class Equity implements Serializable{
 
     //Getters
     public String getTickerSymbol () { return tickerSymbol; }
+
     public String getName () { return name; }
 //    public String getIndex () { return index; }
 //    public String getSector () { return sector; }
@@ -42,8 +37,7 @@ public class Equity implements Serializable{
     public Date getDateOfBuy () { return dateOfBuy; }
 
     public int getSharesHeld () { return 0; }
-    public double getSharePrice () { return sharePrice; }
-    public double getTotalValue () { return totalValue; }
+    public Double getSharePrice () { return sharePrice; }
 
     //Setters
 //    public void setSharesHeld (int newShares) {
@@ -59,13 +53,6 @@ public class Equity implements Serializable{
     public void setSharePrice (double newPrice) {
         sharePrice = newPrice;
         //totalValue = sharesHeld * sharePrice;
-    }
-
-    //Other functions
-    public String display () {
-        //Displays as: "Symbol name sharesHeld $sharePrice $totalValue"
-        return tickerSymbol + " " + name + " " +  " $" + Double.toString(sharePrice)
-                + " $" + Double.toString(totalValue);
     }
 
     //Methods to help with reset functionality

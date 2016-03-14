@@ -1,20 +1,25 @@
 package sample;
 
 import java.io.Serializable;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Created by minhduong on 3/3/16.
+ * This class will create the user Object to represent the User account
  */
-public class User implements Serializable {
+public class User implements Serializable,observer  {
 
     /*
     * Private variable to support the User object
     * */
     private String password;
     private String username;
+    /*
+    * encryption the password
+    * */
     private String encryption = "1234";
-    private int portfolioID;
-    //private int id;
+
 
     /*
     * Initial the object with information
@@ -24,35 +29,6 @@ public class User implements Serializable {
         // encrypte the password
         this.password = password+encryption;
     }
-
-    /*
-    * connect with the associate portfolio id
-    * */
-    public void setPortfolioID(int ID){
-        this.portfolioID = ID;
-    }
-
-    /*
-    * return the associate portforlio id
-    * */
-    public int getPortfolioID(){
-        return this.portfolioID;
-    }
-
-//    /*
-//    * set a new ID for user
-//    * */
-//    public void setUserID(int ID){
-//        this.id = ID;
-//    }
-//
-//    /*
-//    * return userID
-//    * */
-//    public int getUserID(int ID){
-//        return this.id;
-//    }
-
 
     /*
     * return username
@@ -70,9 +46,6 @@ public class User implements Serializable {
         return temporalPW;
     }
 
-    public void changePassword(String newPassword){
-
-    }
     /*
     * compare two user whether both are equal or not
     * Both account need to have the same username and password
@@ -88,9 +61,12 @@ public class User implements Serializable {
                 isEqual = true;
             }
         }
-
         return isEqual;
     }
 
+    @Override
+    public void update(String message) {
+        System.out.println( "the account has been "+message);
+    }
 
 }

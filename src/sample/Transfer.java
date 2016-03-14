@@ -3,6 +3,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/*
+* This class will create the Transfer object
+* It also create function to deal with transaction between multiple accounts
+* */
 public class Transfer {
 
     private CashAccount toAccount;
@@ -11,6 +15,9 @@ public class Transfer {
     private Logger log;
     private String user;
 
+    /*
+    * Initial the Transfer object to store the information
+    * */
     public Transfer(double amount, CashAccount toAccount, CashAccount fromAccount, Logger log, String user){
 
         this.toAccount = toAccount;
@@ -21,6 +28,9 @@ public class Transfer {
 
     }
 
+    /*
+    * Run the transaction activity. The money will move from one account to another account
+    * */
     public void execute(){
 
         toAccount.addFunds(amount);
@@ -34,8 +44,10 @@ public class Transfer {
 
     }
 
+    /*
+    * Undo the action if the user don't want to finish the transaction activity
+    * */
     public void undo(){
-
         toAccount.subtractFunds(amount);
         fromAccount.addFunds(amount);
 

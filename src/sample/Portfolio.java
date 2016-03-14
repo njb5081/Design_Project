@@ -31,7 +31,7 @@ public class Portfolio implements Serializable {
         this.userid = userid;
         //this.sharePrices = avgSharePrices;
         this.sharesHeld = new HashMap<String, Integer>();
-        this.sharePrices = avgSharePrices;
+
 
         //this.equities = new ArrayList<Equity>();
         this.cashAccounts = new ArrayList<CashAccount>();
@@ -68,6 +68,10 @@ public class Portfolio implements Serializable {
         return this.totalEquities;
     }
 
+    public Map<String, Integer> getSharesHeld(){
+        return sharesHeld;
+    }
+
     //public ArrayList<Equity> getportfolioEquity(){ return this.equities;}
 
     /**
@@ -99,7 +103,7 @@ public class Portfolio implements Serializable {
         int newShares = sharesHeld.get(ticker) + numShares;
         this.sharesHeld.put(ticker, newShares);
 
-        calculateTotalHoldings();
+        //calculateTotalHoldings();
         return true;
     }
 
@@ -123,7 +127,7 @@ public class Portfolio implements Serializable {
         if (cash && !cashAccounts.isEmpty()) {
             cashAccounts.get(0).addFunds(totalSalePrice);
         }
-        calculateTotalHoldings(); //or just update the holdings
+        //calculateTotalHoldings(); //or just update the holdings
         return true;
     }
 
@@ -169,6 +173,7 @@ public class Portfolio implements Serializable {
     /**
      * Checks all Portfolio holdings and updates the Portfolio's total attribute
      */
+    /*
     public void calculateTotalHoldings(){
         double holdingTotal = 0;
         double cashTotal = 0;
@@ -187,6 +192,7 @@ public class Portfolio implements Serializable {
         this.totalCash = cashTotal;
         this.totalEquities = equityTotal;
     }
+    */
 
     public ArrayList<CashAccount> getCashAccounts(){
         return this.cashAccounts;

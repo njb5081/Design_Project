@@ -22,6 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 
+import javax.sound.sampled.Port;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -176,28 +177,28 @@ public class Main extends Application {
         box.setAlignment(Pos.BOTTOM_RIGHT);
 
         //action for button
-        register.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-
-
-                if (pwBox.getText().equals(confirmPw.getText())){
-
-                    User newAccount = new User(userField.getText(),pwBox.getText());
-                    if(!userData.usernameExist(newAccount.username())) {
-                        userData.saveAccount(newAccount);
-                        message.setText("register success");
-                    } else {
-                        message.setText("username has been used");
-                    }
-
-                } else {
-
-                    message.setText("please confirm the password");
-
-                }
-            }
-        });
+//        register.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//
+//
+//                if (pwBox.getText().equals(confirmPw.getText())){
+//
+//                    User newAccount = new User(userField.getText(),pwBox.getText());
+//                    if(!userData.usernameExist(newAccount.username())) {
+//                        userData.saveAccount(newAccount);
+//                        message.setText("register success");
+//                    } else {
+//                        message.setText("Account has been created");
+//                    }
+//
+//                } else {
+//
+//                    message.setText("please confirm the password");
+//
+//                }
+//            }
+//        });
         box.getChildren().add(register);
         grid2.add(box, 1 , 4);
 
@@ -732,7 +733,7 @@ public class Main extends Application {
         transactionButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                transactionScene(mainStage);
+                transactionScene(mainStage, user);
             }
         });
 
@@ -802,78 +803,75 @@ public class Main extends Application {
 
 
 
-        bullSimulation.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                ArrayList<Equity> equities = new ArrayList<Equity>();
-                ArrayList<CashAccount> cash = new ArrayList<CashAccount>();
-                MarketSimulation bull = new BullMarket();
-                Portfolio port = new Portfolio("njb5081",equities,cash);
-                float tempPercent = Float.parseFloat(percentage.getText());
-                int tempSteps = Integer.parseInt(stepField.getText());
-                String tempInterval = IntervalField.getText();
-
-                //Equity eq = new Equity("t","test","id1","sec1",3,50);
-//                eq.setSharePrice(30);
-             //   Equity eq2 = new Equity("t2","test1","id2","sec4",1,100);
-//                eq2.setSharePrice(10);
-                port.addEquity("t",3,50,"3/10/16",false);
-//                equities.add(eq2);
-//                for (Equity EEE : equities) {
-//                    System.out.println(EEE.EquityPrice + " before simulation");
+//        bullSimulation.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+////                ArrayList<Equity> equities = new ArrayList<Equity>();
+////                ArrayList<CashAccount> cash = new ArrayList<CashAccount>();
+//                MarketSimulation bull = new BullMarket();
+//
+//
+//                List<Portfolio> portList = userData.listOfPortfolio();
+//                Portfolio port = portList.get(0);
+//                for (Portfolio p : portList) {
+//                    if (p.getUserID().equals(user)){
+//                        port = p;
+//                    }
 //                }
-
-                port.setEquities(bull.runSimulation(tempPercent, port, true, tempSteps, tempInterval));
-                System.out.println(String.valueOf(port.getTotalHoldings() + " total value of PORTFOLIO"));
-                port.calculateTotalHoldings();
-                portValue.setText(String.valueOf(port.getTotalHoldings()));
-                for (Equity ppp : port.getportfolioEquity()){
-                    System.out.println(ppp.getSharePrice() + " each equity value After sim");
-                }
-                //todo RESET FUNCTION NOT WORKING CORRECTLY
-                // tempList = bull.reset(equities);
-                //todo Calling reset on wrong thing should be portfolio???
-                          }
-
-        });
-
-        bearSimulation.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                MarketSimulation bear = new BearMarket();
-
-                float tempPercent = Float.parseFloat(percentage.getText());
-                int tempSteps = Integer.parseInt(stepField.getText());
-                String tempInterval = IntervalField.getText();
-                ArrayList<Equity> equities = new ArrayList<Equity>();
-                ArrayList<CashAccount> cash = new ArrayList<CashAccount>();
-                Portfolio port = new Portfolio("njb5081",equities,cash);
-//                Equity eq = new Equity("t", "test", "id1", "sec1", 3, 50);
-//                eq.setSharePrice(30);
-//                Equity eq2 = new Equity("t2", "test1", "id2", "sec4", 1, 100);
-//                eq2.setSharePrice(10);
-                port.addEquity("t",3,50,"3/10/16",false);
-                for (Equity pfkn : port.getportfolioEquity()){
-                    System.out.println(pfkn.getSharePrice() + "equities in portfolio");
-                }
-//                for (Equity EEE : equities) {
-//                    System.out.println(EEE.EquityPrice + " before simulation");
+//
+//
+//                float tempPercent = Float.parseFloat(percentage.getText());
+//                int tempSteps = Integer.parseInt(stepField.getText());
+//                String tempInterval = IntervalField.getText();
+//
+//
+//                port.setEquities(bull.runSimulation(tempPercent, port, true, tempSteps, tempInterval));
+//                System.out.println(String.valueOf(port.getTotalHoldings() + " total value of PORTFOLIO"));
+//                port.calculateTotalHoldings();
+//                portValue.setText(String.valueOf(port.getTotalHoldings()));
+//                          }
+//
+//        });
+//
+//        bearSimulation.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                MarketSimulation bear = new BearMarket();
+//
+//                float tempPercent = Float.parseFloat(percentage.getText());
+//                int tempSteps = Integer.parseInt(stepField.getText());
+//                String tempInterval = IntervalField.getText();
+//                ArrayList<Equity> equities = new ArrayList<Equity>();
+//                ArrayList<CashAccount> cash = new ArrayList<CashAccount>();
+//                Portfolio port = new Portfolio("njb5081",equities,cash);
+////                Equity eq = new Equity("t", "test", "id1", "sec1", 3, 50);
+////                eq.setSharePrice(30);
+////                Equity eq2 = new Equity("t2", "test1", "id2", "sec4", 1, 100);
+////                eq2.setSharePrice(10);
+//                port.addEquity("t",3,50,"3/10/16",false);
+//                for (Equity pfkn : port.getportfolioEquity()){
+//                    System.out.println(pfkn.getSharePrice() + "equities in portfolio");
 //                }
-                port.setEquities(bear.runSimulation(tempPercent, port, true, tempSteps, tempInterval));
-                for (Equity pfkn : port.getportfolioEquity()){
-                    System.out.println(pfkn.getSharePrice() + "equities in portfolio after simulation");
-                }
-                port.calculateTotalHoldings();
-                portValue.setText(String.valueOf(port.getTotalHoldings()));
-                for (Equity ppp : port.getportfolioEquity()) {
-                    System.out.println(ppp.getSharePrice() + "After sim");
-                }
-                //todo RESET FUNCTION NOT WORKING CORRECTLY
-                // tempList = bear.reset(equities);
-                //todo Calling reset on wrong thing should be portfolio???
-            }
-
-        });
+////                for (Equity EEE : equities) {
+////                    System.out.println(EEE.EquityPrice + " before simulation");
+////                }
+//                port.setEquities(bear.runSimulation(tempPercent, port, true, tempSteps, tempInterval));
+//                for (Equity pfkn : port.getportfolioEquity()){
+//                    System.out.println(pfkn.getSharePrice() + "equities in portfolio after simulation");
+//                }
+//                port.calculateTotalHoldings();
+//                portValue.setText(String.valueOf(port.getTotalHoldings()));
+//                for (Equity ppp : port.getportfolioEquity()) {
+//                    System.out.println(ppp.getSharePrice() + "After sim");
+//                }
+//                //todo RESET FUNCTION NOT WORKING CORRECTLY
+//                // tempList = bear.reset(equities);
+//                //todo Calling reset on wrong thing should be portfolio???
+//
+//
+//            }
+//
+//        });
 
         window.setScene(scene3);
         window.show();
@@ -883,7 +881,6 @@ public class Main extends Application {
         window = stage;
         window.setTitle("My Portfolio");
 
-        //System.out.println("Portfolio Scene");
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         Scene portScene = new Scene(grid, 500, 500);
@@ -895,23 +892,23 @@ public class Main extends Application {
                 myPortfolio = p;
             }
         }
-        Label welcome = new Label("Welcome, ");
-        grid.add(welcome, 0, 0);
-        Label userName = new Label(myPortfolio.getUserID());
-        grid.add(userName, 1, 0);
-        int i = 2;
-        for (CashAccount c : myPortfolio.getCashAccounts()){
-            Label name = new Label("Account Name: ");
-            grid.add(name, 0, i);
-            Label nameDesc = new Label(c.toString());
-            grid.add(nameDesc, 1, i);
-            i++;
-            Label bal = new Label("Balance: ");
-            grid.add(bal, 0, i);
-            Label balDesc = new Label(String.valueOf(c.getBalance()));
-            grid.add(balDesc, 1, i);
-            i++;
+
+        int i = 0;
+        Label welcome = new Label("Welcome,  " + myPortfolio.getUserID());
+        grid.add(welcome, 0, i);
+        //Label userName = new Label(myPortfolio.getUserID());
+        //grid.add(userName, 1, i);
+        i++;
+
+        double totalMoney = 0;
+        for (CashAccount c : myPortfolio.getCashAccounts()) {
+            totalMoney += (c.getBalance());
         }
+        Label total = new Label("Total Account Balance:  " + String.valueOf(totalMoney));
+        grid.add(total, 0, i);
+        //Label totalDesc = new Label(String.valueOf(totalMoney));
+        //grid.add(totalDesc, 1, i);
+        i++;
 
         //LOGGER NAVIGATION START
         final Button logButton = new Button("Go to Logger");
@@ -940,30 +937,51 @@ public class Main extends Application {
 
         HBox transBox = new HBox();
         transBox.setAlignment(Pos.TOP_LEFT);
+        grid.add(transactionButton, 0, i);
+        //TRANSACTION STUFF END
         grid.add(transactionButton, 1, 200);
         //TRANSACTION NAVIGATION END
 
-        Button addAccount = new Button("Add a Cash Account");
+//        for (CashAccount c : myPortfolio.getCashAccounts()){
+//            Label name = new Label("Account Name: ");
+//            grid.add(name, 0, i);
+//            Label nameDesc = new Label(c.toString());
+//            grid.add(nameDesc, 1, i);
+//            i++;
+//            Label bal = new Label("Balance: ");
+//            grid.add(bal, 0, i);
+//            Label balDesc = new Label(String.valueOf(c.getBalance()));
+//            grid.add(balDesc, 1, i);
+//            i++;
+//        }
+
         Button marketSimulation = new Button("MarketSimulation");
-        grid.add(marketSimulation, 0, 200);
+        grid.add(marketSimulation, 1, i);
         marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 simulationScene(window);
             }
         });
+        i++;
+
+        Button addAccount = new Button("Add a Cash Account");
         addAccount.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //String user = userID;
                 addCashAccountScene(window, userID);
             }
         });
 
-//        bearSimulation.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-        grid.add(addAccount, 0, 1);
+        grid.add(addAccount, 0, i);
+        Button deleteAccount = new Button("Delete a Cash Account");
+        deleteAccount.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                deleteCashAccountScene(window);
+            }
+        });
+        grid.add(deleteAccount, 1, i);
 
         window.setScene(portScene);
         window.show();
@@ -972,11 +990,6 @@ public class Main extends Application {
     public void addCashAccountScene(Stage stage, final String userid){
         window = stage;
         window.setTitle("Add a New Cash Account");
-
-//        final Label username = new Label("username");
-//        grid.add(username, 0, 1);
-//        final TextField userField = new TextField();
-//        grid.add(userField, 1, 1);
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -990,9 +1003,6 @@ public class Main extends Application {
         grid.add(accAmount, 0, 1);
         final TextField amountField = new TextField();
         grid.add(amountField, 1, 1);
-
-        String date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
-        //System.out.println(date);
 
         Button cancelB = new Button("Cancel");
         cancelB.setOnAction(new EventHandler<ActionEvent>() {
@@ -1010,9 +1020,10 @@ public class Main extends Application {
                 String amount = amountField.getText();
                 String name = nameField.getText();
                 //double balance = Double.parseDouble(amount);
+                //double balance = Double.parseDouble(amount);
                 Double balance = Double.parseDouble(amount);
 
-                CashAccount acc = new CashAccount(balance, name);
+                //CashAccount acc = new CashAccount(balance, name);
                 //Find correct portfolio in list of portfolios from text file
                 //Should i just pass the portfolio object into the scene method instead of userid?
                 List<Portfolio> portList = userData.listOfPortfolio();
@@ -1047,9 +1058,61 @@ public class Main extends Application {
         window.show();
     }
 
-    public void addEquityScene(Stage stage, String userid){
+    public void deleteCashAccountScene(Stage stage) {
+        window = stage;
+        window.setTitle("Delete an Account");
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        Scene deleteAccScene = new Scene(grid, 500, 500);
+
+        Label select = new Label("Select an account to delete: ");
+        grid.add(select, 0, 0);
+
+        List<Portfolio> portList = userData.listOfPortfolio();
+        Portfolio myPortfolio = portList.get(0);
+        for (Portfolio p : portList) {
+            if (p.getUserID().equals(user)){
+                myPortfolio = p;
+            }
+        }
+        final Portfolio port = myPortfolio;
+        final HashMap<String, CashAccount> cashAccounts = new HashMap<String, CashAccount>();
+        for (CashAccount c : myPortfolio.getCashAccounts()) {
+            cashAccounts.put(c.toString(), c);
+        }
+        final ObservableList<String> optionsAccounts = FXCollections.observableArrayList();
+        optionsAccounts.addAll(cashAccounts.keySet());
+        final ComboBox account = new ComboBox(optionsAccounts);
+        grid.add(account, 1, 0);
+
+        Button confirm = new Button("Delete Account");
+        confirm.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //port.deleteCashAccount(account.getValue().toString());
+
+                //userData.updatePortfolioList();
+
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio myPortfolio = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(user)){
+                        myPortfolio = p;
+                    }
+                }
+                myPortfolio.deleteCashAccount(account.getValue().toString());
+                userData.updatePortfolioList(portList);
+                portfolioScene(window, user);
+            }
+        });
+        grid.add(confirm, 1, 1);
+
+
+        window.setScene(deleteAccScene);
+        window.show();
 
     }
+
 
     public static void main(String[] args) {
 

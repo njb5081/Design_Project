@@ -3,6 +3,8 @@ package sample;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Nick on 3/9/2016.
@@ -12,9 +14,12 @@ public class Portfolio implements Serializable {
     //private list of transactions
     private double totalHoldings;
     private double totalCash;
-    private ArrayList<Equity> equities;
+    private double totalEquities;
+    //private ArrayList<Equity> equities;
     private ArrayList<CashAccount> cashAccounts;
     private CashAccount largest;
+    private Map<String, Integer> sharesHeld;
+    private Map<String, Double> sharePrices;
 
     /**
      * Constructor creates new Portfolio
@@ -22,22 +27,22 @@ public class Portfolio implements Serializable {
      * @param importedEquities any equities being imported to a new Portfolio
      * @param importedCashAccounts any cash accounts being imported
      */
-    public Portfolio(String userid, ArrayList<Equity> importedEquities, ArrayList<CashAccount> importedCashAccounts){
+    public Portfolio(String userid, HashMap<String, Integer> importedEquities, ArrayList<CashAccount> importedCashAccounts, HashMap<String, Double> avgSharePrices){
         this.userid = userid;
+        this.sharePrices = avgSharePrices;
 
-        this.equities = new ArrayList<Equity>();
+        //this.equities = new ArrayList<Equity>();
         this.cashAccounts = new ArrayList<CashAccount>();
-        double holdings = 0;
-        for (Equity e : importedEquities) {
-            equities.add(e);
-            holdings += (e.getSharesHeld() * e.getSharePrice());
+        for (String s : importedEquities.keySet()) {
+            sharesHeld.put(s, importedEquities.get(s));
+            this.totalHoldings += (importedEquities.get(s) * avgSharePrices.get(s));
+            this.totalEquities += (importedEquities.get(s) * avgSharePrices.get(s));
         }
         for (CashAccount c : importedCashAccounts) {
-            cashAccounts.add(c);
-            holdings += (c.getBalance());
-            totalCash += (c.getBalance());
+            this.cashAccounts.add(c);
+            this.totalHoldings += (c.getBalance());
+            this.totalCash += (c.getBalance());
         }
-        this.totalHoldings = holdings;
         //add portfolio data to txt file
     }
 
@@ -57,7 +62,11 @@ public class Portfolio implements Serializable {
         return this.totalCash;
     }
 
-    public ArrayList<Equity> getportfolioEquity(){ return this.equities;}
+    public double getTotalEquities() {
+        return this.totalEquities;
+    }
+
+    //public ArrayList<Equity> getportfolioEquity(){ return this.equities;}
 
     /**
      * Add an equity to this Portfolio
@@ -68,9 +77,6 @@ public class Portfolio implements Serializable {
      * @param cash boolean true if equity is purchased with money in an account associated with this Portfolio
      */
     public boolean addEquity(String ticker, int numShares, double pricePerShare, String date, boolean cash) {
-        //change to boolean, false if not enough money in account?
-        //create new equity object?
-        //add to total holdings
         double totalPrice = (numShares * pricePerShare);
         if (cash && (totalPrice > this.totalCash)) { //if purchasing equity with a cash account
             return false;
@@ -87,13 +93,11 @@ public class Portfolio implements Serializable {
             //subtract from cash account
             largest.subtractFunds(totalPrice);
         }
-        String name = "name"; //placeholder
-        String index = "index"; //placeholder
-        String sector = "sector"; //placeholder
 
-        //Equity e = new Equity(ticker, name, index, sector, numShares, pricePerShare);
-        //this.equities.add(e);
-        calculateTotalHoldings(); //or just update the holdings
+        int newShares = sharesHeld.get(ticker) + numShares;
+        this.sharesHeld.put(ticker, newShares);
+
+        calculateTotalHoldings();
         return true;
     }
 
@@ -106,16 +110,11 @@ public class Portfolio implements Serializable {
      * @param cash boolean true if money is being deposited into cash account for this sale
      */
     public boolean sellEquity(String ticker, int numSold, double pricePerShare, String date, boolean cash){
-        //update arrays and shit
-        //update txt file
-        Equity equity = equities.get(0);
         double totalSalePrice = (numSold * pricePerShare);
-        for (Equity e : equities){
-            if (e.getTickerSymbol().equals(ticker)){
-                equity = e;
-            }
-        }
-        //equity.setSharesHeld((equity.getSharesHeld() - numSold));
+        int newShares = this.sharesHeld.get(ticker) - numSold;
+        this.sharesHeld.put(ticker, newShares);
+
+
         if (cash && cashAccounts.isEmpty()){ //There are no cash accounts associated with this portfolio
             return false;
         }
@@ -145,8 +144,7 @@ public class Portfolio implements Serializable {
     public void deleteCashAccount(String name){
         for (CashAccount c : cashAccounts) {
             if (c.toString().equals(name)) {
-                //remove account from list
-                //remove info from txt file
+                this.cashAccounts.remove(c);
                 calculateTotalHoldings(); //or just update the holdings
                 return;
             }
@@ -172,28 +170,32 @@ public class Portfolio implements Serializable {
     public void calculateTotalHoldings(){
         double holdingTotal = 0;
         double cashTotal = 0;
-        for (CashAccount c : cashAccounts) {
+        double equityTotal = 0;
+        for (CashAccount c : this.cashAccounts) {
             holdingTotal += (c.getBalance());
             cashTotal += (c.getBalance());
         }
-        for (Equity e : equities) {
-            holdingTotal += (e.getSharesHeld() * e.getSharePrice());
+        for (String s : this.sharesHeld.keySet()) {
+            holdingTotal += (sharesHeld.get(s) * sharePrices.get(s));
+            equityTotal += (sharesHeld.get(s) * sharePrices.get(s));
         }
+
         this.totalHoldings = holdingTotal;
         this.totalCash = cashTotal;
+        this.totalEquities = equityTotal;
     }
 
     public ArrayList<CashAccount> getCashAccounts(){
         return this.cashAccounts;
     }
 
-    public ArrayList<Equity> getEquities(){
-        return this.equities;
-    }
+//    public ArrayList<Equity> getEquities(){
+//        return this.equities;
+//    }
 
-    public void setEquities(ArrayList<Equity> updatedEquities){
-       this.equities = updatedEquities;
-    }
+//    public void setEquities(ArrayList<Equity> updatedEquities){
+//       this.equities = updatedEquities;
+//    }
 
     /**
      * Create a string representation of the Portfolio

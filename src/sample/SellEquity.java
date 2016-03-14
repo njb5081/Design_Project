@@ -3,6 +3,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/*
+* this class will be resposible for selling the equity
+* */
 public class SellEquity {
 
     private CashAccount funds;
@@ -21,6 +24,9 @@ public class SellEquity {
 
     }
 
+    /*
+    *sells selected asset into selected cash account
+    * */
     public void execute(){
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

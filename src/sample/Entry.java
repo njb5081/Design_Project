@@ -21,12 +21,14 @@ public class Entry implements Serializable{
 
     }
 
+    //get date of creation
     public String getDate(){
 
         return date;
 
     }
 
+    //get description of event
     public String getDescription(){
 
         return description;
@@ -39,6 +41,7 @@ public class Entry implements Serializable{
 
     }
 
+    //get user that the entry pertains to
     public String getUser(){
         return user;
     }

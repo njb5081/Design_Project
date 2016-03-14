@@ -29,6 +29,7 @@ public class IndexSector implements Serializable, Asset {
 
     }
 
+    //Updates total value when value of equities change
     public void updateSharePrice(){
 
         sharePrice = 0.0;

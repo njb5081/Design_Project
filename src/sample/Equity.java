@@ -1,69 +1,70 @@
 package sample;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.DoubleSummaryStatistics;
 import java.util.zip.DeflaterOutputStream;
 
-public class Equity {
+public class Equity implements Serializable{
 
     private String tickerSymbol;
     private String name;
-    private String index;
-    private String sector;
+    //private String index;
+    //private String sector;
 
     private Date dateOfBuy;
 
-    private int sharesHeld;
+    //private int sharesHeld;
     private double sharePrice;
     private double totalValue;
 
-    public Equity (String tickerSymbol, String name, String index, String sector, int sharesHeld, double sharePrice) {
+    public Equity (String tickerSymbol, String name, double sharePrice) {
 
         this.tickerSymbol = tickerSymbol;
         this.name = name;
-        this.index = index;
-        this.sector = sector;
+//        this.index = index;
+//        this.sector = sector;
 
         this.dateOfBuy = new Date();
 
-        this.sharesHeld = sharesHeld;
+        //this.sharesHeld = sharesHeld;
         this.sharePrice = sharePrice;
-        this.totalValue = sharesHeld * sharePrice;
+        //this.totalValue = sharesHeld * sharePrice;
 
     }
 
     //Getters
     public String getTickerSymbol () { return tickerSymbol; }
     public String getName () { return name; }
-    public String getIndex () { return index; }
-    public String getSector () { return sector; }
+//    public String getIndex () { return index; }
+//    public String getSector () { return sector; }
 
     public Date getDateOfBuy () { return dateOfBuy; }
 
-    public int getSharesHeld () { return sharesHeld; }
+    public int getSharesHeld () { return 0; }
     public double getSharePrice () { return sharePrice; }
     public double getTotalValue () { return totalValue; }
 
     //Setters
-    public void setSharesHeld (int newShares) {
-        sharesHeld = newShares;
-        totalValue = sharesHeld * sharePrice;
-    }
+//    public void setSharesHeld (int newShares) {
+//        sharesHeld = newShares;
+//        totalValue = sharesHeld * sharePrice;
+//    }
 
-    public void addSharesHeld (int addShares) {
-        sharesHeld += addShares;
-        totalValue = sharesHeld * sharePrice;
-    }
+//    public void addSharesHeld (int addShares) {
+//        sharesHeld += addShares;
+//        totalValue = sharesHeld * sharePrice;
+//    }
 
     public void setSharePrice (double newPrice) {
         sharePrice = newPrice;
-        totalValue = sharesHeld * sharePrice;
+        //totalValue = sharesHeld * sharePrice;
     }
 
     //Other functions
     public String display () {
         //Displays as: "Symbol name sharesHeld $sharePrice $totalValue"
-        return tickerSymbol + " " + name + " " + Integer.toString(sharesHeld) + " $" + Double.toString(sharePrice)
+        return tickerSymbol + " " + name + " " +  " $" + Double.toString(sharePrice)
                 + " $" + Double.toString(totalValue);
     }
 

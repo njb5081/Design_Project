@@ -27,7 +27,7 @@ public class SellEquity {
         Date date = new Date();
 
         funds.addFunds(asset.getSharePrice() * ((double)amount));
-        asset.addSharesHeld(-amount);
+        //asset.addSharesHeld(-amount);
 
         log.addEntry("Sold " +
                 Integer.toString(amount) +

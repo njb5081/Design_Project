@@ -57,7 +57,7 @@ public class BullMarket implements MarketSimulation {
 
             }
             E.setSharePrice(equityValue);
-            equityValue *= E.getSharesHeld();
+            //equityValue *= E.getSharesHeld();
             equityValue = Math.floor(equityValue);
             porfolioValue += equityValue;
 

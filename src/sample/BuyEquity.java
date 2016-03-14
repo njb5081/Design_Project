@@ -27,7 +27,7 @@ public class BuyEquity {
         Date date = new Date();
 
         funds.subtractFunds(asset.getSharePrice() * ((double)amount));
-        asset.addSharesHeld(amount);
+        //asset.addSharesHeld(amount);
 
         if(!port.getEquities().contains(asset)){
             port.addEquity(asset.getTickerSymbol(), amount, asset.getSharePrice(), dateFormat.format(date), true);

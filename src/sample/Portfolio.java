@@ -91,8 +91,8 @@ public class Portfolio implements Serializable {
         String index = "index"; //placeholder
         String sector = "sector"; //placeholder
 
-        Equity e = new Equity(ticker, name, index, sector, numShares, pricePerShare);
-        this.equities.add(e);
+        //Equity e = new Equity(ticker, name, index, sector, numShares, pricePerShare);
+        //this.equities.add(e);
         calculateTotalHoldings(); //or just update the holdings
         return true;
     }
@@ -115,7 +115,7 @@ public class Portfolio implements Serializable {
                 equity = e;
             }
         }
-        equity.setSharesHeld((equity.getSharesHeld() - numSold));
+        //equity.setSharesHeld((equity.getSharesHeld() - numSold));
         if (cash && cashAccounts.isEmpty()){ //There are no cash accounts associated with this portfolio
             return false;
         }

@@ -1,3 +1,7 @@
+/**
+ * Portfolio.java
+ * Portfolio object that holds information about a portfolio's userid, cash accounts, and equities
+ */
 package sample;
 
 import java.io.Serializable;
@@ -11,15 +15,12 @@ import java.util.Map;
  */
 public class Portfolio implements Serializable {
     private String userid;
-    //private list of transactions
     private double totalHoldings;
     private double totalCash;
     private double totalEquities;
-    //private ArrayList<Equity> equities;
     private ArrayList<CashAccount> cashAccounts;
     private CashAccount largest;
     private Map<String, Integer> sharesHeld;
-    //private Map<String, Double> sharePrices;
 
     /**
      * Constructor creates new Portfolio
@@ -29,11 +30,8 @@ public class Portfolio implements Serializable {
      */
     public Portfolio(String userid, HashMap<String, Integer> importedEquities, ArrayList<CashAccount> importedCashAccounts){
         this.userid = userid;
-        //this.sharePrices = avgSharePrices;
         this.sharesHeld = new HashMap<String, Integer>();
 
-
-        //this.equities = new ArrayList<Equity>();
         this.cashAccounts = new ArrayList<CashAccount>();
 //        for (String s : importedEquities.keySet()) {
 //            sharesHeld.put(s, importedEquities.get(s));
@@ -45,7 +43,6 @@ public class Portfolio implements Serializable {
             this.totalHoldings += (c.getBalance());
             this.totalCash += (c.getBalance());
         }
-        //add portfolio data to txt file
     }
 
     /**
@@ -72,7 +69,6 @@ public class Portfolio implements Serializable {
         return sharesHeld;
     }
 
-    //public ArrayList<Equity> getportfolioEquity(){ return this.equities;}
 
 
     public void addEquity(Asset asset, int amount) {
@@ -190,7 +186,7 @@ public class Portfolio implements Serializable {
      * @return string representing the Portfolio object
      */
     public String toString(){
-        return "Words";
+        return (userid + "'s Portfolio");
     }
 
 }

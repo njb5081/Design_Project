@@ -60,16 +60,16 @@ public class Main extends Application {
     Map<String, List<String>> indexMap = userData.getIndexMap();
     Map<String, Equity> equityMap = userData.getEquityMap();
 
+    //Starts the initial JavaFX GUI
     @Override
-
-
     public void start(Stage primaryStage) throws Exception{
         loginScene(primaryStage);
     }
 
-    /*
-    * create login scene
-    * */
+    /**
+     * Shows the first screen that allows a user to login to a portfolio
+     * @param mainStage
+     */
     public void loginScene(Stage mainStage){
         window = mainStage;
         window.setTitle("Login page");
@@ -149,9 +149,10 @@ public class Main extends Application {
         window.show();
     }
 
-    /*
-    * create register scene
-    * */
+    /**
+     * Shows the page that allows for registering new users/portfolios
+     * @param mainStage
+     */
     public void registerScene(Stage mainStage){
         //scene 2 register
         window = mainStage;
@@ -236,6 +237,10 @@ public class Main extends Application {
     }
 
 
+    /**
+     * Shows logs for previous actions
+     * @param mainStage stage for the window
+     */
     public void loggerScene(final Stage mainStage){
         window = mainStage;
         window.setTitle("Logger");
@@ -304,6 +309,10 @@ public class Main extends Application {
         window.show();
     }
 
+    /**
+     * Shows a page that allows transferring funds and buying and selling equities
+     * @param mainStage stage for the window
+     */
     public void transactionScene(final Stage mainStage){
 
         window = mainStage;
@@ -729,6 +738,11 @@ public class Main extends Application {
         window.show();
     }
 
+    /**
+     * Shows the simulation page and allows for showing simulations on future holdings
+     * @param mainStage stage for the window
+     * @param port the portfolio being simulated
+     */
     public void simulationScene (final Stage mainStage, final Portfolio port){
         window = mainStage;
         window.setTitle("Market simulation");
@@ -905,14 +919,21 @@ public class Main extends Application {
         window.show();
     }
 
+    /**
+     * Shows the portfolio summary information after loggin in
+     * @param stage the stage for the window
+     * @param userID the id of the user logged in
+     */
     public void portfolioScene(final Stage stage, final String userID){
         window = stage;
         window.setTitle("My Portfolio");
 
+        //create the grid being shown in the scene
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         Scene portScene = new Scene(grid, 500, 500);
 
+        //find user information from the user text file
         List<Portfolio> portList = userData.listOfPortfolio();
         Portfolio myPortfolio = portList.get(0);
         for (Portfolio p : portList) {
@@ -925,30 +946,25 @@ public class Main extends Application {
         int i = 0;
         Label welcome = new Label("Welcome,  " + myPortfolio.getUserID());
         grid.add(welcome, 0, i);
-        //Label userName = new Label(myPortfolio.getUserID());
-        //grid.add(userName, 1, i);
         i++;
 
+        //display the total amount of money in all cash accounts
         double totalMoney = 0;
         for (CashAccount c : myPortfolio.getCashAccounts()) {
             totalMoney += (c.getBalance());
         }
         Label total = new Label("Total Account Balance:  " + String.valueOf(totalMoney));
         grid.add(total, 0, i);
-        //Label totalDesc = new Label(String.valueOf(totalMoney));
-        //grid.add(totalDesc, 1, i);
         i++;
 
         //LOGGER NAVIGATION START
         final Button logButton = new Button("Go to Logger");
-
         logButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 loggerScene(stage);
             }
         });
-
         HBox logBox = new HBox();
         logBox.setAlignment(Pos.TOP_LEFT);
         grid.add(logButton, 1, 300);
@@ -956,21 +972,18 @@ public class Main extends Application {
 
         //TRANSACTION NAVIGATION START
         final Button transactionButton = new Button("Go to Transactions");
-
         transactionButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 transactionScene(stage);
             }
         });
-
         HBox transBox = new HBox();
         transBox.setAlignment(Pos.TOP_LEFT);
         grid.add(transactionButton, 0, i);
-        //TRANSACTION STUFF END
-//        grid.add(transactionButton, 1, 200);
         //TRANSACTION NAVIGATION END
 
+        //Create a button that leads to the simulation screen
         Button marketSimulation = new Button("MarketSimulation");
         grid.add(marketSimulation, 1, i);
         marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
@@ -981,6 +994,7 @@ public class Main extends Application {
         });
         i++;
 
+        //Create a button that leads to the page to add an account
         Button addAccount = new Button("Add a Cash Account");
         addAccount.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -1003,6 +1017,11 @@ public class Main extends Application {
         window.show();
     }
 
+    /**
+     * Shows a screen to add an account to the portfolio
+     * @param stage the stage for the window
+     * @param userid the id of the user logged in
+     */
     public void addCashAccountScene(Stage stage, final String userid){
         window = stage;
         window.setTitle("Add a New Cash Account");
@@ -1070,6 +1089,10 @@ public class Main extends Application {
         window.show();
     }
 
+    /**
+     * Shows a screen to delete a cash account from the portfolio
+     * @param stage the stage for the window
+     */
     public void deleteCashAccountScene(Stage stage) {
         window = stage;
         window.setTitle("Delete an Account");
@@ -1121,6 +1144,10 @@ public class Main extends Application {
 
     }
 
+    /**
+     * Launches the JavaFX GUI and allows for deleting users on the command line
+     * @param args initial arguments
+     */
     public static void main(String[] args) {
 
         //Check for admin command line input.

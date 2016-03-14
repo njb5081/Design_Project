@@ -33,7 +33,6 @@ import java.util.HashMap;
 
 public class Main extends Application {
 
-
     Stage window;
     Scene scene1, scene2, scene3, scene4, scene5;
     static data userData = new data();
@@ -62,8 +61,6 @@ public class Main extends Application {
         grid.setPadding(new Insets(25, 25, 25, 25));
 
         scene1 = new Scene(grid, 300, 300);
-
-
 
         Text sceneTitle = new Text("welcome");
         sceneTitle.setFont(Font.font("Arial"));
@@ -189,7 +186,7 @@ public class Main extends Application {
                         userData.saveAccount(newAccount);
                         message.setText("register success");
                     } else {
-                        message.setText("Account has been created");
+                        message.setText("username has been used");
                     }
 
                 } else {
@@ -792,9 +789,9 @@ public class Main extends Application {
                 int tempSteps = Integer.parseInt(stepField.getText());
                 String tempInterval = IntervalField.getText();
 
-                Equity eq = new Equity("t","test","id1","sec1",3,50);
+                //Equity eq = new Equity("t","test","id1","sec1",3,50);
 //                eq.setSharePrice(30);
-                Equity eq2 = new Equity("t2","test1","id2","sec4",1,100);
+             //   Equity eq2 = new Equity("t2","test1","id2","sec4",1,100);
 //                eq2.setSharePrice(10);
                 port.addEquity("t",3,50,"3/10/16",false);
 //                equities.add(eq2);

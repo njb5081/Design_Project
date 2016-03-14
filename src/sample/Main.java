@@ -357,17 +357,17 @@ public class Main extends Application {
 
         final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
         final HashMap<String, Equity> equitiesOwned =  new HashMap<String, Equity>();
-        final HashMap<String, Equity> equitiesForSale =  new HashMap<String, Equity>();
 
         for (int i = 0; i < myPortfolio.getCashAccounts().size(); i++){
             cashAccounts.put(myPortfolio.getCashAccounts().get(i).toString(),
                     myPortfolio.getCashAccounts().get(i));
         }
-
-//        for (int i = 0; i < myPortfolio.getEquities().size(); i++){
-//            equitiesOwned.put(myPortfolio.getEquities().get(i).toString(),
-//                    myPortfolio.getEquities().get(i));
-//        }
+        /*
+        for (int i = 0; i < myPortfolio.getSharesHeld().size(); i++){
+            equitiesOwned.put(myPortfolio.getSharesHeld().toString(),
+                    myPortfolio.getEquities().get(i));
+        }
+        */
 
         final ObservableList<String> optionsCashAccounts = FXCollections.observableArrayList();
         final ObservableList<String> optionsEquitiesOwned = FXCollections.observableArrayList();
@@ -392,7 +392,6 @@ public class Main extends Application {
         final Label fromAccountBalanceLabel = new Label("     Account Balance: $0");
 
         final Button transFunds = new Button("Transfer");
-        
 
         final ComboBox sellCashAccount = new ComboBox(optionsCashAccounts);
         final ComboBox sellEquity = new ComboBox(optionsEquitiesOwned);
@@ -444,9 +443,9 @@ public class Main extends Application {
                         !sellEquityAmount.getText().equals("")
                         ) {
 
-                    CashAccount tempSellAccount = cashAccounts.get(toAccount.getValue());
+                    CashAccount tempSellAccount = cashAccounts.get(sellCashAccount.getValue());
                     Equity tempSellEquity = equitiesOwned.get(sellEquity.getValue());
-                    int tempAmount = Integer.parseInt(transAmount.getText());
+                    int tempAmount = Integer.parseInt(sellEquityAmount.getText());
 
                     if(tempSellAccount.getBalance() >= tempSellEquity.getSharePrice() * tempAmount) {
 
@@ -480,11 +479,11 @@ public class Main extends Application {
                         !buyEquityAmount.getText().equals("")
                         ) {
 
-                    CashAccount tempBuyAccount = cashAccounts.get(toAccount.getValue());
-                    Equity tempBuyEquity = equitiesForSale.get(buyEquity.getValue());
-                    int tempAmount = Integer.parseInt(transAmount.getText());
+                    CashAccount tempBuyAccount = cashAccounts.get(buyCashAccount.getValue());
+                    Asset tempBuyEquity = availableAssets.get(buyEquity.getValue());
+                    int tempAmount = Integer.parseInt(buyEquityAmount.getText());
 
-                    if(tempBuyAccount.getBalance() >= tempBuyEquity.getSharePrice() * tempAmount & tempBuyEquity.getSharesHeld() > 0) {
+                    if(tempBuyAccount.getBalance() >= tempBuyEquity.getSharePrice() * tempAmount) {
 
                         BuyEquity equitySale = new BuyEquity(tempAmount, tempBuyAccount, tempBuyEquity, log,  innerMyPortfolio);
                         equitySale.execute();
@@ -592,7 +591,7 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 buyEquityNameLabel.setText("      Name: " + buyEquity.getValue().toString());
                 buyEquityValueLabel.setText("      Value: $" + availableAssets.get(buyEquity.getValue().toString()).getSharePrice());
-                buyEquityOwnedLabel.setText("      Amount Owned: " );
+                buyEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(innerMyPortfolio.getSharesHeld().get(buyEquity.getValue())));
             }
         });
 

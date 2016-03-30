@@ -9,6 +9,22 @@ import javax.sound.sampled.Port;
 import java.io.*;
 import java.util.*;
 
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+import org.w3c.dom.Element;
+import java.util.ArrayList;
+import java.util.List;
+import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.File;
+
+
 /**
  * Created by minhduong on 3/4/16.
  */
@@ -117,6 +133,7 @@ public class  data implements subject {
             i.printStackTrace();
         }
     }
+
     public Logger getLog (){
         Logger log = new Logger();
 
@@ -185,21 +202,22 @@ public class  data implements subject {
     public List<User> listOfUser (){
         List<User> listOfAccount = new ArrayList<User>();
         //access the text file employee.text to get the list of User account
-        try {
-            FileInputStream fileOut = new FileInputStream("employee.txt");
-            if(fileOut.available() > 0) {
-                ObjectInputStream is = new ObjectInputStream(fileOut);
-                listOfAccount = (ArrayList<User>)is.readObject();
-                is.close();
-            }
-        } catch (FileNotFoundException i){
-            i.printStackTrace();
-        }catch(IOException i)
-        {
-            i.printStackTrace();
-        } catch (ClassNotFoundException i){
-            i.printStackTrace();
-        }
+//        try {
+//            FileInputStream fileOut = new FileInputStream("employee.txt");
+//            if(fileOut.available() > 0) {
+//                ObjectInputStream is = new ObjectInputStream(fileOut);
+//                listOfAccount = (ArrayList<User>)is.readObject();
+//                is.close();
+//            }
+//        } catch (FileNotFoundException i){
+//            i.printStackTrace();
+//        }catch(IOException i)
+//        {
+//            i.printStackTrace();
+//        } catch (ClassNotFoundException i){
+//            i.printStackTrace();
+//        }
+        listOfAccount = (ArrayList<User>)this.listOfFile("employee.txt");
         return listOfAccount;
     }
 
@@ -209,11 +227,35 @@ public class  data implements subject {
     public List<Portfolio> listOfPortfolio (){
         List<Portfolio> listOfPortfolio = new ArrayList<Portfolio>();
         //access the text file portfolio.text to get the lsit of Portfolio account
+//        try {
+//            FileInputStream fileOut = new FileInputStream("portfolio.txt");
+//            if(fileOut.available() > 0) {
+//                ObjectInputStream is = new ObjectInputStream(fileOut);
+//                listOfPortfolio = (ArrayList<Portfolio>)is.readObject();
+//                is.close();
+//            }
+//        } catch (FileNotFoundException i){
+//            i.printStackTrace();
+//        }catch(IOException i)
+//        {
+//            i.printStackTrace();
+//        } catch (ClassNotFoundException i){
+//            i.printStackTrace();
+//        }
+        listOfPortfolio = (ArrayList<Portfolio>)this.listOfFile("portfolio.txt");
+        return listOfPortfolio;
+    }
+
+    /*
+    * return list of object after open the file
+    * */
+    private Object listOfFile(String filename){
+        Object list = null;
         try {
-            FileInputStream fileOut = new FileInputStream("portfolio.txt");
+            FileInputStream fileOut = new FileInputStream(filename);
             if(fileOut.available() > 0) {
                 ObjectInputStream is = new ObjectInputStream(fileOut);
-                listOfPortfolio = (ArrayList<Portfolio>)is.readObject();
+                list = is.readObject();
                 is.close();
             }
         } catch (FileNotFoundException i){
@@ -224,7 +266,7 @@ public class  data implements subject {
         } catch (ClassNotFoundException i){
             i.printStackTrace();
         }
-        return listOfPortfolio;
+        return list;
     }
 
     /*
@@ -257,7 +299,7 @@ public class  data implements subject {
                 int size = equity.length;
                 for (int k = 3; k < size; k++){
                     //if no index or sector has been read
-                    //create a new key for that index or sector to store the ticket symbol
+                    //create a new key for that index or sector to store the list ticket symbol
                     if (!indexMap.containsKey(equity[k])){
                         ticketList.add(equity[0]);
                         indexMap.put(equity[k],ticketList);
@@ -266,6 +308,7 @@ public class  data implements subject {
                         ticketList = indexMap.get(equity[k]);
                         ticketList.add(equity[0]);
                         indexMap.put(equity[k],ticketList);
+
                     }
                 }
             }
@@ -274,13 +317,18 @@ public class  data implements subject {
         }
         //Add both hashmap into an array
         List<Map> dataMap = new ArrayList<Map>();
+        //Index 0 represent the index map, Index 1 represent the equity Map
         dataMap.add(indexMap);
         dataMap.add(equityMap);
         // serialize the array to store in the equityfile.txt
+        this.updateMap(dataMap);
+    }
+
+    private void updateMap(List<Map> map){
         try {
             FileOutputStream fileOut = new FileOutputStream("equityfile.txt");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(dataMap);
+            out.writeObject(map);
             out.close();
             fileOut.close();
         } catch (FileNotFoundException i) {
@@ -288,9 +336,7 @@ public class  data implements subject {
         } catch (IOException i) {
             i.printStackTrace();
         }
-        System.out.println("Sucessful");
     }
-
     /*
     * return the hashmap contain the index or sector
     * the key will be the index or sector, the value will be the list of ticket symbol
@@ -313,21 +359,61 @@ public class  data implements subject {
     */
     private List<Map> getMap(){
         List<Map> map = new ArrayList<Map>();
-        try {
-            FileInputStream fileOut = new FileInputStream("equityfile.txt");
-            if(fileOut.available() > 0) {
-                ObjectInputStream is = new ObjectInputStream(fileOut);
-                map = (ArrayList<Map>)is.readObject();
-                is.close();
-            }
-        } catch (FileNotFoundException i){
-            i.printStackTrace();
-        }catch(IOException i)
-        {
-            i.printStackTrace();
-        } catch (ClassNotFoundException i){
-            i.printStackTrace();
-        }
+        map = (ArrayList<Map>)this.listOfFile("equityfile.txt");
         return map;
     }
+
+    /*
+    * Update the share price from the webservice
+    * */
+    public void updateSharePrice(ArrayList<String> equitySymbol) {
+        String compile = "";
+        String firstElement = equitySymbol.get(0);
+        compile = compile + "%22"+firstElement+"%22";
+        for (int i = 1; i<equitySymbol.size(); i++){
+
+            compile = compile +"%2C%22"+equitySymbol.get(i)+"%22";
+        }
+        String url = "https://query.yahooapis.com/v1/public/yql?q=select%20symbol%2CLastTradePriceOnly%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("+compile+")&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+
+        try {
+
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance().newInstance();
+            DocumentBuilder buidler = factory.newDocumentBuilder();
+            Document doc = buidler.parse(url);
+
+            NodeList list = doc.getElementsByTagName("quote");
+            //System.out.println(list.getLength());
+            Map<String,Equity> mapNeedUpdate = this.getEquityMap();
+
+            for (int i = 0; i< list.getLength(); i++){
+                Element item = (Element)list.item(i);
+                //check if the hashmap contain the ticket symbol
+                String ticketSymbol =  item.getAttribute("symbol");
+                if (mapNeedUpdate.containsKey(ticketSymbol)) {
+                    //go through each child of the ticket symbol
+                    NodeList childNodes = item.getChildNodes();
+                    if (childNodes.item(0).getNodeName().equals("LastTradePriceOnly")) {
+                        //get the Equity object from the map
+                        Equity temporaryEquity = mapNeedUpdate.get(ticketSymbol);
+                        temporaryEquity.setSharePrice((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
+                        mapNeedUpdate.put(ticketSymbol,temporaryEquity);
+                        //System.out.println(childNodes.item(0).getTextContent().trim());
+                    }
+                    //System.out.println(item.getFirstChild().getNodeValue());
+                }
+            }
+            List<Map> listOfHashTable = this.getMap();
+            listOfHashTable.set(1,mapNeedUpdate);
+            this.updateMap(listOfHashTable);
+        } catch (ParserConfigurationException e){
+            e.printStackTrace();
+        } catch (SAXException e){
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
+

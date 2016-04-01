@@ -372,9 +372,7 @@ public class  data implements subject {
                         Equity temporaryEquity = mapNeedUpdate.get(ticketSymbol);
                         temporaryEquity.setSharePrice((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
                         mapNeedUpdate.put(ticketSymbol,temporaryEquity);
-                        //System.out.println(childNodes.item(0).getTextContent().trim());
                     }
-                    //System.out.println(item.getFirstChild().getNodeValue());
                 }
             }
             List<Map> listOfHashTable = this.getMap();

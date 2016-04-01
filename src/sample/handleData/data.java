@@ -1,4 +1,4 @@
-package sample;
+package sample.handleData;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -21,6 +21,8 @@ import org.w3c.dom.Element;
 import java.util.ArrayList;
 import java.util.List;
 import org.xml.sax.SAXException;
+import sample.*;
+
 import java.io.IOException;
 import java.io.File;
 
@@ -59,7 +61,7 @@ public class  data implements subject {
   * */
     public void savePortfolioAccount(String username){
         Map<String,List<String>> sectors = this.getIndexMap();
-        Map<String,Equity> equities = this.getEquityMap();
+        Map<String, Equity> equities = this.getEquityMap();
         HashMap<String, Integer> shares = new HashMap<String, Integer>();
         for (String s : sectors.keySet()){
             shares.put(s, 0);
@@ -202,21 +204,6 @@ public class  data implements subject {
     public List<User> listOfUser (){
         List<User> listOfAccount = new ArrayList<User>();
         //access the text file employee.text to get the list of User account
-//        try {
-//            FileInputStream fileOut = new FileInputStream("employee.txt");
-//            if(fileOut.available() > 0) {
-//                ObjectInputStream is = new ObjectInputStream(fileOut);
-//                listOfAccount = (ArrayList<User>)is.readObject();
-//                is.close();
-//            }
-//        } catch (FileNotFoundException i){
-//            i.printStackTrace();
-//        }catch(IOException i)
-//        {
-//            i.printStackTrace();
-//        } catch (ClassNotFoundException i){
-//            i.printStackTrace();
-//        }
         listOfAccount = (ArrayList<User>)this.listOfFile("employee.txt");
         return listOfAccount;
     }
@@ -227,21 +214,6 @@ public class  data implements subject {
     public List<Portfolio> listOfPortfolio (){
         List<Portfolio> listOfPortfolio = new ArrayList<Portfolio>();
         //access the text file portfolio.text to get the lsit of Portfolio account
-//        try {
-//            FileInputStream fileOut = new FileInputStream("portfolio.txt");
-//            if(fileOut.available() > 0) {
-//                ObjectInputStream is = new ObjectInputStream(fileOut);
-//                listOfPortfolio = (ArrayList<Portfolio>)is.readObject();
-//                is.close();
-//            }
-//        } catch (FileNotFoundException i){
-//            i.printStackTrace();
-//        }catch(IOException i)
-//        {
-//            i.printStackTrace();
-//        } catch (ClassNotFoundException i){
-//            i.printStackTrace();
-//        }
         listOfPortfolio = (ArrayList<Portfolio>)this.listOfFile("portfolio.txt");
         return listOfPortfolio;
     }
@@ -366,7 +338,9 @@ public class  data implements subject {
     /*
     * Update the share price from the webservice
     * */
-    public void updateSharePrice(ArrayList<String> equitySymbol) {
+    public void updateSharePrice() {
+        data handler = new data();
+        ArrayList<String> equitySymbol = (ArrayList<String>) handler.getEquityMap().keySet();
         String compile = "";
         String firstElement = equitySymbol.get(0);
         compile = compile + "%22"+firstElement+"%22";

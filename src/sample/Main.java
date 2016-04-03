@@ -338,8 +338,8 @@ public class Main extends Application {
                 tempEquities.add(equityMap.get(equityName));
             }
 
-            Asset tempIndexSector = new IndexSector(indexName, tempEquities);
-            availableAssets.put(tempIndexSector.getName(), tempIndexSector);
+            Asset tempMarketAverage = new MarketAverage(indexName, tempEquities);
+            availableAssets.put(tempMarketAverage.getName(), tempMarketAverage);
 
         }
 

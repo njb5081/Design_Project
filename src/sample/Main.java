@@ -1156,7 +1156,6 @@ public class Main extends Application {
             }
         }
         userData.parseEquityFile();
-        userData.updateSharePrice();
         launch(args);
     }
 }

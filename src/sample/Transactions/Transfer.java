@@ -1,13 +1,18 @@
-package sample;
+package sample.Transactions;
+import sample.Holdings.CashAccount;
+import sample.Logger.Logger;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import java.io.Serializable;
 
 /*
 * This class will create the Transfer object
 * It also create function to deal with transaction between multiple accounts
 * */
-public class Transfer {
+public class Transfer implements Serializable, Transaction {
 
     private CashAccount toAccount;
     private CashAccount fromAccount;
@@ -50,6 +55,12 @@ public class Transfer {
     public void undo(){
         toAccount.subtractFunds(amount);
         fromAccount.addFunds(amount);
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+
+        log.addEntry("This transaction has been reverted: Transfer $" + Double.toString(amount) +
+                " from " + fromAccount.toString() + " to " + toAccount.toString(), user);
 
     }
 

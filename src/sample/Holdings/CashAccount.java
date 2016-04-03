@@ -1,4 +1,4 @@
-package sample;
+package sample.Holdings;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

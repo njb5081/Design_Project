@@ -340,16 +340,16 @@ public class  data implements subject {
     * */
     public void updateSharePrice() {
         data handler = new data();
-        ArrayList<String> equitySymbol = (ArrayList<String>) handler.getEquityMap().keySet();
+        List<String> equitySymbol = new ArrayList<String>();
+        equitySymbol.addAll(handler.getEquityMap().keySet());
         String compile = "";
         String firstElement = equitySymbol.get(0);
         compile = compile + "%22"+firstElement+"%22";
         for (int i = 1; i<equitySymbol.size(); i++){
 
-            compile = compile +"%2C%22"+equitySymbol.get(i)+"%22";
+            compile = compile +"%2C"+"%22"+equitySymbol.get(i)+"%22";
         }
-        String url = "https://query.yahooapis.com/v1/public/yql?q=select%20symbol%2CLastTradePriceOnly%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("+compile+")&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
-
+        String url = "https://query.yahooapis.com/v1/public/yql?q=select%20symbol%2CLastTradePriceOnly%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22YHOO%22%2C%22AAPL%22%2C%22GOOG%22%2C%22MSFT%22)&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
         try {
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance().newInstance();
@@ -372,6 +372,7 @@ public class  data implements subject {
                         Equity temporaryEquity = mapNeedUpdate.get(ticketSymbol);
                         temporaryEquity.setSharePrice((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
                         mapNeedUpdate.put(ticketSymbol,temporaryEquity);
+                        System.out.println((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
                     }
                 }
             }

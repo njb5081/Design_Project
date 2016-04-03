@@ -181,12 +181,13 @@ public class  data implements subject {
     * */
     public boolean usernameExist(String username){
         List<User> list = this.listOfUser();
-        for (User u: list){
-            if (u.username().equals(username)){
-                return true;
+        if (list != null) {
+            for (User u : list) {
+                if (u.username().equals(username)) {
+                    return true;
+                }
             }
         }
-
         return false;
     }
 
@@ -195,7 +196,12 @@ public class  data implements subject {
     * check if the user has made an account before
     * */
     public boolean isUserExist(User checkUser){
-        return this.listOfUser().contains(checkUser);
+        if (this.listOfUser() == null || !this.listOfUser().contains(checkUser)){
+            return false;
+        } else {
+            return true;
+        }
+        //return this.listOfUser().contains(checkUser);
     }
 
     /*c
@@ -204,7 +210,10 @@ public class  data implements subject {
     public List<User> listOfUser (){
         List<User> listOfAccount = new ArrayList<User>();
         //access the text file employee.text to get the list of User account
-        listOfAccount = (ArrayList<User>)this.listOfFile("employee.txt");
+        Object list = this.listOfFile("employee.txt");
+        if(list != null ) {
+            listOfAccount = (ArrayList<User>) list;
+        }
         return listOfAccount;
     }
 
@@ -214,7 +223,10 @@ public class  data implements subject {
     public List<Portfolio> listOfPortfolio (){
         List<Portfolio> listOfPortfolio = new ArrayList<Portfolio>();
         //access the text file portfolio.text to get the lsit of Portfolio account
-        listOfPortfolio = (ArrayList<Portfolio>)this.listOfFile("portfolio.txt");
+        Object list = this.listOfFile("portfolio.txt");
+        if(list != null) {
+            listOfPortfolio = (ArrayList<Portfolio>) list;
+        }
         return listOfPortfolio;
     }
 

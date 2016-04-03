@@ -1,4 +1,4 @@
-package sample;
+package sample.Holdings;
 
 /**
  * Created by benjamin on 3/13/16.

@@ -1,11 +1,11 @@
-package sample;
+package sample.Holdings;
+import sample.EquityMemento;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.DoubleSummaryStatistics;
-import java.util.zip.DeflaterOutputStream;
 
-public class Equity implements Serializable, Asset{
+public class Equity implements Serializable, Asset {
 
     private String tickerSymbol;
     private String name;
@@ -69,7 +69,7 @@ public class Equity implements Serializable, Asset{
         return this.equityList;
     }
 
-    public EquityMemento saveToMemento(){ 
+    public EquityMemento saveToMemento(){
         System.out.println("Orginator saving to memento");
         return new EquityMemento(this.equityList);
     }

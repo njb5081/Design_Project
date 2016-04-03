@@ -1,12 +1,19 @@
-package sample;
+package sample.Transactions;
+import sample.Holdings.Asset;
+import sample.Holdings.CashAccount;
+import sample.Logger.Logger;
+import sample.Portfolio;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import java.io.Serializable;
+
 /*
 * this class will be resposible for selling the equity
 * */
-public class SellEquity {
+public class SellEquity implements Serializable, Transaction{
 
     private CashAccount funds;
     private Asset asset;
@@ -52,7 +59,18 @@ public class SellEquity {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
 
-        log.addEntry("", port.getUserID());
+        funds.subtractFunds(asset.getSharePrice() * ((double)amount));
+
+        port.addEquity(asset, amount);
+
+        log.addEntry("This transaction has been reverted: Sold " +
+                        Integer.toString(amount) +
+                        " shares of " + asset.getName() +
+                        " at " +
+                        Double.toString(asset.getSharePrice()) +
+                        " deposited into " + funds.toString() +
+                        " cash account",
+                port.getUserID());
 
     }
 

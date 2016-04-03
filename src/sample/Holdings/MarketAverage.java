@@ -1,4 +1,7 @@
-package sample;
+package sample.Holdings;
+
+import sample.Holdings.Asset;
+import sample.Holdings.Equity;
 
 import java.io.Serializable;
 import java.util.ArrayList;

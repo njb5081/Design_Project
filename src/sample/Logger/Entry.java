@@ -1,4 +1,4 @@
-package sample;
+package sample.Logger;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

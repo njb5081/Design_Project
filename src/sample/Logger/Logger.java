@@ -1,4 +1,5 @@
-package sample;
+package sample.Logger;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 

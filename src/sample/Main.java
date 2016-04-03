@@ -19,6 +19,15 @@ import javafx.scene.text.Text;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
+import sample.Holdings.Asset;
+import sample.Holdings.CashAccount;
+import sample.Holdings.Equity;
+import sample.Holdings.MarketAverage;
+import sample.Log.Entry;
+import sample.Log.Logger;
+import sample.Transactions.BuyEquity;
+import sample.Transactions.SellEquity;
+import sample.Transactions.Transfer;
 import sample.handleData.data;
 
 import java.util.ArrayList;
@@ -237,7 +246,7 @@ public class Main extends Application {
      */
     public void loggerScene(final Stage mainStage){
         window = mainStage;
-        window.setTitle("Logger");
+        window.setTitle("Log");
 
         final GridPane logGrid = new GridPane();
         logGrid.setAlignment(Pos.TOP_LEFT);
@@ -342,7 +351,6 @@ public class Main extends Application {
             availableAssets.put(tempMarketAverage.getName(), tempMarketAverage);
 
         }
-
 
         final GridPane transactionGrid = new GridPane();
         transactionGrid.setAlignment(Pos.TOP_LEFT);
@@ -838,7 +846,6 @@ public class Main extends Application {
 //            }
 //        });
 
-
         bullSimulation.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -952,7 +959,7 @@ public class Main extends Application {
         i++;
 
         //LOGGER NAVIGATION START
-        final Button logButton = new Button("Go to Logger");
+        final Button logButton = new Button("Go to Log");
         logButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {

@@ -21,6 +21,7 @@ public class Portfolio implements Serializable {
     private ArrayList<CashAccount> cashAccounts;
     private CashAccount largest;
     private Map<String, Integer> sharesHeld;
+    private ArrayList<WatchedAsset> watchlist;
 
     /**
      * Constructor creates new Portfolio
@@ -43,6 +44,7 @@ public class Portfolio implements Serializable {
             this.totalHoldings += (c.getBalance());
             this.totalCash += (c.getBalance());
         }
+        this.watchlist = new ArrayList<WatchedAsset>();
     }
 
     /**
@@ -180,6 +182,41 @@ public class Portfolio implements Serializable {
 //    public void setEquities(ArrayList<Equity> updatedEquities){
 //       this.equities = updatedEquities;
 //    }
+
+    public void addToWatchlist(String name, double lowTrigger, double highTrigger) {
+        WatchedAsset newAsset = new WatchedAsset(name, lowTrigger, highTrigger);
+        watchlist.add(newAsset);
+    }
+
+    public void deleteFromWatchlist(String name){
+        for (WatchedAsset w : this.watchlist) {
+            if (w.getName().equals(name)){
+                this.watchlist.remove(w);
+            }
+        }
+    }
+
+    public void changeLowTrigger(String name, double newLow){
+        for (WatchedAsset w : this.watchlist) {
+            if (w.getName().equals(name)) {
+                w.changeLow(newLow);
+                return;
+            }
+        }
+    }
+
+    public void changeHighTrigger(String name, double newHigh) {
+        for (WatchedAsset w : this.watchlist) {
+            if (w.getName().equals(name)) {
+                w.changeHigh(newHigh);
+                return;
+            }
+        }
+    }
+
+    public ArrayList<WatchedAsset> getWatchlist() {
+        return this.watchlist;
+    }
 
     /**
      * Create a string representation of the Portfolio

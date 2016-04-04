@@ -4,8 +4,11 @@
  */
 package sample;
 
+import sample.Holdings.Asset;
+import sample.Holdings.CashAccount;
+import sample.Transactions.Transaction;
+
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +25,7 @@ public class Portfolio implements Serializable {
     private CashAccount largest;
     private Map<String, Integer> sharesHeld;
     private ArrayList<WatchedAsset> watchlist;
+    private ArrayList<Transaction> recentTransactions;
 
     /**
      * Constructor creates new Portfolio
@@ -71,7 +75,15 @@ public class Portfolio implements Serializable {
         return sharesHeld;
     }
 
+    public CashAccount getCashAccountByName(String name){
 
+        for(CashAccount ca : getCashAccounts()){
+            if(ca.toString().equals(name)){
+                return ca;
+            }
+        }
+        return null;
+    }
 
     public void addEquity(Asset asset, int amount) {
         if(sharesHeld.keySet().contains(asset.getName())){
@@ -82,6 +94,16 @@ public class Portfolio implements Serializable {
     }
     public void subtractEquity(Asset asset, int amount) {
         sharesHeld.put(asset.getName(), sharesHeld.get(asset.getName()) - amount);
+    }
+
+    public void addRecentTransaction(Transaction newTransaction){
+
+        recentTransactions.add(newTransaction);
+
+        if(recentTransactions.size() > 5){
+            recentTransactions.remove(0);
+        }
+
     }
 
     /**
@@ -118,6 +140,20 @@ public class Portfolio implements Serializable {
         cashAccounts.add(newAcc);
         //add info to txt file
 //        calculateTotalHoldings(); //or just update the holdings
+    }
+
+    /**
+     * Updates a cash account in the portfolio
+     * @param ca cash account which will be updated
+     */
+    public void updateCashAccount(CashAccount ca){
+
+        for (CashAccount portCashACcount : cashAccounts){
+            if(ca.toString().equals(portCashACcount.toString())){
+                portCashACcount = ca;
+                return;
+            }
+        }
     }
 
     /**

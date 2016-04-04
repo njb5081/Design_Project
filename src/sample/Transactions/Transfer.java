@@ -1,6 +1,6 @@
 package sample.Transactions;
 import sample.Holdings.CashAccount;
-import sample.Logger.Logger;
+import sample.Log.Logger;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,6 +19,7 @@ public class Transfer implements Serializable, Transaction {
     private double amount;
     private Logger log;
     private String user;
+    private String status = "undone";
 
     /*
     * Initial the Transfer object to store the information
@@ -59,8 +60,20 @@ public class Transfer implements Serializable, Transaction {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
 
-        log.addEntry("This transaction has been reverted: Transfer $" + Double.toString(amount) +
-                " from " + fromAccount.toString() + " to " + toAccount.toString(), user);
+        log.addEntry("This transaction has been reverted" +
+                    status +
+                    ": Transfer $" + Double.toString(amount) +
+                    " from " + fromAccount.toString() + " to " + toAccount.toString(), user);
+
+        if(status.equals("undone")){
+
+            status = "redone";
+
+        }else if(status.equals("redone")){
+
+            status = "undone";
+
+        }
 
     }
 

@@ -257,7 +257,7 @@ public class Main extends Application {
         final Label logDescription = new Label("Choose Entry to View");
         final Label entryDescription = new Label("     Entry Description:");
 
-        //PORTFOLIO STUFF START
+        //PORTFOLIO NAVIGATION START
         final Button portButton = new Button("Go to Portfolio");
 
         portButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -266,7 +266,7 @@ public class Main extends Application {
                 portfolioScene(mainStage, user);
             }
         });
-        //PORTFOLIO STUFF END
+        //PORTFOLIO NAVIGATION END
 
         scene5 = new Scene(logGrid, 600, 250);
 
@@ -329,8 +329,6 @@ public class Main extends Application {
             }
         }
 
-        final Portfolio innerMyPortfolio = myPortfolio;
-
         final HashMap<String, Asset> availableAssets = new HashMap<String, Asset>();
 
         for(String equityName : equityMap.keySet()){
@@ -367,25 +365,17 @@ public class Main extends Application {
         scene4 = new Scene(transactionGrid, 900, 600);
 
         final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
-        final HashMap<String, Asset> equitiesOwned =  new HashMap<String, Asset>();
 
         for (int i = 0; i < myPortfolio.getCashAccounts().size(); i++){
             cashAccounts.put(myPortfolio.getCashAccounts().get(i).toString(),
                     myPortfolio.getCashAccounts().get(i));
         }
 
-        for (String name : myPortfolio.getSharesHeld().keySet()){
-            equitiesOwned.put(name, availableAssets.get(name));
-        }
-
-
         final ObservableList<String> optionsCashAccounts = FXCollections.observableArrayList();
-        final ObservableList<String> optionsEquitiesOwned = FXCollections.observableArrayList();
-        final ObservableList<String> optionsEquitiesForSale = FXCollections.observableArrayList();
+        final ObservableList<String> optionsAssetsAvailable = FXCollections.observableArrayList();
 
         optionsCashAccounts.addAll(cashAccounts.keySet());
-        optionsEquitiesOwned.addAll(equitiesOwned.keySet());
-        optionsEquitiesForSale.addAll(availableAssets.keySet());
+        optionsAssetsAvailable.addAll(availableAssets.keySet());
 
         final ComboBox fromAccount = new ComboBox(optionsCashAccounts);
         final ComboBox toAccount = new ComboBox(optionsCashAccounts);
@@ -405,12 +395,12 @@ public class Main extends Application {
 
 
         final ComboBox sellCashAccount = new ComboBox(optionsCashAccounts);
-        final ComboBox sellEquity = new ComboBox(optionsEquitiesOwned);
+        final ComboBox sellEquity = new ComboBox(optionsAssetsAvailable);
 
         final Label sellTransactionLabel = new Label("Choose Equity to Sell");
         final Label sellEquityNameLabel = new Label("      Name: None");
         final Label sellEquityValueLabel = new Label("      Value: None");
-        final Label sellEquityOwnedLabel = new Label("      Amount Owned: None");
+        final Label sellEquityOwnedLabel = new Label("      Amount Owned: 0");
         final Label sellCashAccountNameLabel = new Label("      Name: None");
         final Label sellCashAccountBalanceLabel = new Label("      Balance: None");
         final Label sellCashAccountLabel = new Label("Add funds to:");
@@ -422,12 +412,12 @@ public class Main extends Application {
         final NumberTextField sellEquityAmount = new NumberTextField();
 
         final ComboBox buyCashAccount = new ComboBox(optionsCashAccounts);
-        final ComboBox buyEquity = new ComboBox(optionsEquitiesForSale);
+        final ComboBox buyEquity = new ComboBox(optionsAssetsAvailable);
 
         final Label buyTransactionLabel = new Label("Choose Equity to Buy");
         final Label buyEquityNameLabel = new Label("      Name: None");
         final Label buyEquityValueLabel = new Label("      Value: None");
-        final Label buyEquityOwnedLabel = new Label("      Amount Owned: None");
+        final Label buyEquityOwnedLabel = new Label("      Amount Owned: 0");
         final Label buyCashAccountNameLabel = new Label("      Name: None");
         final Label buyCashAccountBalanceLabel = new Label("      Balance: None");
         final Label buyCashAccountLabel = new Label("Deduct funds from:");
@@ -449,26 +439,37 @@ public class Main extends Application {
 
             @Override
             public void handle(ActionEvent event) {
+
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio myPortfolioInner = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(user)){
+                        myPortfolioInner = p;
+                    }
+                }
+
                 if (sellCashAccount.getValue() != null &
                         sellEquity.getValue() != null &
                         !sellEquityAmount.getText().equals("")
                         ) {
 
-                    CashAccount tempSellAccount = cashAccounts.get(sellCashAccount.getValue()) ;
-                    Asset tempSellEquity = availableAssets.get(sellEquity.getValue());
+                    CashAccount tempSellAccount = myPortfolioInner.getCashAccountByName(sellCashAccount.getValue().toString());
+                    Asset tempSellEquity = availableAssets.get(sellEquity.getValue().toString());
                     int tempAmount = Integer.parseInt(sellEquityAmount.getText());
 
-                    if(tempSellAccount.getBalance() >= tempSellEquity.getSharePrice() * tempAmount & innerMyPortfolio.getSharesHeld().get(tempSellEquity.getName()) > 0) {
+                    if(myPortfolioInner.getSharesHeld().get(tempSellEquity.getName()) >= tempAmount) {
 
-                        SellEquity equitySale = new SellEquity(tempAmount, tempSellAccount, tempSellEquity, log, innerMyPortfolio);
+                        SellEquity equitySale = new SellEquity(tempAmount, myPortfolioInner.getCashAccountByName(tempSellAccount.toString()), tempSellEquity, log, myPortfolioInner);
                         equitySale.execute();
 
                         sellTransactionLabel.setText("Sale Successful");
 
                         sellCashAccountNameLabel.setText("      Name: " + sellCashAccount.getValue().toString());
-                        sellCashAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(sellCashAccount.getValue()).getBalance()));
-                        sellAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(sellCashAccount.getValue()).getOpenDate());
+                        sellCashAccountBalanceLabel.setText("      Balance: $" + String.format("%.2f", tempSellAccount.getBalance()));
+                        sellAccountOpenDateLabel.setText("      Open Date: " + tempSellAccount.getOpenDate());
+                        sellEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(tempSellEquity.getName())));
                         userData.updateLogger(log);
+                        userData.updatePortfolioList(portList);
 
                     } else{
                         sellTransactionLabel.setText("Invalid Input");
@@ -484,34 +485,42 @@ public class Main extends Application {
 
             @Override
             public void handle(ActionEvent event) {
+
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio myPortfolioInner = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(user)){
+                        myPortfolioInner = p;
+                    }
+                }
+
                 //Check to make sure a cash account and equity is selected and an amount is specified
                 if (buyCashAccount.getValue() != null &
                         buyEquity.getValue() != null &
                         !buyEquityAmount.getText().equals("")
                         ) {
 
-                    CashAccount tempBuyAccount = cashAccounts.get(buyCashAccount.getValue());
-                    Asset tempBuyEquity = availableAssets.get(buyEquity.getValue());
+                    CashAccount tempBuyAccount = myPortfolioInner.getCashAccountByName( buyCashAccount.getValue().toString());
+                    Asset tempBuyEquity = availableAssets.get(buyEquity.getValue().toString());
                     int tempAmount = Integer.parseInt(buyEquityAmount.getText());
 
                     if(tempBuyAccount.getBalance() >= tempBuyEquity.getSharePrice() * tempAmount) {
 
-                        BuyEquity equitySale = new BuyEquity(tempAmount, tempBuyAccount, tempBuyEquity, log,  innerMyPortfolio);
+                        BuyEquity equitySale = new BuyEquity(tempAmount, myPortfolioInner.getCashAccountByName(tempBuyAccount.toString()), tempBuyEquity, log,  myPortfolioInner);
                         equitySale.execute();
+
+                        System.out.println(Integer.toString(myPortfolioInner.getSharesHeld().get(tempBuyEquity.getName())));
+
+                        cashAccounts.put(buyCashAccount.getValue().toString(), tempBuyAccount);
 
                         buyTransactionLabel.setText("Purchase Successful");
 
                         buyCashAccountNameLabel.setText("      Name: " + buyCashAccount.getValue().toString());
-                        buyCashAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(buyCashAccount.getValue()).getBalance()));
-                        buyAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(buyCashAccount.getValue()).getOpenDate());
+                        buyCashAccountBalanceLabel.setText("      Balance: $" + String.format("%.2f", cashAccounts.get(buyCashAccount.getValue().toString()).getBalance()));
+                        buyAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(buyCashAccount.getValue().toString()).getOpenDate());
+                        buyEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(tempBuyEquity.getName())));
                         userData.updateLogger(log);
-
-                        for (String name : innerMyPortfolio.getSharesHeld().keySet()){
-                            equitiesOwned.put(name, availableAssets.get(name));
-                        }
-
-                        optionsEquitiesForSale.addAll(availableAssets.keySet());
-                        sellEquity.setItems(optionsEquitiesForSale);
+                        userData.updatePortfolioList(portList);
 
                     } else{
                         buyTransactionLabel.setText("Invalid Input");
@@ -526,14 +535,23 @@ public class Main extends Application {
         transFunds.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio myPortfolioInner = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(user)){
+                        myPortfolioInner = p;
+                    }
+                }
+
                 if (fromAccount.getValue() != null &
                         toAccount.getValue() != null &
                         toAccount.getValue() != fromAccount.getValue() &
                         !transAmount.getText().equals("")
                         ) {
 
-                    CashAccount tempToAccount = cashAccounts.get(toAccount.getValue());
-                    CashAccount tempFromAccount = cashAccounts.get(fromAccount.getValue());
+                    CashAccount tempToAccount = myPortfolioInner.getCashAccountByName((toAccount.getValue().toString()));
+                    CashAccount tempFromAccount = myPortfolioInner.getCashAccountByName((fromAccount.getValue().toString()));
                     int tempAmount = Integer.parseInt(transAmount.getText());
 
                     if(tempFromAccount.getBalance() >= tempAmount) {
@@ -543,10 +561,11 @@ public class Main extends Application {
                         cashTransfer.execute();
 
                         toAccountNameLabel.setText("      Name: " + tempToAccount.toString());
-                        toAccountBalanceLabel.setText("      Balance: $" + Double.toString(tempToAccount.getBalance()));
+                        toAccountBalanceLabel.setText("      Balance: $" + String.format("%.2f", tempToAccount.getBalance()));
                         fromAccountNameLabel.setText("      Name: " + tempFromAccount.toString());
-                        fromAccountBalanceLabel.setText("      Balance: $" + Double.toString(tempFromAccount.getBalance()));
+                        fromAccountBalanceLabel.setText("      Balance: $" + String.format("%.2f", tempFromAccount.getBalance()));
                         userData.updateLogger(log);
+                        userData.updatePortfolioList(portList);
 
                         transFundsLabel.setText("Transfer Successful");
 
@@ -572,8 +591,8 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
                 toAccountNameLabel.setText("      Name: " + toAccount.getValue().toString());
-                toAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(toAccount.getValue()).getBalance()));
-                toAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(toAccount.getValue()).getOpenDate());
+                toAccountBalanceLabel.setText("      Balance: $" + String.format("%.2f", cashAccounts.get(toAccount.getValue().toString()).getBalance()));
+                toAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(toAccount.getValue().toString()).getOpenDate());
             }
         });
 
@@ -581,8 +600,8 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
                 fromAccountNameLabel.setText("      Name: " + fromAccount.getValue().toString());
-                fromAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(fromAccount.getValue()).getBalance()));
-                fromAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(fromAccount.getValue()).getOpenDate());
+                fromAccountBalanceLabel.setText("      Balance: $" + String.format("%.2f", cashAccounts.get(fromAccount.getValue().toString()).getBalance()));
+                fromAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(fromAccount.getValue().toString()).getOpenDate());
             }
         });
 
@@ -590,8 +609,8 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
                 sellCashAccountNameLabel.setText("      Name: " + sellCashAccount.getValue().toString());
-                sellCashAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(sellCashAccount.getValue()).getBalance()));
-                sellAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(sellCashAccount.getValue()).getOpenDate());
+                sellCashAccountBalanceLabel.setText("      Balance: $" + String.format("%.2f", cashAccounts.get(sellCashAccount.getValue().toString()).getBalance()));
+                sellAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(sellCashAccount.getValue().toString()).getOpenDate());
             }
         });
 
@@ -599,26 +618,53 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent event) {
                 buyCashAccountNameLabel.setText("      Name: " + buyCashAccount.getValue().toString());
-                buyCashAccountBalanceLabel.setText("      Balance: $" + Double.toString(cashAccounts.get(buyCashAccount.getValue()).getBalance()));
-                buyAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(buyCashAccount.getValue()).getOpenDate());
+                buyCashAccountBalanceLabel.setText("      Balance: $" + String.format("%.2f", cashAccounts.get(buyCashAccount.getValue().toString()).getBalance()));
+                buyAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(buyCashAccount.getValue().toString()).getOpenDate());
             }
         });
 
         buyEquity.setOnAction(new EventHandler<ActionEvent>(){
+
             @Override
             public void handle(ActionEvent event) {
+
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio myPortfolioInner = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(user)){
+                        myPortfolioInner = p;
+                    }
+                }
+
                 buyEquityNameLabel.setText("      Name: " + buyEquity.getValue().toString());
                 buyEquityValueLabel.setText("      Value: $" + availableAssets.get(buyEquity.getValue().toString()).getSharePrice());
-                buyEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(innerMyPortfolio.getSharesHeld().get(buyEquity.getValue())));
+                try {
+                    buyEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(availableAssets.get(buyEquity.getValue()).getName())));
+                } catch(NullPointerException e){
+                    buyEquityOwnedLabel.setText("      Amount Owned: 0");
+                }
             }
         });
 
         sellEquity.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
+
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio myPortfolioInner = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(user)){
+                        myPortfolioInner = p;
+                    }
+                }
+
                 sellEquityNameLabel.setText("      Name: " + sellEquity.getValue().toString());
-                sellEquityValueLabel.setText("      Value: $" + Double.toString(equitiesOwned.get(sellEquity.getValue()).getSharePrice()));
-                sellEquityOwnedLabel.setText("      Amount Owned: " );
+                sellEquityValueLabel.setText("      Value: $" + availableAssets.get(sellEquity.getValue().toString()).getSharePrice());
+                try {
+                    sellEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(availableAssets.get(sellEquity.getValue()).getName())));
+                } catch(NullPointerException e){
+                    sellEquityOwnedLabel.setText("      Amount Owned: 0");
+                }
             }
         });
 

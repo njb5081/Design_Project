@@ -1,7 +1,7 @@
 package sample.Transactions;
 import sample.Holdings.Asset;
 import sample.Holdings.CashAccount;
-import sample.Logger.Logger;
+import sample.Log.Logger;
 import sample.Portfolio;
 
 import java.text.DateFormat;
@@ -20,6 +20,7 @@ public class SellEquity implements Serializable, Transaction{
     private int amount;
     private Logger log;
     private Portfolio port;
+    private String status = "undone";
 
     public SellEquity(int amount, CashAccount funds, Asset asset, Logger log, Portfolio port){
 
@@ -40,7 +41,7 @@ public class SellEquity implements Serializable, Transaction{
         Date date = new Date();
 
         funds.addFunds(asset.getSharePrice() * ((double)amount));
-        //asset.addSharesHeld(-amount);
+        port.updateCashAccount(funds);
 
         port.subtractEquity(asset, amount);
 
@@ -63,7 +64,9 @@ public class SellEquity implements Serializable, Transaction{
 
         port.addEquity(asset, amount);
 
-        log.addEntry("This transaction has been reverted: Sold " +
+        log.addEntry("This transaction has been " +
+                        status +
+                        ": Sold " +
                         Integer.toString(amount) +
                         " shares of " + asset.getName() +
                         " at " +
@@ -71,6 +74,16 @@ public class SellEquity implements Serializable, Transaction{
                         " deposited into " + funds.toString() +
                         " cash account",
                 port.getUserID());
+
+        if(status.equals("undone")){
+
+            status = "redone";
+
+        }else if(status.equals("redone")){
+
+            status = "undone";
+
+        }
 
     }
 

@@ -1,14 +1,16 @@
 package sample.Transactions;
 import sample.Holdings.Asset;
 import sample.Holdings.CashAccount;
-import sample.Logger.Logger;
+import sample.Log.Logger;
 import sample.Portfolio;
+import sample.handleData.data;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class BuyEquity implements Serializable, Transaction {
 
@@ -17,6 +19,7 @@ public class BuyEquity implements Serializable, Transaction {
     private int amount;
     private Logger log;
     private Portfolio port;
+    private String status = "undone";
 
     public BuyEquity(int amount, CashAccount funds, Asset asset, Logger log, Portfolio port){
 
@@ -36,9 +39,8 @@ public class BuyEquity implements Serializable, Transaction {
 
         funds.subtractFunds(asset.getSharePrice() * ((double)amount));
         //asset.addSharesHeld(amount);
-
-
         port.addEquity(asset, amount);
+
 
         //create log entry
         log.addEntry("Bought " +
@@ -65,16 +67,26 @@ public class BuyEquity implements Serializable, Transaction {
         port.subtractEquity(asset, amount);
 
         //create log entry
-        log.addEntry("This transaction has been reverted: Bought " +
+        log.addEntry("This transaction has been " +
+                        status +
+                        ": Sold " +
                         Integer.toString(amount) +
-                        " shares of " +
-                        asset.getName() +
+                        " shares of " + asset.getName() +
                         " at " +
                         Double.toString(asset.getSharePrice()) +
-                        " using " +
-                        funds.toString() +
+                        " deposited into " + funds.toString() +
                         " cash account",
                 port.getUserID());
+
+        if(status.equals("undone")){
+
+            status = "redone";
+
+        }else if(status.equals("redone")){
+
+            status = "undone";
+
+        }
 
     }
 

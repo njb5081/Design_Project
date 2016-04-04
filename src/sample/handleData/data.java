@@ -56,7 +56,7 @@ public class  data implements subject {
     }
 
     /*
-  * pre-condition: the user account is created before the fortfolio account is created
+  * pre-condition: the user account is created before the portfolio account is created
   * Post-condition: save the Portfolio account into the array in the text file
   * */
     public void savePortfolioAccount(String username){

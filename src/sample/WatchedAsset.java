@@ -11,17 +11,22 @@ public class WatchedAsset {
     private double highTrigger;
 
     public WatchedAsset(String name, double low, double high){
+        //if there is no low trigger or no high trigger, the parameter should be -1
         this.name = name;
         this.lowTrigger = low;
         this.highTrigger = high;
-    };
-
-    public void changeLow(double newLow) {
-        this.lowTrigger = newLow;
     }
 
-    public void changeHigh(double newHigh) {
-        this.highTrigger = newHigh;
+    public boolean hasLowTrigger() {
+        return (this.lowTrigger != -1);
+    }
+    public boolean hasHighTrigger() {
+        return (this.highTrigger != -1);
+    }
+
+    public void editTriggers(double low, double high) {
+        this.lowTrigger = low;
+        this.highTrigger = high;
     }
 
     public String getName(){

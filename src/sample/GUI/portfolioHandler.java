@@ -10,7 +10,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import sample.Holdings.CashAccount;
-import sample.Logger.Logger;
+import sample.Log.Logger;
 import sample.Portfolio;
 import sample.handleData.data;
 

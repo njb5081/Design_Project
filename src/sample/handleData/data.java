@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
 import sample.*;
 import sample.Holdings.Equity;
 import sample.Holdings.CashAccount;
-import sample.Logger.*;
+import sample.Log.*;
 import sample.Transactions.*;
 import java.io.IOException;
 import java.io.File;

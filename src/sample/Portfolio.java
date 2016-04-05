@@ -4,6 +4,9 @@
  */
 package sample;
 
+import sample.Holdings.Asset;
+import sample.Holdings.CashAccount;
+
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;

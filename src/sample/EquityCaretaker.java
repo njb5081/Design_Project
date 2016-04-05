@@ -1,5 +1,7 @@
 package sample;
 
+import sample.Holdings.Equity;
+
 import java.util.ArrayList;
 
 /**

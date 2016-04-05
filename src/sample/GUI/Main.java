@@ -1,4 +1,4 @@
-package sample;
+package sample.GUI;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -19,13 +19,23 @@ import javafx.scene.text.Text;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
+import sample.*;
+import sample.Holdings.Asset;
+import sample.Holdings.CashAccount;
+import sample.Holdings.Equity;
+import sample.Holdings.MarketAverage;
+import sample.Logger.Entry;
+import sample.Logger.Logger;
+import sample.Transactions.BuyEquity;
+import sample.Transactions.SellEquity;
+import sample.Transactions.Transfer;
 import sample.handleData.data;
-
+import sample.handleData.handleEquity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
-
+import sample.GUI.accountHandler;
 /*
 * This class will display all the GUI for the system
 * */
@@ -39,11 +49,14 @@ public class Main extends Application {
     /*
     * define multiple scene to display different GUI
     * */
-    Scene scene1, scene2, scene3, scene4, scene5;
+    Scene  scene1,scene2,scene3, scene4, scene5;
     /*
     * Initialize the data class to access different function in order to creeate,save, delete account
     * */
     static data userData = new data();
+    static handleEquity equityHandler = new handleEquity();
+    static accountHandler accountHandle = new accountHandler();
+    static portfolioHandler portfolioHandle = new portfolioHandler();
     TextField portValue;
     String user;
     Portfolio port;
@@ -51,184 +64,186 @@ public class Main extends Application {
     MarketSimulation marketSim;
     private Logger log = userData.getLog();
 
-    Map<String, List<String>> indexMap = userData.getIndexMap();
-    Map<String, Equity> equityMap = userData.getEquityMap();
+    Map<String, List<String>> indexMap = equityHandler.getIndexMap();
+    Map<String, Equity> equityMap = equityHandler.getEquityMap();
 
     //Starts the initial JavaFX GUI
     @Override
     public void start(Stage primaryStage) throws Exception{
-        loginScene(primaryStage);
+        accountHandle.loginScene(primaryStage);
     }
 
     /**
      * Shows the first screen that allows a user to login to a portfolio
      * @param mainStage
      */
-    public void loginScene(Stage mainStage){
-        window = mainStage;
-        window.setTitle("Login page");
-
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        grid.setHgap(15);
-        grid.setVgap(15);
-        grid.setPadding(new Insets(25, 25, 25, 25));
-
-        scene1 = new Scene(grid, 300, 300);
 
 
-
-        Text sceneTitle = new Text("welcome");
-        sceneTitle.setFont(Font.font("Arial"));
-        grid.add(sceneTitle, 0 , 0 ,2 ,1);
-
-        //user input
-        final Label username = new Label("username");
-        grid.add(username, 0, 1);
-        final TextField userField = new TextField();
-        grid.add(userField, 1, 1);
-        final Label password = new Label("password");
-        grid.add(password, 0, 2);
-        final PasswordField pwBox = new PasswordField();
-        grid.add(pwBox, 1, 2);
-
-        final Text message = new Text();
-        grid.add(message, 1, 7);
-
-        //add button login
-        Button login = new Button("Sign In");
-        HBox box = new HBox(10);
-        box.setAlignment(Pos.BOTTOM_RIGHT);
-
-        //action for button
-        login.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                User loginUser = new User(userField.getText(),pwBox.getText());
-                user = userField.getText();
-                //if the user account has been created, then the user can login
-                if(userData.isUserExist(loginUser)){
-                    message.setFill(Color.FIREBRICK);
-                    message.setText("successful sign in");
-                    portfolioScene(window, loginUser.username());
-                } else {
-
-                    message.setText("Please enter correct information");
-
-                }
-            }
-        });
-        box.getChildren().add(login);
-        grid.add(box, 1 , 4);
-
-        //add register account
-        Label noAccount = new Label("need new Account?");
-        noAccount.autosize();
-        grid.add(noAccount, 0, 5);
-        Button register = new Button("Register");
-
-        //action
-        register.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                registerScene(window);
-            }
-        });
-
-        HBox box2 = new HBox(10);
-        box2.setAlignment(Pos.BOTTOM_RIGHT);
-        box2.getChildren().add(register);
-        grid.add(box2, 1, 5);
-        window.setScene(scene1);
-        window.show();
-    }
-
-    /**
-     * Shows the page that allows for registering new users/portfolios
-     * @param mainStage
-     */
-    public void registerScene(Stage mainStage){
-        //scene 2 register
-        window = mainStage;
-        window.setTitle("Register page");
-        //window.setScene(scene2);
-        GridPane grid2 = new GridPane();
-        grid2.setAlignment(Pos.CENTER);
-        grid2.setHgap(15);
-        grid2.setVgap(15);
-        grid2.setPadding(new Insets(25, 25, 25, 25));
-
-        scene2 = new Scene(grid2, 300, 300);
-
-        Text registerSceneTitle = new Text("");
-        registerSceneTitle.setFont(Font.font("Arial"));
-        grid2.add(registerSceneTitle, 0 , 0 ,2 ,1);
-
-        //user input
-        Label username = new Label("username");
-        grid2.add(username, 0, 1);
-        final TextField userField = new TextField();
-        grid2.add(userField, 1, 1);
-        final Label password = new Label("password");
-        grid2.add(password, 0, 2);
-        final PasswordField pwBox = new PasswordField();
-        grid2.add(pwBox, 1, 2);
-        Label confirm = new Label("confirm password");
-        grid2.add(confirm, 0, 3);
-        final PasswordField confirmPw = new PasswordField();
-        grid2.add(confirmPw, 1, 3);
-
-        final Text message = new Text();
-        grid2.add(message, 1, 7);
-
-        //add button login
-        Button register = new Button("Sign Up");
-        HBox box = new HBox(10);
-        box.setAlignment(Pos.BOTTOM_RIGHT);
-
-//        action for button
-        register.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                //confirm the password for registation
-                if (pwBox.getText().equals(confirmPw.getText())){
-                    User newAccount = new User(userField.getText(),pwBox.getText());
-                    //check whether someone has used this username or not
-                    if(!userData.usernameExist(newAccount.username())) {
-                        userData.saveAccount(newAccount);
-                        message.setText("register success");
-                    } else {
-                        message.setText("Account has been created");
-                    }
-                } else {
-                    message.setText("please confirm the password");
-
-                }
-            }
-        });
-        box.getChildren().add(register);
-        grid2.add(box, 1 , 4);
-
-        //add register account
-        Label needLogin = new Label("need Login?");
-        needLogin.autosize();
-        grid2.add(needLogin, 0, 6);
-        Button login = new Button("login");
-        //move to the login scene
-        login.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                loginScene(window);
-            }
-        });
-        grid2.add(login, 1, 6);
-        HBox box2 = new HBox(10);
-        box2.setAlignment(Pos.BOTTOM_RIGHT);
-        box2.getChildren().add(register);
-        grid2.add(box2, 1, 5);
-        window.setScene(scene2);
-        window.show();
-    }
+//    public void loginScene(Stage mainStage){
+//        window = mainStage;
+//        window.setTitle("Login page");
+//
+//        GridPane grid = new GridPane();
+//        grid.setAlignment(Pos.CENTER);
+//        grid.setHgap(15);
+//        grid.setVgap(15);
+//        grid.setPadding(new Insets(25, 25, 25, 25));
+//
+//        scene1 = new Scene(grid, 300, 300);
+//
+//
+//
+//        Text sceneTitle = new Text("welcome");
+//        sceneTitle.setFont(Font.font("Arial"));
+//        grid.add(sceneTitle, 0 , 0 ,2 ,1);
+//
+//        //user input
+//        final Label username = new Label("username");
+//        grid.add(username, 0, 1);
+//        final TextField userField = new TextField();
+//        grid.add(userField, 1, 1);
+//        final Label password = new Label("password");
+//        grid.add(password, 0, 2);
+//        final PasswordField pwBox = new PasswordField();
+//        grid.add(pwBox, 1, 2);
+//
+//        final Text message = new Text();
+//        grid.add(message, 1, 7);
+//
+//        //add button login
+//        Button login = new Button("Sign In");
+//        HBox box = new HBox(10);
+//        box.setAlignment(Pos.BOTTOM_RIGHT);
+//
+//        //action for button
+//        login.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                User loginUser = new User(userField.getText(),pwBox.getText());
+//                user = userField.getText();
+//                //if the user account has been created, then the user can login
+//                if(userData.isUserExist(loginUser)){
+//                    message.setFill(Color.FIREBRICK);
+//                    message.setText("successful sign in");
+//                    portfolioScene(window, loginUser.username());
+//                } else {
+//
+//                    message.setText("Please enter correct information");
+//
+//                }
+//            }
+//        });
+//        box.getChildren().add(login);
+//        grid.add(box, 1 , 4);
+//
+//        //add register account
+//        Label noAccount = new Label("need new Account?");
+//        noAccount.autosize();
+//        grid.add(noAccount, 0, 5);
+//        Button register = new Button("Register");
+//
+//        //action
+//        register.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                registerScene(window);
+//            }
+//        });
+//
+//        HBox box2 = new HBox(10);
+//        box2.setAlignment(Pos.BOTTOM_RIGHT);
+//        box2.getChildren().add(register);
+//        grid.add(box2, 1, 5);
+//        window.setScene(scene1);
+//        window.show();
+//    }
+//
+//    /**
+//     * Shows the page that allows for registering new users/portfolios
+//     * @param mainStage
+//     */
+//    public void registerScene(Stage mainStage){
+//        //scene 2 register
+//        window = mainStage;
+//        window.setTitle("Register page");
+//        //window.setScene(scene2);
+//        GridPane grid2 = new GridPane();
+//        grid2.setAlignment(Pos.CENTER);
+//        grid2.setHgap(15);
+//        grid2.setVgap(15);
+//        grid2.setPadding(new Insets(25, 25, 25, 25));
+//
+//        scene2 = new Scene(grid2, 300, 300);
+//
+//        Text registerSceneTitle = new Text("");
+//        registerSceneTitle.setFont(Font.font("Arial"));
+//        grid2.add(registerSceneTitle, 0 , 0 ,2 ,1);
+//
+//        //user input
+//        Label username = new Label("username");
+//        grid2.add(username, 0, 1);
+//        final TextField userField = new TextField();
+//        grid2.add(userField, 1, 1);
+//        final Label password = new Label("password");
+//        grid2.add(password, 0, 2);
+//        final PasswordField pwBox = new PasswordField();
+//        grid2.add(pwBox, 1, 2);
+//        Label confirm = new Label("confirm password");
+//        grid2.add(confirm, 0, 3);
+//        final PasswordField confirmPw = new PasswordField();
+//        grid2.add(confirmPw, 1, 3);
+//
+//        final Text message = new Text();
+//        grid2.add(message, 1, 7);
+//
+//        //add button login
+//        Button register = new Button("Sign Up");
+//        HBox box = new HBox(10);
+//        box.setAlignment(Pos.BOTTOM_RIGHT);
+//
+////        action for button
+//        register.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                //confirm the password for registation
+//                if (pwBox.getText().equals(confirmPw.getText())){
+//                    User newAccount = new User(userField.getText(),pwBox.getText());
+//                    //check whether someone has used this username or not
+//                    if(!userData.usernameExist(newAccount.username())) {
+//                        userData.saveAccount(newAccount);
+//                        message.setText("register success");
+//                    } else {
+//                        message.setText("Account has been created");
+//                    }
+//                } else {
+//                    message.setText("please confirm the password");
+//
+//                }
+//            }
+//        });
+//        box.getChildren().add(register);
+//        grid2.add(box, 1 , 4);
+//
+//        //add register account
+//        Label needLogin = new Label("need Login?");
+//        needLogin.autosize();
+//        grid2.add(needLogin, 0, 6);
+//        Button login = new Button("login");
+//        //move to the login scene
+//        login.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                loginScene(window);
+//            }
+//        });
+//        grid2.add(login, 1, 6);
+//        HBox box2 = new HBox(10);
+//        box2.setAlignment(Pos.BOTTOM_RIGHT);
+//        box2.getChildren().add(register);
+//        grid2.add(box2, 1, 5);
+//        window.setScene(scene2);
+//        window.show();
+//    }
 
 
     /**
@@ -254,7 +269,7 @@ public class Main extends Application {
         portButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                portfolioScene(mainStage, user);
+                portfolioHandle.portfolioScene(mainStage, user);
             }
         });
         //PORTFOLIO STUFF END
@@ -620,7 +635,7 @@ public class Main extends Application {
         portfolioButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                portfolioScene(mainStage, user);
+                portfolioHandle.portfolioScene(mainStage, user);
             }
         });
 
@@ -771,7 +786,7 @@ public class Main extends Application {
         portButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                portfolioScene(window, user);
+                portfolioHandle.portfolioScene(window, user);
             }
         });
 
@@ -913,103 +928,103 @@ public class Main extends Application {
         window.show();
     }
 
-    /**
-     * Shows the portfolio summary information after loggin in
-     * @param stage the stage for the window
-     * @param userID the id of the user logged in
-     */
-    public void portfolioScene(final Stage stage, final String userID){
-        window = stage;
-        window.setTitle("My Portfolio");
-
-        //create the grid being shown in the scene
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        Scene portScene = new Scene(grid, 500, 500);
-
-        //find user information from the user text file
-        List<Portfolio> portList = userData.listOfPortfolio();
-        Portfolio myPortfolio = portList.get(0);
-        for (Portfolio p : portList) {
-            if (p.getUserID().equals(userID)){
-                myPortfolio = p;
-                port = p;
-            }
-        }
-
-        int i = 0;
-        Label welcome = new Label("Welcome,  " + myPortfolio.getUserID());
-        grid.add(welcome, 0, i);
-        i++;
-
-        //display the total amount of money in all cash accounts
-        double totalMoney = 0;
-        for (CashAccount c : myPortfolio.getCashAccounts()) {
-            totalMoney += (c.getBalance());
-        }
-        Label total = new Label("Total Account Balance:  " + String.valueOf(totalMoney));
-        grid.add(total, 0, i);
-        i++;
-
-        //LOGGER NAVIGATION START
-        final Button logButton = new Button("Go to Logger");
-        logButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                loggerScene(stage);
-            }
-        });
-        HBox logBox = new HBox();
-        logBox.setAlignment(Pos.TOP_LEFT);
-        grid.add(logButton, 1, 300);
-        //LOGGER NAVIGATION END
-
-        //TRANSACTION NAVIGATION START
-        final Button transactionButton = new Button("Go to Transactions");
-        transactionButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                transactionScene(stage);
-            }
-        });
-        HBox transBox = new HBox();
-        transBox.setAlignment(Pos.TOP_LEFT);
-        grid.add(transactionButton, 0, i);
-        //TRANSACTION NAVIGATION END
-
-        //Create a button that leads to the simulation screen
-        Button marketSimulation = new Button("MarketSimulation");
-        grid.add(marketSimulation, 1, i);
-        marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                simulationScene(window, port);
-            }
-        });
-        i++;
-
-        //Create a button that leads to the page to add an account
-        Button addAccount = new Button("Add a Cash Account");
-        addAccount.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                addCashAccountScene(window, userID);
-            }
-        });
-
-        grid.add(addAccount, 0, i);
-        Button deleteAccount = new Button("Delete a Cash Account");
-        deleteAccount.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                deleteCashAccountScene(window);
-            }
-        });
-        grid.add(deleteAccount, 1, i);
-
-        window.setScene(portScene);
-        window.show();
-    }
+//    /**
+//     * Shows the portfolio summary information after loggin in
+//     * @param stage the stage for the window
+//     * @param userID the id of the user logged in
+//     */
+//    public void portfolioScene(final Stage stage, final String userID){
+//        window = stage;
+//        window.setTitle("My Portfolio");
+//
+//        //create the grid being shown in the scene
+//        GridPane grid = new GridPane();
+//        grid.setAlignment(Pos.CENTER);
+//        Scene portScene = new Scene(grid, 500, 500);
+//
+//        //find user information from the user text file
+//        List<Portfolio> portList = userData.listOfPortfolio();
+//        Portfolio myPortfolio = portList.get(0);
+//        for (Portfolio p : portList) {
+//            if (p.getUserID().equals(userID)){
+//                myPortfolio = p;
+//                port = p;
+//            }
+//        }
+//
+//        int i = 0;
+//        Label welcome = new Label("Welcome,  " + myPortfolio.getUserID());
+//        grid.add(welcome, 0, i);
+//        i++;
+//
+//        //display the total amount of money in all cash accounts
+//        double totalMoney = 0;
+//        for (CashAccount c : myPortfolio.getCashAccounts()) {
+//            totalMoney += (c.getBalance());
+//        }
+//        Label total = new Label("Total Account Balance:  " + String.valueOf(totalMoney));
+//        grid.add(total, 0, i);
+//        i++;
+//
+//        //LOGGER NAVIGATION START
+//        final Button logButton = new Button("Go to Logger");
+//        logButton.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                loggerScene(stage);
+//            }
+//        });
+//        HBox logBox = new HBox();
+//        logBox.setAlignment(Pos.TOP_LEFT);
+//        grid.add(logButton, 1, 300);
+//        //LOGGER NAVIGATION END
+//
+//        //TRANSACTION NAVIGATION START
+//        final Button transactionButton = new Button("Go to Transactions");
+//        transactionButton.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                transactionScene(stage);
+//            }
+//        });
+//        HBox transBox = new HBox();
+//        transBox.setAlignment(Pos.TOP_LEFT);
+//        grid.add(transactionButton, 0, i);
+//        //TRANSACTION NAVIGATION END
+//
+//        //Create a button that leads to the simulation screen
+//        Button marketSimulation = new Button("MarketSimulation");
+//        grid.add(marketSimulation, 1, i);
+//        marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                simulationScene(window, port);
+//            }
+//        });
+//        i++;
+//
+//        //Create a button that leads to the page to add an account
+//        Button addAccount = new Button("Add a Cash Account");
+//        addAccount.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                addCashAccountScene(window, userID);
+//            }
+//        });
+//
+//        grid.add(addAccount, 0, i);
+//        Button deleteAccount = new Button("Delete a Cash Account");
+//        deleteAccount.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                deleteCashAccountScene(window);
+//            }
+//        });
+//        grid.add(deleteAccount, 1, i);
+//
+//        window.setScene(portScene);
+//        window.show();
+//    }
 
     /**
      * Shows a screen to add an account to the portfolio
@@ -1037,7 +1052,7 @@ public class Main extends Application {
         cancelB.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                portfolioScene(window, userid);
+                portfolioHandle.portfolioScene(window, userid);
             }
         });
         grid.add(cancelB, 0, 3);
@@ -1065,14 +1080,14 @@ public class Main extends Application {
                     if(myPortfolio.getCashAccounts().get(i).toString().equals(name)){
                         myPortfolio.getCashAccounts().get(i).addFunds(balance);
                         userData.updatePortfolioList(portList);
-                        portfolioScene(window, userid);
+                        portfolioHandle.portfolioScene(window, userid);
                         hold = 1;
                     }
                 }
                 if(hold == 0) {
                     myPortfolio.addCashAccount(name, balance);
                     userData.updatePortfolioList(portList);
-                    portfolioScene(window, userid);
+                    portfolioHandle.portfolioScene(window, userid);
                 }
 
             }
@@ -1127,7 +1142,7 @@ public class Main extends Application {
                 }
                 myPortfolio.deleteCashAccount(account.getValue().toString());
                 userData.updatePortfolioList(portList);
-                portfolioScene(window, user);
+                portfolioHandle.portfolioScene(window, user);
             }
         });
         grid.add(confirm, 1, 1);
@@ -1155,7 +1170,7 @@ public class Main extends Application {
                 }
             }
         }
-        userData.parseEquityFile();
+        equityHandler.parseEquityFile();
         launch(args);
     }
 }

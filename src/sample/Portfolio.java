@@ -199,19 +199,10 @@ public class Portfolio implements Serializable {
         }
     }
 
-    public void changeLowTrigger(String name, double newLow){
+    public void editWatchlistTriggers(String name, double low, double high) {
         for (WatchedAsset w : this.watchlist) {
             if (w.getName().equals(name)) {
-                w.changeLow(newLow);
-                return;
-            }
-        }
-    }
-
-    public void changeHighTrigger(String name, double newHigh) {
-        for (WatchedAsset w : this.watchlist) {
-            if (w.getName().equals(name)) {
-                w.changeHigh(newHigh);
+                w.editTriggers(low, high);
                 return;
             }
         }

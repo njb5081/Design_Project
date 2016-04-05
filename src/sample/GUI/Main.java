@@ -252,7 +252,7 @@ public class Main extends Application {
      */
     public void loggerScene(final Stage mainStage){
         window = mainStage;
-        window.setTitle("Logger");
+        window.setTitle("Log");
 
         final GridPane logGrid = new GridPane();
         logGrid.setAlignment(Pos.TOP_LEFT);
@@ -357,7 +357,6 @@ public class Main extends Application {
             availableAssets.put(tempMarketAverage.getName(), tempMarketAverage);
 
         }
-
 
         final GridPane transactionGrid = new GridPane();
         transactionGrid.setAlignment(Pos.TOP_LEFT);
@@ -852,7 +851,6 @@ public class Main extends Application {
 //                }
 //            }
 //        });
-
 
         bullSimulation.setOnAction(new EventHandler<ActionEvent>() {
             @Override

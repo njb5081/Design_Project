@@ -29,6 +29,10 @@ import sample.Transactions.*;
 import java.io.IOException;
 import java.io.File;
 import sample.handleData.handleEquity;
+import sample.Holdings.CashAccount;
+import sample.Holdings.Equity;
+import sample.Log.Logger;
+
 
 /**
  * Created by minhduong on 3/4/16.

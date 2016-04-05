@@ -4,7 +4,7 @@ import sample.EquityMemento;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-
+import sample.Holdings.Equity;
 public class Equity implements Serializable, Asset {
 
     private String tickerSymbol;

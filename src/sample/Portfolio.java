@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+import sample.handleData.handleEquity;
 /**
  * Created by Nick on 3/9/2016.
  */
@@ -186,8 +186,10 @@ public class Portfolio implements Serializable {
     /**
      * Checks all Portfolio holdings and updates the Portfolio's total attribute
      */
-    /*
-    public void calculateTotalHoldings(){
+
+
+/*
+    public double calculateTotalHoldings(){
         double holdingTotal = 0;
         double cashTotal = 0;
         double equityTotal = 0;
@@ -197,16 +199,17 @@ public class Portfolio implements Serializable {
         }
         if (!this.sharesHeld.isEmpty()) {
             for (String s : this.sharesHeld.keySet()) {
-                holdingTotal += (sharesHeld.get(s) * sharePrices.get(s));
-                equityTotal += (sharesHeld.get(s) * sharePrices.get(s));
+              //  holdingTotal += (sharesHeld.get(s) * 10.05);
+                equityTotal += (sharesHeld.get(s) * 10.06);
             }
         }
         this.totalHoldings = holdingTotal;
         this.totalCash = cashTotal;
         this.totalEquities = equityTotal;
+        return totalHoldings;
     }
-    */
 
+*/
     public ArrayList<CashAccount> getCashAccounts(){
         return this.cashAccounts;
     }

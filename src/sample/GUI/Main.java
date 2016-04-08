@@ -383,6 +383,7 @@ public class Main extends Application {
         optionsCashAccounts.addAll(cashAccounts.keySet());
         optionsAssetsAvailable.addAll(availableAssets.keySet());
 
+
         final ComboBox fromAccount = new ComboBox(optionsCashAccounts);
         final ComboBox toAccount = new ComboBox(optionsCashAccounts);
         final NumberTextField transAmount = new NumberTextField();
@@ -885,24 +886,28 @@ public class Main extends Application {
         portValue = Val;
         grid.add(Val, 1, 125);
 
-//        reset.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                for (Equity e : tempPort.getportfolioEquity()){
-//                    System.out.println(e.getSharePrice() + " RIGHT BEFORE ATTEMPTED RESET");
-//                }
-//                port.setEquities(tempPort.getEquities());
-//                for (Equity e : port.getportfolioEquity()){
-//                    System.out.println(e.getSharePrice() + "Value of equity after reset");
-//                }
-//            }
-//        });
+        reset.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio port = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(user)){
+                        port = p;
+                    }
+                }
+                MarketSimulation bullReset = new BullMarket();
+                double money = bullReset.reset(port);
+                portValue.setText(String.valueOf(money));
+            }
+        });
 
         bullSimulation.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
 //                ArrayList<Equity> equities = new ArrayList<Equity>();
 //                ArrayList<CashAccount> cash = new ArrayList<CashAccount>();
+
                 MarketSimulation bull = new BullMarket();
 
 
@@ -921,52 +926,67 @@ public class Main extends Application {
 
 
                 double money  = (bull.runSimulation(tempPercent, port, true, tempSteps, tempInterval));
-                System.out.println(String.valueOf(port.getTotalHoldings() + " total value of PORTFOLIO"));
-                money += port.getTotalHoldings();
                 portValue.setText(String.valueOf(money));
                           }
 
         });
 //
-//        bearSimulation.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                MarketSimulation bear = new BearMarket();
-//
-//                float tempPercent = Float.parseFloat(percentage.getText());
-//                int tempSteps = Integer.parseInt(stepField.getText());
-//                String tempInterval = IntervalField.getText();
+        bearSimulation.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
 //                ArrayList<Equity> equities = new ArrayList<Equity>();
 //                ArrayList<CashAccount> cash = new ArrayList<CashAccount>();
-//                Portfolio port = new Portfolio("njb5081",equities,cash);
-////                Equity eq = new Equity("t", "test", "id1", "sec1", 3, 50);
-////                eq.setSharePrice(30);
-////                Equity eq2 = new Equity("t2", "test1", "id2", "sec4", 1, 100);
-////                eq2.setSharePrice(10);
-//                port.addEquity("t",3,50,"3/10/16",false);
-//                for (Equity pfkn : port.getportfolioEquity()){
-//                    System.out.println(pfkn.getSharePrice() + "equities in portfolio");
-//                }
-////                for (Equity EEE : equities) {
-////                    System.out.println(EEE.EquityPrice + " before simulation");
-////                }
-//                port.setEquities(bear.runSimulation(tempPercent, port, true, tempSteps, tempInterval));
-//                for (Equity pfkn : port.getportfolioEquity()){
-//                    System.out.println(pfkn.getSharePrice() + "equities in portfolio after simulation");
-//                }
-//                port.calculateTotalHoldings();
-//                portValue.setText(String.valueOf(port.getTotalHoldings()));
-//                for (Equity ppp : port.getportfolioEquity()) {
-//                    System.out.println(ppp.getSharePrice() + "After sim");
-//                }
-//                //todo RESET FUNCTION NOT WORKING CORRECTLY
-//                // tempList = bear.reset(equities);
-//                //todo Calling reset on wrong thing should be portfolio???
-//
-//
-//            }
-//
-//        });
+                MarketSimulation bull = new BearMarket();
+
+
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio port = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(user)){
+                        port = p;
+                    }
+                }
+
+
+                float tempPercent = Float.parseFloat(percentage.getText());
+                int tempSteps = Integer.parseInt(stepField.getText());
+                String tempInterval = IntervalField.getText();
+
+
+                double money  = (bull.runSimulation(tempPercent, port, true, tempSteps, tempInterval));
+                portValue.setText(String.valueOf(money));
+            }
+
+        });
+
+        noSimulation.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+//                ArrayList<Equity> equities = new ArrayList<Equity>();
+//                ArrayList<CashAccount> cash = new ArrayList<CashAccount>();
+                MarketSimulation noGrowth = new NoGrowthMarket();
+
+
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio port = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(user)){
+                        port = p;
+                    }
+                }
+
+
+                float tempPercent = Float.parseFloat(percentage.getText());
+                int tempSteps = Integer.parseInt(stepField.getText());
+                String tempInterval = IntervalField.getText();
+
+
+                double money  = (noGrowth.runSimulation(tempPercent, port, true, tempSteps, tempInterval));
+                portValue.setText(String.valueOf(money));
+            }
+
+        });
 
         window.setScene(scene3);
         window.show();

@@ -81,5 +81,4 @@ public class Equity implements Serializable, Asset {
             System.out.println("Orginitor state after restore " + EEE.getSharePrice());
         }
     }
-
 }

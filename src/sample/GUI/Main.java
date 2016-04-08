@@ -1234,6 +1234,7 @@ public class Main extends Application {
                 }
             }
         }
+        //equityHandler.searchEquity("","");
         equityHandler.parseEquityFile();
         launch(args);
     }

@@ -10,10 +10,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by minhduong on 4/3/16.
@@ -21,8 +18,9 @@ import java.util.Map;
  */
 public class handleEquity {
 
+    private shareEquity compareMachine;
     static data accountHandler = new data();
-    /*
+    /*k
 * take the equities.csv file and parse the information into Equity object
 * Create 2 hashmap to store information about the Equity and its index or sector
 */
@@ -98,7 +96,11 @@ public class handleEquity {
     * the key will be the index or sector, the value will be the list of ticket symbol
     * */
     public Map<String,List<String>> getIndexMap(){
-        return (Map<String,List<String>>)this.getMap().get(0);
+        if(this.getMap().size() >1) {
+            return (Map<String, List<String>>) this.getMap().get(0);
+        } else {
+            return new HashMap<String, List<String>>();
+        }
     }
 
     /*
@@ -106,7 +108,11 @@ public class handleEquity {
     * the key will be the ticket symbol, the value will be the Equity object associate with the ticket symbol
     * */
     public Map<String,Equity> getEquityMap(){
-        return (Map<String,Equity>) this.getMap().get(1);
+        if(this.getMap().size() >1) {
+            return (Map<String, Equity>) this.getMap().get(1);
+        } else {
+            return new HashMap<String, Equity>();
+        }
     }
 
     /*
@@ -114,9 +120,12 @@ public class handleEquity {
     * return the list of hashmap from the equityfile.txt
     */
     private List<Map> getMap(){
-        List<Map> map = new ArrayList<Map>();
-        map = (ArrayList<Map>)accountHandler.listOfFile("equityfile.txt");
-        return map;
+        List<Map> map = (ArrayList<Map>)accountHandler.listOfFile("equityfile.txt");
+        if(map != null) {
+            return map;
+        } else {
+            return new ArrayList<Map>();
+        }
     }
 
     /*
@@ -172,4 +181,39 @@ public class handleEquity {
         }
     }
 
+    /*
+    *
+    * this function will return the list of ticker symbol which match with the user input.
+    * */
+    public List<String> searchEquity(String symbol, String name){
+        List<String> tickerSymbol = new ArrayList<String>();
+        compareMachine = new shareEquity(symbol,name);
+        for (Iterator it = compareMachine.iterator(); it.hasNext();){
+            String result = (String) it.next();
+            if(!symbol.isEmpty()){
+                //the result match the input
+                if(symbol.equals(result) || result.contains(symbol)){
+                    //System.out.println("");
+                    //check the name
+                    tickerSymbol.add(result);
+                }
+            } else {
+                //System.out.println("no symbol, check string");
+                if(!name.isEmpty()){
+                    String equityName = this.getEquityMap().get(result).getName();
+
+                    //if the input name is part of the equity name
+                    if(equityName.contains(name)){
+                        //System.out.println(equityName);
+                        tickerSymbol.add(result);
+                    }
+                }
+            }
+        }
+        //return tickerSymbol;
+//        for (String e: tickerSymbol){
+//            System.out.println(e);
+//        }
+        return tickerSymbol;
+    }
 }

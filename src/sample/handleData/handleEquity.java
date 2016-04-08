@@ -96,7 +96,11 @@ public class handleEquity {
     * the key will be the index or sector, the value will be the list of ticket symbol
     * */
     public Map<String,List<String>> getIndexMap(){
-        return (Map<String,List<String>>)this.getMap().get(0);
+        if(this.getMap().size() >1) {
+            return (Map<String, List<String>>) this.getMap().get(0);
+        } else {
+            return new HashMap<String, List<String>>();
+        }
     }
 
     /*
@@ -104,7 +108,11 @@ public class handleEquity {
     * the key will be the ticket symbol, the value will be the Equity object associate with the ticket symbol
     * */
     public Map<String,Equity> getEquityMap(){
-        return (Map<String,Equity>) this.getMap().get(1);
+        if(this.getMap().size() >1) {
+            return (Map<String, Equity>) this.getMap().get(1);
+        } else {
+            return new HashMap<String, Equity>();
+        }
     }
 
     /*
@@ -112,9 +120,12 @@ public class handleEquity {
     * return the list of hashmap from the equityfile.txt
     */
     private List<Map> getMap(){
-        List<Map> map = new ArrayList<Map>();
-        map = (ArrayList<Map>)accountHandler.listOfFile("equityfile.txt");
-        return map;
+        List<Map> map = (ArrayList<Map>)accountHandler.listOfFile("equityfile.txt");
+        if(map != null) {
+            return map;
+        } else {
+            return new ArrayList<Map>();
+        }
     }
 
     /*

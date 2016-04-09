@@ -184,7 +184,7 @@ public class  data  {
 
 
     /*
-    * check if the username has been exsited
+    * check if the username exists
     * */
     public boolean usernameExist(String username){
         List<User> list = this.listOfUser();
@@ -229,7 +229,7 @@ public class  data  {
     * */
     public List<Portfolio> listOfPortfolio (){
         List<Portfolio> listOfPortfolio = new ArrayList<Portfolio>();
-        //access the text file portfolio.text to get the lsit of Portfolio account
+        //access the text file portfolio.txt to get the list of Portfolio accounts
         Object list = this.listOfFile("portfolio.txt");
         if(list != null) {
             listOfPortfolio = (ArrayList<Portfolio>) list;
@@ -260,7 +260,4 @@ public class  data  {
         return list;
     }
 
-
-
 }
-

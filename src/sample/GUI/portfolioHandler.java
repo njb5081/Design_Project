@@ -39,7 +39,7 @@ public class portfolioHandler {
         //create the grid being shown in the scene
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        Scene portScene = new Scene(grid, 500, 500);
+        Scene portScene = new Scene(grid, 500, 300);
 
         //find user information from the user text file
         List<Portfolio> portList = userData.listOfPortfolio();
@@ -79,7 +79,7 @@ public class portfolioHandler {
         //LOGGER NAVIGATION END
 
         //TRANSACTION NAVIGATION START
-        final Button transactionButton = new Button("Go to Transactions");
+        final Button transactionButton = new Button("Transactions");
         transactionButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -92,7 +92,7 @@ public class portfolioHandler {
         //TRANSACTION NAVIGATION END
 
         //Create a button that leads to the simulation screen
-        Button marketSimulation = new Button("MarketSimulation");
+        Button marketSimulation = new Button("Market Simulations");
         grid.add(marketSimulation, 1, i);
         marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
             @Override

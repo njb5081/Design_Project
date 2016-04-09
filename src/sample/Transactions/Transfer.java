@@ -21,7 +21,7 @@ public class Transfer implements Serializable, Transaction {
     private Logger log;
     private String user;
     private Portfolio port;
-    private String status = "undone";
+    private String status = "redone";
     private String transDate = "";
 
     /*
@@ -53,8 +53,12 @@ public class Transfer implements Serializable, Transaction {
 
         transDate = date.toString();
 
-        log.addEntry("Transfer $" + Double.toString(amount) +
-                " from " + fromAccount.toString() + " to " + toAccount.toString(), user);
+        log.addEntry("Transfer $" +
+                     Double.toString(amount) +
+                     " from " +
+                     fromAccount.toString() +
+                     " to " +
+                     toAccount.toString(), user);
 
     }
 
@@ -62,26 +66,31 @@ public class Transfer implements Serializable, Transaction {
     * Undo the action if the user don't want to finish the transaction activity
     * */
     public void undo(){
-        toAccount.subtractFunds(amount);
-        fromAccount.addFunds(amount);
+
+        if(status.equals("redone")){
+
+            toAccount.subtractFunds(amount);
+            fromAccount.addFunds(amount);
+            status = "undone";
+
+        }else if(status.equals("undone")){
+
+            toAccount.addFunds(amount);
+            fromAccount.subtractFunds(amount);
+            status = "redone";
+
+        }
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
 
-        log.addEntry("This transaction has been reverted" +
-                    status +
-                    ": Transfer $" + Double.toString(amount) +
-                    " from " + fromAccount.toString() + " to " + toAccount.toString(), user);
-
-        if(status.equals("undone")){
-
-            status = "redone";
-
-        }else if(status.equals("redone")){
-
-            status = "undone";
-
-        }
+        log.addEntry("This transaction has been " +
+                     status +
+                     ": Transfer $" + Double.toString(amount) +
+                     " from " +
+                     fromAccount.toString() +
+                     " to " +
+                     toAccount.toString(), user);
 
     }
 

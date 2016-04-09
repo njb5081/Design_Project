@@ -20,25 +20,22 @@ public class User implements Serializable,observer  {
     * */
     private String encryption = "1234";
 
-
     /*
-    * Initial the object with information
+    * Initialize the object with information
     * */
     public User(String username, String password) {
         this.username = username;
-        // encrypte the password
+        // encrypt the password
         this.password = password+encryption;
     }
 
     /*
     * return username
     * */
-    public String username(){
-        return this.username;
-    }
+    public String username() { return this.username; }
 
     /*
-    * return a password after decrypte
+    * return a password after decryption
     * */
     public String password(){
         int finalIndex = this.password.length()-this.encryption.length()+1;
@@ -65,8 +62,6 @@ public class User implements Serializable,observer  {
     }
 
     @Override
-    public void update(String message) {
-        System.out.println( "the account has been "+message);
-    }
+    public void update(String message) { System.out.println( "the account has been "+message); }
 
 }

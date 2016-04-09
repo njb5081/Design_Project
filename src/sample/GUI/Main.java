@@ -775,7 +775,7 @@ public class Main extends Application {
         grid.setHgap(1);
         grid.setVgap(1);
         grid.setPadding(new Insets(25, 25, 25, 25));
-        Scene scene3 = new Scene(grid, 350, 450);
+        Scene scene3 = new Scene(grid, 400, 500);
 
         //TRANSACTION NAVIGATION START
         final Button transactionButton = new Button("Go to Transactions");
@@ -1078,7 +1078,6 @@ public class Main extends Application {
         });
         grid.add(confirm, 1, 1);
 
-
         window.setScene(deleteAccScene);
         window.show();
 
@@ -1101,8 +1100,10 @@ public class Main extends Application {
                 }
             }
         }
-        //equityHandler.searchEquity("","");
+        //equityHandler.searchEquity("FO","","begin with");
         equityHandler.parseEquityFile();
+        //equityHandler.updateSharePrice();
+        //equityHandler.updateSharePriceTimer(10);
         launch(args);
     }
 }

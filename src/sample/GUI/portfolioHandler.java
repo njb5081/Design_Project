@@ -15,7 +15,7 @@ import sample.Portfolio;
 import sample.handleData.data;
 
 import java.util.List;
-
+import sample.GUI.accountHandler;
 /**
  * Created by minhduong on 4/4/16.
  */
@@ -26,11 +26,12 @@ public class portfolioHandler {
     Portfolio tempPort;
     static data userData = new data();
     static Main main = new Main();
+
     /**
      * Shows the portfolio summary information after loggin in
      * @param stage the stage for the window
      * @param userID the id of the user logged in
-     */
+    s */
     public void portfolioScene(final Stage stage, final String userID){
         window = stage;
         window.setTitle("My Portfolio");
@@ -38,7 +39,7 @@ public class portfolioHandler {
         //create the grid being shown in the scene
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        Scene portScene = new Scene(grid, 500, 500);
+        Scene portScene = new Scene(grid, 500, 300);
 
         //find user information from the user text file
         List<Portfolio> portList = userData.listOfPortfolio();
@@ -78,7 +79,7 @@ public class portfolioHandler {
         //LOGGER NAVIGATION END
 
         //TRANSACTION NAVIGATION START
-        final Button transactionButton = new Button("Go to Transactions");
+        final Button transactionButton = new Button("Transactions");
         transactionButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -91,7 +92,7 @@ public class portfolioHandler {
         //TRANSACTION NAVIGATION END
 
         //Create a button that leads to the simulation screen
-        Button marketSimulation = new Button("MarketSimulation");
+        Button marketSimulation = new Button("Market Simulations");
         grid.add(marketSimulation, 1, i);
         marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -132,11 +133,25 @@ public class portfolioHandler {
             }
         });
         grid.add(deleteAccount, 1, i);
+        i++;
+        //Create a button to lead to the page to let user update shareprice in the interval time
+        Button updatePriceInterval = new Button("Set time interval");
+        updatePriceInterval.setOnAction(new EventHandler<ActionEvent>() {
+            private accountHandler handlerAccount;
+            @Override
+            public void handle(ActionEvent event) {
+                handlerAccount = new accountHandler();
+                handlerAccount.timeIntervalUpdate(window,userID);
+            }
+        });
 
 
 
+        grid.add(updatePriceInterval,0,i);
         window.setScene(portScene);
         window.show();
     }
+
+
 
 }

@@ -20,7 +20,7 @@ public class SellEquity implements Serializable, Transaction{
     private int amount;
     private Logger log;
     private Portfolio port;
-    private String status = "undone";
+    private String status = "redone";
     private String transDate = "";
 
     public SellEquity(int amount, CashAccount funds, Asset asset, Logger log, Portfolio port){
@@ -38,12 +38,11 @@ public class SellEquity implements Serializable, Transaction{
     * */
     public void execute(){
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        //DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
 
         funds.addFunds(asset.getSharePrice() * ((double)amount));
         port.updateCashAccount(funds);
-
         port.subtractEquity(asset, amount);
 
         port.addRecentTransaction(this);
@@ -65,9 +64,21 @@ public class SellEquity implements Serializable, Transaction{
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
 
-        funds.subtractFunds(asset.getSharePrice() * ((double)amount));
+        if(status.equals("redone")){
 
-        port.addEquity(asset, amount);
+            funds.subtractFunds(asset.getSharePrice() * ((double)amount));
+            port.updateCashAccount(funds);
+            port.addEquity(asset, amount);
+            status = "undone";
+
+        }else if(status.equals("undone")){
+
+            funds.addFunds(asset.getSharePrice() * ((double)amount));
+            port.updateCashAccount(funds);
+            port.subtractEquity(asset, amount);
+            status = "redone";
+
+        }
 
         log.addEntry("This transaction has been " +
                         status +
@@ -78,7 +89,7 @@ public class SellEquity implements Serializable, Transaction{
                         Double.toString(asset.getSharePrice()) +
                         " deposited into " + funds.toString() +
                         " cash account",
-                port.getUserID());
+                        port.getUserID());
 
         if(status.equals("undone")){
 

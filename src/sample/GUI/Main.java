@@ -116,9 +116,7 @@ public class Main extends Application {
 
         for(int i = 0; i < myPortfolio.getLog().getEntries().size(); i++){
 
-            if(myPortfolio.getLog().getEntries().get(i).getUser().equals(user)){
-                entries.put(myPortfolio.getLog().getEntries().get(i).getDate(), myPortfolio.getLog().getEntries().get(i));
-            }
+            entries.put(myPortfolio.getLog().getEntries().get(i).getDate(), myPortfolio.getLog().getEntries().get(i));
 
         }
 
@@ -227,10 +225,14 @@ public class Main extends Application {
                     }
                 }
                 if(chooseActionBox.getValue() != null) {
-                    myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).undo();
-                    userData.updatePortfolioList(portList);
-                    undoInstructionLabel.setText("Action Successfully Undone");
-                    portfolioHandle.portfolioScene(mainStage, user);
+//                    if(myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).isValid()) {
+//                        myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).undo();
+//                        userData.updatePortfolioList(portList);
+//                        undoInstructionLabel.setText("Action Successfully Undone");
+//                        portfolioHandle.portfolioScene(mainStage, user);
+//                    }else {
+//                        undoInstructionLabel.setText("Action has become invalid due to change in system state, choose another.");
+//                    }
                 }else{
                     undoInstructionLabel.setText("Invalid Input");
                 }
@@ -331,9 +333,11 @@ public class Main extends Application {
 
         final ObservableList<String> optionsCashAccounts = FXCollections.observableArrayList();
         final ObservableList<String> optionsAssetsAvailable = FXCollections.observableArrayList();
+        final ObservableList<String> optionsAssetsOwned = FXCollections.observableArrayList();
 
         optionsCashAccounts.addAll(cashAccounts.keySet());
         optionsAssetsAvailable.addAll(availableAssets.keySet());
+   //     optionsAssetsOwned.addAll( myPortfolio.getSharesHeldTickerSymbols());
 
 
         final ComboBox fromAccount = new ComboBox(optionsCashAccounts);
@@ -354,7 +358,7 @@ public class Main extends Application {
 
 
         final ComboBox sellCashAccount = new ComboBox(optionsCashAccounts);
-        final ComboBox sellEquity = new ComboBox(optionsAssetsAvailable);
+        final ComboBox sellEquity = new ComboBox(optionsAssetsOwned);
 
         final Label sellTransactionLabel = new Label("Choose Equity to Sell");
         final Label sellEquityNameLabel = new Label("      Name: None");
@@ -761,7 +765,7 @@ public class Main extends Application {
         grid.setHgap(1);
         grid.setVgap(1);
         grid.setPadding(new Insets(25, 25, 25, 25));
-        Scene scene3 = new Scene(grid, 400, 500);
+        Scene scene3 = new Scene(grid, 350, 450);
 
         //TRANSACTION NAVIGATION START
         final Button transactionButton = new Button("Go to Transactions");
@@ -1063,6 +1067,7 @@ public class Main extends Application {
             }
         });
         grid.add(confirm, 1, 1);
+
 
         window.setScene(deleteAccScene);
         window.show();

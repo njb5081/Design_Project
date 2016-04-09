@@ -7,14 +7,14 @@ import java.util.ArrayList;
 /**
  * @author Nicholas Baxter
  */
-public class EquityMemento {
+public class PortfolioMemento {
     private ArrayList<Equity> equityList;
 
     /**
      * puts saves the state of thing to be restored
      * @param equityList - the list to be stored
      */
-    public EquityMemento(ArrayList<Equity> equityList){
+    public PortfolioMemento(ArrayList<Equity> equityList){
         this.equityList = equityList;
     }
 

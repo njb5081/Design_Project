@@ -16,7 +16,7 @@ import java.util.*;
  * Created by minhduong on 4/3/16.
  * this class will handle parse the Equity file and update the current price of equity from the webservice
  */
-public class handleEquity {
+public class handleEquity implements ImportInfo{
 
     private shareEquity compareMachine;
     static data accountHandler = new data();
@@ -173,7 +173,7 @@ public class handleEquity {
                             if (!childNodes.item(0).getTextContent().trim().isEmpty()) {
                                 temporaryEquity.setSharePrice((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
                                 mapNeedUpdate.put(ticketSymbol, temporaryEquity);
-                                //System.out.println((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
+                                System.out.println((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
                             }
                         }
                     }

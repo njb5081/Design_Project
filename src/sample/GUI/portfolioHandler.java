@@ -20,7 +20,6 @@ import sample.GUI.accountHandler;
  * Created by minhduong on 4/4/16.
  */
 public class portfolioHandler {
-    private Logger log = userData.getLog();
     Stage window;
     String user;
     Portfolio port;
@@ -32,7 +31,7 @@ public class portfolioHandler {
      * Shows the portfolio summary information after loggin in
      * @param stage the stage for the window
      * @param userID the id of the user logged in
-    s */
+     */
     public void portfolioScene(final Stage stage, final String userID){
         window = stage;
         window.setTitle("My Portfolio");
@@ -40,7 +39,7 @@ public class portfolioHandler {
         //create the grid being shown in the scene
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        Scene portScene = new Scene(grid, 500, 300);
+        Scene portScene = new Scene(grid, 500, 500);
 
         //find user information from the user text file
         List<Portfolio> portList = userData.listOfPortfolio();
@@ -80,7 +79,7 @@ public class portfolioHandler {
         //LOGGER NAVIGATION END
 
         //TRANSACTION NAVIGATION START
-        final Button transactionButton = new Button("Transactions");
+        final Button transactionButton = new Button("Go to Transactions");
         transactionButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -93,7 +92,7 @@ public class portfolioHandler {
         //TRANSACTION NAVIGATION END
 
         //Create a button that leads to the simulation screen
-        Button marketSimulation = new Button("Market Simulations");
+        Button marketSimulation = new Button("MarketSimulation");
         grid.add(marketSimulation, 1, i);
         marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -152,7 +151,5 @@ public class portfolioHandler {
         window.setScene(portScene);
         window.show();
     }
-
-
 
 }

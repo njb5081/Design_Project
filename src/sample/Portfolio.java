@@ -108,6 +108,10 @@ public class Portfolio implements Serializable {
         return null;
     }
 
+    public void removeRecentTransaction(int i){
+        recentTransactions.remove(i);
+    }
+
     public ArrayList<String> getRecentTransactions(){
 
         ArrayList<String> recentTransactionsString = new ArrayList<String>();

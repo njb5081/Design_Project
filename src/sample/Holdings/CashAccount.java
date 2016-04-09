@@ -1,7 +1,10 @@
 package sample.Holdings;
+import sample.Transactions.Transaction;
+
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -10,6 +13,7 @@ public class CashAccount implements  Serializable{
     private Double balance;
     private String name;
     private String openDate;
+    private ArrayList<Transaction> observers;
 
     public CashAccount(Double initialBalance, String name){
 
@@ -19,6 +23,7 @@ public class CashAccount implements  Serializable{
         this.openDate = dateFormat.format(date);
         this.balance = initialBalance;
         this.name = name;
+        this.observers = new ArrayList<Transaction>();
 
     }
 
@@ -55,6 +60,16 @@ public class CashAccount implements  Serializable{
 
         return name;
 
+    }
+
+    public void addObserver(Transaction trans){
+        observers.add(trans);
+    }
+
+    public void update(){
+        for(Transaction o : observers){
+            o.update();
+        }
     }
 
 }

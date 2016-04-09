@@ -225,6 +225,7 @@ public class Main extends Application {
                     }
                 }
                 if(chooseActionBox.getValue() != null) {
+                    /*
                     if(myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).isValid()) {
                         myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).undo();
                         userData.updatePortfolioList(portList);
@@ -233,6 +234,11 @@ public class Main extends Application {
                     }else {
                         undoInstructionLabel.setText("Action has become invalid due to change in system state, choose another.");
                     }
+                    */
+                    myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).undo();
+                    userData.updatePortfolioList(portList);
+                    undoInstructionLabel.setText("Action Successfully Undone");
+                    portfolioHandle.portfolioScene(mainStage, user);
                 }else{
                     undoInstructionLabel.setText("Invalid Input");
                 }
@@ -1071,6 +1077,7 @@ public class Main extends Application {
                         myPortfolio = p;
                     }
                 }
+                myPortfolio.getCashAccountByName(account.getValue().toString()).update();
                 myPortfolio.deleteCashAccount(account.getValue().toString());
                 userData.updatePortfolioList(portList);
                 portfolioHandle.portfolioScene(window, user);

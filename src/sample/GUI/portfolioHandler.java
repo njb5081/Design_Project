@@ -112,6 +112,19 @@ public class portfolioHandler {
         });
 
         grid.add(addAccount, 0, i);
+        i++;
+
+        //Create a button that leads to the page to undo an action
+        Button undoAction = new Button("Undo Recent Action");
+        undoAction.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                main.undoScene(window);
+            }
+        });
+
+        grid.add(undoAction, 0, i);
+
         Button deleteAccount = new Button("Delete a Cash Account");
         deleteAccount.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -120,6 +133,8 @@ public class portfolioHandler {
             }
         });
         grid.add(deleteAccount, 1, i);
+
+
 
         window.setScene(portScene);
         window.show();

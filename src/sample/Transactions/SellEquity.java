@@ -21,6 +21,7 @@ public class SellEquity implements Serializable, Transaction{
     private Logger log;
     private Portfolio port;
     private String status = "undone";
+    private String transDate = "";
 
     public SellEquity(int amount, CashAccount funds, Asset asset, Logger log, Portfolio port){
 
@@ -44,6 +45,10 @@ public class SellEquity implements Serializable, Transaction{
         port.updateCashAccount(funds);
 
         port.subtractEquity(asset, amount);
+
+        port.addRecentTransaction(this);
+
+        transDate = date.toString();
 
         log.addEntry("Sold " +
                 Integer.toString(amount) +
@@ -85,6 +90,10 @@ public class SellEquity implements Serializable, Transaction{
 
         }
 
+    }
+
+    public String returnTransDate(){
+        return transDate;
     }
 
 

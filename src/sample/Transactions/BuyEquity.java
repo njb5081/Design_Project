@@ -20,6 +20,7 @@ public class BuyEquity implements Serializable, Transaction {
     private Logger log;
     private Portfolio port;
     private String status = "undone";
+    private String transDate = "";
 
     public BuyEquity(int amount, CashAccount funds, Asset asset, Logger log, Portfolio port){
 
@@ -41,6 +42,9 @@ public class BuyEquity implements Serializable, Transaction {
         //asset.addSharesHeld(amount);
         port.addEquity(asset, amount);
 
+        port.addRecentTransaction(this);
+
+        transDate = date.toString();
 
         //create log entry
         log.addEntry("Bought " +
@@ -88,6 +92,10 @@ public class BuyEquity implements Serializable, Transaction {
 
         }
 
+    }
+
+    public String returnTransDate(){
+        return transDate;
     }
 
 

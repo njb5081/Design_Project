@@ -26,7 +26,6 @@ public class Portfolio implements Serializable {
     private Map<String, Integer> sharesHeld;
     private ArrayList<WatchedAsset> watchlist;
     private ArrayList<Transaction> recentTransactions;
-
     /**
      * Constructor creates new Portfolio
      * @param userid userid that links the Portfolio to a user
@@ -36,7 +35,7 @@ public class Portfolio implements Serializable {
     public Portfolio(String userid, HashMap<String, Integer> importedEquities, ArrayList<CashAccount> importedCashAccounts){
         this.userid = userid;
         this.sharesHeld = new HashMap<String, Integer>();
-
+        this.recentTransactions = new ArrayList<Transaction>();
         this.cashAccounts = new ArrayList<CashAccount>();
 //        for (String s : importedEquities.keySet()) {
 //            sharesHeld.put(s, importedEquities.get(s));
@@ -83,6 +82,28 @@ public class Portfolio implements Serializable {
             }
         }
         return null;
+    }
+
+    public Transaction getActionByDate(String date){
+
+        for(Transaction t : recentTransactions){
+            if(t.returnTransDate().equals(date)){
+                return t;
+            }
+        }
+
+        return null;
+    }
+
+    public ArrayList<String> getRecentTransactions(){
+
+        ArrayList<String> recentTransactionsString = new ArrayList<String>();
+
+        for(Transaction t : recentTransactions){
+            recentTransactionsString.add(t.returnTransDate());
+        }
+
+        return recentTransactionsString;
     }
 
     public void addEquity(Asset asset, int amount) {

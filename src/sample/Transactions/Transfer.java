@@ -1,6 +1,7 @@
 package sample.Transactions;
 import sample.Holdings.CashAccount;
 import sample.Log.Logger;
+import sample.Portfolio;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,18 +20,21 @@ public class Transfer implements Serializable, Transaction {
     private double amount;
     private Logger log;
     private String user;
+    private Portfolio port;
     private String status = "undone";
+    private String transDate = "";
 
     /*
     * Initial the Transfer object to store the information
     * */
-    public Transfer(double amount, CashAccount toAccount, CashAccount fromAccount, Logger log, String user){
+    public Transfer(double amount, CashAccount toAccount, CashAccount fromAccount, Logger log, String user, Portfolio port){
 
         this.toAccount = toAccount;
         this.fromAccount = fromAccount;
         this.amount = amount;
         this.log = log;
         this.user = user;
+        this.port = port;
 
     }
 
@@ -42,8 +46,12 @@ public class Transfer implements Serializable, Transaction {
         toAccount.addFunds(amount);
         fromAccount.subtractFunds(amount);
 
+        port.addRecentTransaction(this);
+
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
+
+        transDate = date.toString();
 
         log.addEntry("Transfer $" + Double.toString(amount) +
                 " from " + fromAccount.toString() + " to " + toAccount.toString(), user);
@@ -75,6 +83,10 @@ public class Transfer implements Serializable, Transaction {
 
         }
 
+    }
+
+    public String returnTransDate(){
+        return transDate;
     }
 
 

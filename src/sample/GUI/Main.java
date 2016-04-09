@@ -29,6 +29,7 @@ import sample.Log.Logger;
 import sample.Transactions.BuyEquity;
 import sample.Transactions.SellEquity;
 import sample.Transactions.Transfer;
+import sample.Transactions.Transaction;
 import sample.handleData.data;
 import sample.handleData.handleEquity;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class Main extends Application {
     /*
     * define multiple scene to display different GUI
     * */
-    Scene  scene1,scene2,scene3, scene4, scene5;
+    Scene  scene1,scene2,scene3, sceneTransaction, sceneLog, sceneUndo;
     /*
     * Initialize the data class to access different function in order to creeate,save, delete account
     * */
@@ -274,7 +275,7 @@ public class Main extends Application {
         });
         //PORTFOLIO NAVIGATION END
 
-        scene5 = new Scene(logGrid, 600, 250);
+        sceneLog = new Scene(logGrid, 600, 250);
 
         final HashMap<String, Entry> entries =  new HashMap<String, Entry>();
 
@@ -314,8 +315,98 @@ public class Main extends Application {
         logGrid.add(logBox,1,25);
         logGrid.add(portBox,1,100);
 
-        window.setScene(scene5);
+        window.setScene(sceneLog);
         window.show();
+    }
+
+    /**
+     * Shows a page that allows the user to undo the five most recent actions
+     * @param mainStage stage for the window
+     */
+    public void undoScene(final Stage mainStage){
+
+        window = mainStage;
+        window.setTitle("Undo");
+
+        List<Portfolio> portList = userData.listOfPortfolio();
+        Portfolio myPortfolio = portList.get(0);
+        for (Portfolio p : portList) {
+            if (p.getUserID().equals(user)){
+                myPortfolio = p;
+            }
+        }
+
+        final GridPane undoGrid = new GridPane();
+        undoGrid.setAlignment(Pos.TOP_LEFT);
+        undoGrid.setHgap(1);
+        undoGrid.setVgap(1);
+        undoGrid.setPadding(new Insets(25, 25, 25, 25));
+
+        final ObservableList<String> undoableActions = FXCollections.observableArrayList();
+        undoableActions.addAll(myPortfolio.getRecentTransactions());
+
+        final Button portfolioButton = new Button("Go to Portfolio");
+
+        final ComboBox chooseActionBox = new ComboBox(undoableActions);
+
+        final Label undoInstructionLabel = new Label("Choose Action to Undo");
+
+        portfolioButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                portfolioHandle.portfolioScene(mainStage, user);
+            }
+        });
+
+        final Button undoButtion = new Button("Undo Selected Action");
+
+        undoButtion.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio myPortfolioInner = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(user)){
+                        myPortfolioInner = p;
+                    }
+                }
+                if(chooseActionBox.getValue() != null) {
+                    myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).undo();
+                    userData.updateLogger(log);
+                    userData.updatePortfolioList(portList);
+                }
+
+            }
+        });
+
+        HBox box1Undo = new HBox();
+        VBox box2Undo = new VBox();
+        VBox box3Undo = new VBox();
+        VBox box4Undo = new VBox();
+        HBox box5Undo = new HBox();
+
+        box1Undo.setAlignment(Pos.TOP_LEFT);
+        box2Undo.setAlignment(Pos.TOP_LEFT);
+        box3Undo.setAlignment(Pos.TOP_LEFT);
+        box4Undo.setAlignment(Pos.TOP_LEFT);
+        box5Undo.setAlignment(Pos.TOP_LEFT);
+
+        box1Undo.getChildren().add(undoInstructionLabel);
+
+        box2Undo.getChildren().add(chooseActionBox);
+
+        box5Undo.getChildren().add(undoButtion);
+        box5Undo.getChildren().add(portfolioButton);
+
+        undoGrid.add(box1Undo, 10, 10);
+        undoGrid.add(box2Undo, 10, 20);
+        undoGrid.add(box5Undo, 10, 30);
+
+        sceneUndo = new Scene(undoGrid, 400, 500);
+        window.setScene(sceneUndo);
+        window.show();
+
     }
 
     /**
@@ -368,7 +459,7 @@ public class Main extends Application {
         createCashAccountGrid.setVgap(1);
         createCashAccountGrid.setPadding(new Insets(25, 25, 25, 25));
 
-        scene4 = new Scene(transactionGrid, 900, 600);
+        sceneTransaction = new Scene(transactionGrid, 900, 600);
 
         final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
 
@@ -512,10 +603,11 @@ public class Main extends Application {
 
                     if(tempBuyAccount.getBalance() >= tempBuyEquity.getSharePrice() * tempAmount) {
 
-                        BuyEquity equitySale = new BuyEquity(tempAmount, myPortfolioInner.getCashAccountByName(tempBuyAccount.toString()), tempBuyEquity, log,  myPortfolioInner);
+                        Transaction equitySale = new BuyEquity(tempAmount, myPortfolioInner.getCashAccountByName(tempBuyAccount.toString()), tempBuyEquity, log,  myPortfolioInner);
                         equitySale.execute();
 
-                        System.out.println(Integer.toString(myPortfolioInner.getSharesHeld().get(tempBuyEquity.getName())));
+                        //myPortfolioInner.addRecentTransaction(equitySale);
+                        //myPortfolioInner.plsgod("???");
 
                         cashAccounts.put(buyCashAccount.getValue().toString(), tempBuyAccount);
 
@@ -562,8 +654,7 @@ public class Main extends Application {
 
                     if(tempFromAccount.getBalance() >= tempAmount) {
 
-                        Transfer cashTransfer = new Transfer(tempAmount, tempToAccount, tempFromAccount, log, user);
-
+                        Transfer cashTransfer = new Transfer(tempAmount, tempToAccount, tempFromAccount, log, user, myPortfolioInner);
                         cashTransfer.execute();
 
                         toAccountNameLabel.setText("      Name: " + tempToAccount.toString());
@@ -589,7 +680,7 @@ public class Main extends Application {
 
             @Override
             public void handle(ActionEvent event) {
-                scene4.setRoot(transactionGrid);
+                sceneTransaction.setRoot(transactionGrid);
             }
         });
 
@@ -645,7 +736,7 @@ public class Main extends Application {
                 buyEquityNameLabel.setText("      Name: " + buyEquity.getValue().toString());
                 buyEquityValueLabel.setText("      Value: $" + availableAssets.get(buyEquity.getValue().toString()).getSharePrice());
                 try {
-                    buyEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(availableAssets.get(buyEquity.getValue()).getName())));
+                    buyEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(availableAssets.get(buyEquity.getValue().toString()).getName())));
                 } catch(NullPointerException e){
                     buyEquityOwnedLabel.setText("      Amount Owned: 0");
                 }
@@ -667,7 +758,7 @@ public class Main extends Application {
                 sellEquityNameLabel.setText("      Name: " + sellEquity.getValue().toString());
                 sellEquityValueLabel.setText("      Value: $" + availableAssets.get(sellEquity.getValue().toString()).getSharePrice());
                 try {
-                    sellEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(availableAssets.get(sellEquity.getValue()).getName())));
+                    sellEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(availableAssets.get(sellEquity.getValue().toString()).getName())));
                 } catch(NullPointerException e){
                     sellEquityOwnedLabel.setText("      Amount Owned: 0");
                 }
@@ -788,7 +879,7 @@ public class Main extends Application {
         transactionGrid.add(box4Sell, 100 , 60);
         transactionGrid.add(box5Sell, 100 , 120);
 
-        window.setScene(scene4);
+        window.setScene(sceneTransaction);
         window.show();
     }
 

@@ -5,6 +5,7 @@ import sample.Portfolio;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import java.io.Serializable;
@@ -22,6 +23,7 @@ public class Transfer implements Serializable, Transaction {
     private String status = "undone";
     private String transDate = "";
     private String description = "";
+    private ArrayList<CashAccount> observables;
 
     /*
     * Initial the Transfer object to store the information
@@ -32,6 +34,11 @@ public class Transfer implements Serializable, Transaction {
         this.fromAccount = fromAccount;
         this.amount = amount;
         this.port = port;
+        this.observables = new ArrayList<CashAccount>();
+        observables.add(toAccount);
+        observables.add(fromAccount);
+        toAccount.addObserver(this);
+        fromAccount.addObserver(this);
 
     }
 
@@ -105,12 +112,14 @@ public class Transfer implements Serializable, Transaction {
         }
     }
 
-    public Boolean isValid(){
+    public ArrayList<CashAccount> getObservables(){ return  observables; }
 
-        if(!port.getCashAccounts().contains(toAccount) || !port.getCashAccounts().contains(fromAccount)){
-            return false;
+    public void update(){
+        for(int i = 0; i < port.getRecentTransactions().size(); i++){
+            if(port.getRecentTransactions().get(i).equals(this.transDate)){
+                port.removeRecentTransaction(i);
+            }
         }
-        return true;
     }
 
 }

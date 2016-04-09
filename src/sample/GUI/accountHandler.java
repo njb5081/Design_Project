@@ -17,7 +17,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import sample.User;
 import sample.handleData.data;
-
+import sample.handleData.handleEquity;
 /**
  * Created by minhduong on 4/4/16.
  */
@@ -27,6 +27,7 @@ public class accountHandler {
     String user;
     static data userData = new data();
     static portfolioHandler portfolioHandle = new portfolioHandler();
+    private handleEquity handler;
     /**
      * Shows the first screen that allows a user to login to a portfolio
      * @param mainStage
@@ -197,4 +198,55 @@ public class accountHandler {
         window.show();
     }
 
+
+    public void timeIntervalUpdate(Stage mainStage, final String username){
+        handler = new handleEquity();
+        //scene 2 register
+        window = mainStage;
+        window.setTitle("update share price in the time interval");
+        //window.setScene(scene2);
+        GridPane grid2 = new GridPane();
+        grid2.setAlignment(Pos.CENTER);
+        grid2.setHgap(15);
+        grid2.setVgap(15);
+        grid2.setPadding(new Insets(25, 25, 25, 25));
+
+        scene2 = new Scene(grid2, 500, 500);
+
+        Text registerSceneTitle = new Text("");
+        registerSceneTitle.setFont(Font.font("Arial"));
+        grid2.add(registerSceneTitle, 0 , 0 ,2 ,1);
+
+        //user input
+        Label timer = new Label("SetTimer");
+        grid2.add(timer, 0, 1);
+        final TextField timeField= new TextField();
+        grid2.add(timeField, 1, 1);
+
+        //add button set timer
+        Button setTimer = new Button("Set Timer");
+        HBox box = new HBox(10);
+        box.setAlignment(Pos.BOTTOM_RIGHT);
+
+        final Text message = new Text();
+//        action for button
+        setTimer.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //confirm the password for registation
+                int time = Integer.parseInt(timeField.getText());
+                if(time < 8){
+                    message.setText("you need to enter a minimum of 8 second for the program to run");
+                } else {
+                    handler.updateSharePriceTimer(time);
+                    portfolioHandle.portfolioScene(window,username);
+                }
+            }
+        });
+        box.getChildren().add(setTimer);
+        grid2.add(box, 1 , 4);
+        grid2.add(message,1,6);
+        window.setScene(scene2);
+        window.show();
+    }
 }

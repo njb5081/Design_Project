@@ -41,10 +41,13 @@ public class shareEquity {
         * */
         public boolean hasNext() {
             //if there is index or sector then we will check the Index map first
-
+//            if(!indexOrSector.isEmpty()){
+//                return index < listOfSectorOrIndex.size();
+//            } else {
                 //user enter the ticket symbol
                 //check the index base of the ticket symbol
             return index < listOfSymbol.size();
+//            }
 
         }
 
@@ -54,11 +57,16 @@ public class shareEquity {
         * Otherwise it will return the name of the ticket symbol
         * */
         public String next() {
-            //String index = "";
-            //String name = "";
-                //user enter the ticket symbol
-                //check the index base of the ticket symbol
+
+            String name = "";
+
+//            if (!indexOrSector.isEmpty()) {
+//                //user enter the ticket symbol
+//                //check the index base of the ticket symbol
+//                return listOfSectorOrIndex.get(index++);
+//            } else {
             return listOfSymbol.get(index++);
+            //}
 
         }
     }

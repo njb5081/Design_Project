@@ -135,21 +135,31 @@ public class handleEquity {
         //access the list of ticket symbol from the hash map of ticket symbol - equity
         List<String> equitySymbol = new ArrayList<String>();
         equitySymbol.addAll(this.getEquityMap().keySet());
+        int lengthOfArraySymbol = equitySymbol.size();
+        int sizeOfTickerSymbol = lengthOfArraySymbol/ 200;
+        int length = 200;
+        int remainder = (lengthOfArraySymbol -1)%200;
+        if(equitySymbol.size() % 200 > 1){
+            sizeOfTickerSymbol++;
+        }
+        String compile = "%22"+equitySymbol.remove(0)+"%22";
         //access the hashmap
         Map<String, Equity> mapNeedUpdate = this.getEquityMap();
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder buidler = factory.newDocumentBuilder();
             //go through every
-            for( int k = 0; k<equitySymbol.size(); k++) {
-                String compile = "%22"+equitySymbol.get(k)+"%22";
+            for( int k = 0; k<sizeOfTickerSymbol; k++) {
+                if(k == sizeOfTickerSymbol-1){
+                    length = remainder;
+                }
+                for(int t = 0; t< length; t++){
+                    String currentSymbol = equitySymbol.get(t);
+                    compile = compile+"%2C%22"+currentSymbol+"%22";
+                }
                 String url = "https://query.yahooapis.com/v1/public/yql?q=select%20symbol%2CLastTradePriceOnly%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("+compile+")&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
                 Document doc = buidler.parse(url);
-
                 NodeList list = doc.getElementsByTagName("quote");
-                //System.out.println(list.getLength());
-
-
                 for (int i = 0; i < list.getLength(); i++) {
                     Element item = (Element) list.item(i);
                     //check if the hashmap contain the ticket symbol
@@ -185,17 +195,38 @@ public class handleEquity {
     *
     * this function will return the list of ticker symbol which match with the user input.
     * */
-    public List<String> searchEquity(String symbol, String name){
+    public List<String> searchEquity(String symbol, String name,String typeOfSearch){
         List<String> tickerSymbol = new ArrayList<String>();
         compareMachine = new shareEquity(symbol,name);
+        typeOfSearch = typeOfSearch.toLowerCase();
+        if("exact".contains(typeOfSearch)){
+            typeOfSearch = "exact";
+        } else if ("start with".contains(typeOfSearch)){
+            typeOfSearch = "start with";
+        } else if ("contains".contains(typeOfSearch)){
+            typeOfSearch = "contains";
+        }
         for (Iterator it = compareMachine.iterator(); it.hasNext();){
             String result = (String) it.next();
+            //if the user enter index or sector
+
             if(!symbol.isEmpty()){
                 //the result match the input
-                if(symbol.equals(result) || result.contains(symbol)){
-                    //System.out.println("");
-                    //check the name
-                    tickerSymbol.add(result);
+                if (typeOfSearch.equals("exact")) {
+                    if (symbol.equals(result)) {
+                        tickerSymbol.add(result);
+                    }
+
+                } else if (typeOfSearch.equals("begin with")) {
+                    if (result.startsWith(symbol)) {
+                        tickerSymbol.add(result);
+                    }
+
+                } else if (typeOfSearch.equals("contains")) {
+                    if (result.contains(symbol)) {
+                        tickerSymbol.add(result);
+                    }
+
                 }
             } else {
                 //System.out.println("no symbol, check string");
@@ -203,17 +234,59 @@ public class handleEquity {
                     String equityName = this.getEquityMap().get(result).getName();
 
                     //if the input name is part of the equity name
-                    if(equityName.contains(name)){
-                        //System.out.println(equityName);
-                        tickerSymbol.add(result);
+                    if (typeOfSearch.equals("exact")) {
+                        if (equityName.equals(name)) {
+                            tickerSymbol.add(result);
+                        }
+
+                    } else if (typeOfSearch.equals("begin with")) {
+                        if (equityName.startsWith(name)) {
+                            tickerSymbol.add(result);
+                        }
+
+                    } else if (typeOfSearch.equals("contains")) {
+                        if (equityName.contains(name)) {
+                            tickerSymbol.add(result);
+                        }
+
                     }
+
                 }
             }
         }
         //return tickerSymbol;
-//        for (String e: tickerSymbol){
-//            System.out.println(e);
-//        }
+        for (String e: tickerSymbol){
+            System.out.println(e);
+        }
         return tickerSymbol;
     }
+
+    /*
+    * allow the user to enter the timer interval to update the shareprice from the website
+    * */
+    public void updateSharePriceTimer(int time){
+        TimerTask task = new TimerTask() {
+            handleEquity handler;
+            @Override
+            public void run() {
+                // task to run goes here
+                handler = new handleEquity();
+                //System.out.println("start---");
+                handler.updateSharePrice();
+                //System.out.println("finish ------------");
+            }
+        };
+        Timer timer = new Timer();
+        long delay = 0;
+        if(time < 8){
+            time = 8;
+        }
+        long intevalPeriod = 1000 * time;
+        // schedules the task to be run in an interval
+        timer.scheduleAtFixedRate(task, delay,
+                intevalPeriod);
+    } // end of main
+
+
+    //private List<String> searchSupport(String type)
 }

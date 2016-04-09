@@ -1086,8 +1086,10 @@ public class Main extends Application {
                 }
             }
         }
-        //equityHandler.searchEquity("","");
+        //equityHandler.searchEquity("FO","","begin with");
         equityHandler.parseEquityFile();
+        //equityHandler.updateSharePrice();
+        //equityHandler.updateSharePriceTimer(10);
         launch(args);
     }
 }

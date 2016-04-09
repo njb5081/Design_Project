@@ -12,7 +12,7 @@ public interface  MarketSimulation {
     public double runSimulation(float percentage, Portfolio EQ, boolean continuous,int stepNum, String timeInterval );
 
     //resets the equity prices to what they were before the simulation
-    public double reset();
+    public double reset(Portfolio p);
 
 //    public Portfolio savePortfolio(Portfolio port);
 

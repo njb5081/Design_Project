@@ -12,12 +12,14 @@ import java.util.ArrayList;
 public class MarketAverage implements Serializable, Asset {
 
     private String name;
+    private String tickerSymbol;
     private Double sharePrice;
     private ArrayList<Equity> equities = new ArrayList<Equity>();
 
     public MarketAverage(String name, ArrayList<Equity> equities){
 
         this.name = name;
+        this.tickerSymbol = name;
         this.equities = equities;
 
         sharePrice = 0.0;
@@ -50,6 +52,8 @@ public class MarketAverage implements Serializable, Asset {
     public String getName(){
         return name;
     }
+
+    public String getTickerSymbol(){ return tickerSymbol; }
 
     public Double getSharePrice(){
         return sharePrice;

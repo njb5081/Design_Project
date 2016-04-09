@@ -20,7 +20,6 @@ import java.util.List;
  * Created by minhduong on 4/4/16.
  */
 public class portfolioHandler {
-    private Logger log = userData.getLog();
     Stage window;
     String user;
     Portfolio port;

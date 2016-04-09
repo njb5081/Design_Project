@@ -105,4 +105,12 @@ public class Transfer implements Serializable, Transaction {
         }
     }
 
+    public Boolean isValid(){
+
+        if(!port.getCashAccounts().contains(toAccount) || !port.getCashAccounts().contains(fromAccount)){
+            return false;
+        }
+        return true;
+    }
+
 }

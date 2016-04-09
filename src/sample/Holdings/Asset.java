@@ -5,6 +5,7 @@ package sample.Holdings;
  */
 public interface Asset {
 
+    String getTickerSymbol();
     String getName();
     Double getSharePrice();
 

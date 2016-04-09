@@ -116,9 +116,7 @@ public class Main extends Application {
 
         for(int i = 0; i < myPortfolio.getLog().getEntries().size(); i++){
 
-            if(myPortfolio.getLog().getEntries().get(i).getUser().equals(user)){
-                entries.put(myPortfolio.getLog().getEntries().get(i).getDate(), myPortfolio.getLog().getEntries().get(i));
-            }
+            entries.put(myPortfolio.getLog().getEntries().get(i).getDate(), myPortfolio.getLog().getEntries().get(i));
 
         }
 
@@ -227,10 +225,14 @@ public class Main extends Application {
                     }
                 }
                 if(chooseActionBox.getValue() != null) {
-                    myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).undo();
-                    userData.updatePortfolioList(portList);
-                    undoInstructionLabel.setText("Action Successfully Undone");
-                    portfolioHandle.portfolioScene(mainStage, user);
+                    if(myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).isValid()) {
+                        myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).undo();
+                        userData.updatePortfolioList(portList);
+                        undoInstructionLabel.setText("Action Successfully Undone");
+                        portfolioHandle.portfolioScene(mainStage, user);
+                    }else {
+                        undoInstructionLabel.setText("Action has become invalid due to change in system state, choose another.");
+                    }
                 }else{
                     undoInstructionLabel.setText("Invalid Input");
                 }
@@ -331,10 +333,23 @@ public class Main extends Application {
 
         final ObservableList<String> optionsCashAccounts = FXCollections.observableArrayList();
         final ObservableList<String> optionsAssetsAvailable = FXCollections.observableArrayList();
+        final ObservableList<String> optionsAssetsOwned = FXCollections.observableArrayList();
+
+        ArrayList<String> ownedEquity = new ArrayList<String>();
+
+        for (String s : myPortfolio.getSharesHeld().keySet()){
+            for (Equity e : equityHandler.getEquityMap().values()){
+
+                if (s.equals(e.getName())){
+                    ownedEquity.add( e.getTickerSymbol() );
+
+                }
+            }
+        }
 
         optionsCashAccounts.addAll(cashAccounts.keySet());
         optionsAssetsAvailable.addAll(availableAssets.keySet());
-
+        optionsAssetsOwned.addAll( ownedEquity );
 
         final ComboBox fromAccount = new ComboBox(optionsCashAccounts);
         final ComboBox toAccount = new ComboBox(optionsCashAccounts);
@@ -352,9 +367,8 @@ public class Main extends Application {
 
         final Button transFunds = new Button("Transfer");
 
-
         final ComboBox sellCashAccount = new ComboBox(optionsCashAccounts);
-        final ComboBox sellEquity = new ComboBox(optionsAssetsAvailable);
+        final ComboBox sellEquity = new ComboBox(optionsAssetsOwned);
 
         final Label sellTransactionLabel = new Label("Choose Equity to Sell");
         final Label sellEquityNameLabel = new Label("      Name: None");

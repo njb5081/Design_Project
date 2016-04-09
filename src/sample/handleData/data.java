@@ -126,44 +126,6 @@ public class  data  {
         }
     }
 
-    /*
-    * update the logger in the text file
-    * */
-    public void updateLogger(Logger log){
-        try {
-            FileOutputStream fileOut = new FileOutputStream("log.txt");
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(log);
-            out.close();
-            fileOut.close();
-        } catch (FileNotFoundException i) {
-            i.printStackTrace();
-        } catch (IOException i) {
-            i.printStackTrace();
-        }
-    }
-
-    public Logger getLog (){
-        Logger log = new Logger();
-
-        try {
-            FileInputStream fileOut = new FileInputStream("log.txt");
-            if(fileOut.available() > 0) {
-                ObjectInputStream is = new ObjectInputStream(fileOut);
-                log = (Logger)is.readObject();
-                is.close();
-            }
-        } catch (FileNotFoundException i){
-            i.printStackTrace();
-        }catch(IOException i)
-        {
-            i.printStackTrace();
-        } catch (ClassNotFoundException i){
-            i.printStackTrace();
-        }
-        return log;
-    }
-
     /**
      * update the account list in the text file
      *

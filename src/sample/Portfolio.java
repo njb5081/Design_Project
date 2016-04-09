@@ -7,11 +7,13 @@ package sample;
 import sample.Holdings.Asset;
 import sample.Holdings.CashAccount;
 import sample.Transactions.Transaction;
+import sample.Log.Logger;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import sample.handleData.handleEquity;
 /**
  * Created by Nick on 3/9/2016.
@@ -26,6 +28,8 @@ public class Portfolio implements Serializable {
     private Map<String, Integer> sharesHeld;
     private ArrayList<WatchedAsset> watchlist;
     private ArrayList<Transaction> recentTransactions;
+    private Logger log;
+
     /**
      * Constructor creates new Portfolio
      * @param userid userid that links the Portfolio to a user
@@ -37,6 +41,7 @@ public class Portfolio implements Serializable {
         this.sharesHeld = new HashMap<String, Integer>();
         this.recentTransactions = new ArrayList<Transaction>();
         this.cashAccounts = new ArrayList<CashAccount>();
+        this.log = new Logger();
 //        for (String s : importedEquities.keySet()) {
 //            sharesHeld.put(s, importedEquities.get(s));
 //            this.totalHoldings += (importedEquities.get(s) * avgSharePrices.get(s));
@@ -74,6 +79,8 @@ public class Portfolio implements Serializable {
         return sharesHeld;
     }
 
+    public Logger getLog(){return log;}
+
     public CashAccount getCashAccountByName(String name){
 
         for(CashAccount ca : getCashAccounts()){
@@ -82,6 +89,10 @@ public class Portfolio implements Serializable {
             }
         }
         return null;
+    }
+
+    public void updateLog(String description, String user){
+        log.addEntry(description, user);
     }
 
     public Transaction getActionByDate(String date){

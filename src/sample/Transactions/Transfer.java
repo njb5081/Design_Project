@@ -18,7 +18,6 @@ public class Transfer implements Serializable, Transaction {
     private CashAccount toAccount;
     private CashAccount fromAccount;
     private double amount;
-    private Logger log;
     private Portfolio port;
     private String status = "undone";
     private String transDate = "";
@@ -27,12 +26,11 @@ public class Transfer implements Serializable, Transaction {
     /*
     * Initial the Transfer object to store the information
     * */
-    public Transfer(double amount, CashAccount toAccount, CashAccount fromAccount, Logger log, Portfolio port){
+    public Transfer(double amount, CashAccount toAccount, CashAccount fromAccount, Portfolio port){
 
         this.toAccount = toAccount;
         this.fromAccount = fromAccount;
         this.amount = amount;
-        this.log = log;
         this.port = port;
 
     }
@@ -59,7 +57,7 @@ public class Transfer implements Serializable, Transaction {
                             " to " +
                             toAccount.toString();
 
-        log.addEntry(description, port.getUserID());
+        port.getLog().addEntry(description, port.getUserID());
 
     }
 
@@ -68,7 +66,7 @@ public class Transfer implements Serializable, Transaction {
     * */
     public void undo(){
 
-        log.addEntry("This transaction has been " +
+        port.getLog().addEntry("This transaction has been " +
                      status +
                      ": Transfer $" + Double.toString(amount) +
                      " from " +

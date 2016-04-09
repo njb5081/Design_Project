@@ -18,18 +18,16 @@ public class SellEquity implements Serializable, Transaction{
     private CashAccount funds;
     private Asset asset;
     private int amount;
-    private Logger log;
     private Portfolio port;
     private String status = "undone";
     private String transDate = "";
     private String description = "";
 
-    public SellEquity(int amount, CashAccount funds, Asset asset, Logger log, Portfolio port){
+    public SellEquity(int amount, CashAccount funds, Asset asset, Portfolio port){
 
         this.funds = funds;
         this.asset = asset;
         this.amount = amount;
-        this.log = log;
         this.port = port;
 
     }
@@ -58,12 +56,12 @@ public class SellEquity implements Serializable, Transaction{
                             " deposited into " + funds.toString() +
                             " cash account";
 
-        log.addEntry(description, port.getUserID());
+        port.getLog().addEntry(description, port.getUserID());
     }
 
     public void undo(){
 
-        log.addEntry("This transaction has been " +
+        port.getLog().addEntry("This transaction has been " +
                         status +
                         ": Sold " +
                         Integer.toString(amount) +

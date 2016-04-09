@@ -17,18 +17,16 @@ public class BuyEquity implements Serializable, Transaction {
     private CashAccount funds;
     private Asset asset;
     private int amount;
-    private Logger log;
     private Portfolio port;
     private String status = "undone";
     private String transDate = "";
     private String description = "";
 
-    public BuyEquity(int amount, CashAccount funds, Asset asset, Logger log, Portfolio port){
+    public BuyEquity(int amount, CashAccount funds, Asset asset, Portfolio port){
 
         this.funds = funds;
         this.asset = asset;
         this.amount = amount;
-        this.log = log;
         this.port = port;
 
     }
@@ -57,13 +55,13 @@ public class BuyEquity implements Serializable, Transaction {
                             " cash account";
 
         //create log entry
-        log.addEntry(description, port.getUserID());
+        port.updateLog(description, port.getUserID());
     }
 
     public void undo(){
 
         //create log entry
-        log.addEntry("This transaction has been " +
+        port.updateLog("This transaction has been " +
                         status +
                         ": Sold " +
                         Integer.toString(amount) +

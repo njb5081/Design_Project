@@ -63,7 +63,6 @@ public class Main extends Application {
     Portfolio port;
     Portfolio tempPort;
     MarketSimulation marketSim;
-    private Logger log = userData.getLog();
 
     Map<String, List<String>> indexMap = equityHandler.getIndexMap();
     Map<String, Equity> equityMap = equityHandler.getEquityMap();
@@ -79,6 +78,15 @@ public class Main extends Application {
      * @param mainStage stage for the window
      */
     public void loggerScene(final Stage mainStage){
+
+        List<Portfolio> portList = userData.listOfPortfolio();
+        Portfolio myPortfolio = portList.get(0);
+        for (Portfolio p : portList) {
+            if (p.getUserID().equals(user)){
+                myPortfolio = p;
+            }
+        }
+
         window = mainStage;
         window.setTitle("Log");
 
@@ -106,10 +114,10 @@ public class Main extends Application {
 
         final HashMap<String, Entry> entries =  new HashMap<String, Entry>();
 
-        for(int i = 0; i < log.getEntries().size(); i++){
-            //entries.put(log.getEntries().get(i).getUser(), log.getEntries().get(i));
-            if(log.getEntries().get(i).getUser().equals(user)){
-                entries.put(log.getEntries().get(i).getDate(), log.getEntries().get(i));
+        for(int i = 0; i < myPortfolio.getLog().getEntries().size(); i++){
+
+            if(myPortfolio.getLog().getEntries().get(i).getUser().equals(user)){
+                entries.put(myPortfolio.getLog().getEntries().get(i).getDate(), myPortfolio.getLog().getEntries().get(i));
             }
 
         }
@@ -220,7 +228,6 @@ public class Main extends Application {
                 }
                 if(chooseActionBox.getValue() != null) {
                     myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).undo();
-                    userData.updateLogger(log);
                     userData.updatePortfolioList(portList);
                     undoInstructionLabel.setText("Action Successfully Undone");
                     portfolioHandle.portfolioScene(mainStage, user);
@@ -411,7 +418,7 @@ public class Main extends Application {
 
                     if(myPortfolioInner.getSharesHeld().get(tempSellEquity.getName()) >= tempAmount) {
 
-                        SellEquity equitySale = new SellEquity(tempAmount, myPortfolioInner.getCashAccountByName(tempSellAccount.toString()), tempSellEquity, log, myPortfolioInner);
+                        SellEquity equitySale = new SellEquity(tempAmount, myPortfolioInner.getCashAccountByName(tempSellAccount.toString()), tempSellEquity, myPortfolioInner);
                         equitySale.execute();
 
                         sellTransactionLabel.setText("Sale Successful");
@@ -420,7 +427,6 @@ public class Main extends Application {
                         sellCashAccountBalanceLabel.setText("      Balance: $" + String.format("%.2f", tempSellAccount.getBalance()));
                         sellAccountOpenDateLabel.setText("      Open Date: " + tempSellAccount.getOpenDate());
                         sellEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(tempSellEquity.getName())));
-                        userData.updateLogger(log);
                         userData.updatePortfolioList(portList);
                         portfolioHandle.portfolioScene(mainStage, user);
 
@@ -459,7 +465,7 @@ public class Main extends Application {
 
                     if(tempBuyAccount.getBalance() >= tempBuyEquity.getSharePrice() * tempAmount) {
 
-                        Transaction equitySale = new BuyEquity(tempAmount, myPortfolioInner.getCashAccountByName(tempBuyAccount.toString()), tempBuyEquity, log,  myPortfolioInner);
+                        Transaction equitySale = new BuyEquity(tempAmount, myPortfolioInner.getCashAccountByName(tempBuyAccount.toString()), tempBuyEquity,  myPortfolioInner);
                         equitySale.execute();
 
                         cashAccounts.put(buyCashAccount.getValue().toString(), tempBuyAccount);
@@ -470,7 +476,6 @@ public class Main extends Application {
                         buyCashAccountBalanceLabel.setText("      Balance: $" + String.format("%.2f", cashAccounts.get(buyCashAccount.getValue().toString()).getBalance()));
                         buyAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(buyCashAccount.getValue().toString()).getOpenDate());
                         buyEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(tempBuyEquity.getName())));
-                        userData.updateLogger(log);
                         userData.updatePortfolioList(portList);
                         portfolioHandle.portfolioScene(mainStage, user);
 
@@ -510,14 +515,13 @@ public class Main extends Application {
 
                         Transfer cashTransfer = new Transfer(tempAmount, myPortfolioInner.getCashAccountByName((toAccount.getValue().toString())),
                                                                 myPortfolioInner.getCashAccountByName((fromAccount.getValue().toString())),
-                                                                log, myPortfolioInner);
+                                                                myPortfolioInner);
                         cashTransfer.execute();
 
                         toAccountNameLabel.setText("      Name: " + tempToAccount.toString());
                         toAccountBalanceLabel.setText("      Balance: $" + String.format("%.2f", tempToAccount.getBalance()));
                         fromAccountNameLabel.setText("      Name: " + tempFromAccount.toString());
                         fromAccountBalanceLabel.setText("      Balance: $" + String.format("%.2f", tempFromAccount.getBalance()));
-                        userData.updateLogger(log);
                         userData.updatePortfolioList(portList);
 
                         transFundsLabel.setText("Transfer Successful");

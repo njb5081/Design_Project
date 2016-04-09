@@ -104,5 +104,12 @@ public class SellEquity implements Serializable, Transaction{
         }
     }
 
+    public Boolean isValid(){
+
+        if(!port.getCashAccounts().contains(funds)){
+            return false;
+        }
+        return true;
+    }
 
 }

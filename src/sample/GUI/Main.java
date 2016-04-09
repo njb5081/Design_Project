@@ -225,14 +225,14 @@ public class Main extends Application {
                     }
                 }
                 if(chooseActionBox.getValue() != null) {
-//                    if(myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).isValid()) {
-//                        myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).undo();
-//                        userData.updatePortfolioList(portList);
-//                        undoInstructionLabel.setText("Action Successfully Undone");
-//                        portfolioHandle.portfolioScene(mainStage, user);
-//                    }else {
-//                        undoInstructionLabel.setText("Action has become invalid due to change in system state, choose another.");
-//                    }
+                    if(myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).isValid()) {
+                        myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).undo();
+                        userData.updatePortfolioList(portList);
+                        undoInstructionLabel.setText("Action Successfully Undone");
+                        portfolioHandle.portfolioScene(mainStage, user);
+                    }else {
+                        undoInstructionLabel.setText("Action has become invalid due to change in system state, choose another.");
+                    }
                 }else{
                     undoInstructionLabel.setText("Invalid Input");
                 }
@@ -335,9 +335,22 @@ public class Main extends Application {
         final ObservableList<String> optionsAssetsAvailable = FXCollections.observableArrayList();
         final ObservableList<String> optionsAssetsOwned = FXCollections.observableArrayList();
 
+        ArrayList<String> ownedEquity = new ArrayList<String>();
+
+        for (String s : myPortfolio.getSharesHeld().keySet()){
+            for (Equity e : equityHandler.getEquityMap().values()){
+
+                if (s.equals(e.getName())){
+                    ownedEquity.add( e.getTickerSymbol() );
+
+                }
+            }
+        }
+
         optionsCashAccounts.addAll(cashAccounts.keySet());
         optionsAssetsAvailable.addAll(availableAssets.keySet());
-   //     optionsAssetsOwned.addAll( myPortfolio.getSharesHeldTickerSymbols());
+        optionsAssetsOwned.addAll( myPortfolio.getSharesHeldTickerSymbols());
+        optionsAssetsOwned.addAll( ownedEquity );
 
 
         final ComboBox fromAccount = new ComboBox(optionsCashAccounts);
@@ -1067,7 +1080,6 @@ public class Main extends Application {
             }
         });
         grid.add(confirm, 1, 1);
-
 
         window.setScene(deleteAccScene);
         window.show();

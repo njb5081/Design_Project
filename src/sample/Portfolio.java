@@ -26,6 +26,7 @@ public class Portfolio implements Serializable {
     private ArrayList<CashAccount> cashAccounts;
     private CashAccount largest;
     private Map<String, Integer> sharesHeld;
+    private ArrayList<String> sharesHeldTickerSymbols;
     private ArrayList<WatchedAsset> watchlist;
     private ArrayList<Transaction> recentTransactions;
     private Logger log;
@@ -41,6 +42,7 @@ public class Portfolio implements Serializable {
         this.sharesHeld = new HashMap<String, Integer>();
         this.recentTransactions = new ArrayList<Transaction>();
         this.cashAccounts = new ArrayList<CashAccount>();
+        this.sharesHeldTickerSymbols = new ArrayList<String>();
         this.log = new Logger();
 //        for (String s : importedEquities.keySet()) {
 //            sharesHeld.put(s, importedEquities.get(s));
@@ -117,11 +119,14 @@ public class Portfolio implements Serializable {
         return recentTransactionsString;
     }
 
+    public ArrayList<String> getSharesHeldTickerSymbols(){ return sharesHeldTickerSymbols; };
+
     public void addEquity(Asset asset, int amount) {
         if(sharesHeld.keySet().contains(asset.getName())){
             sharesHeld.put(asset.getName(), sharesHeld.get(asset.getName()) + amount);
         }else{
             sharesHeld.put(asset.getName(), amount);
+            sharesHeldTickerSymbols.add(asset.getTickerSymbol());
         }
     }
     public void subtractEquity(Asset asset, int amount) {

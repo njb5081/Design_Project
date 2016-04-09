@@ -5,6 +5,8 @@ package sample.Transactions;
  */
 public interface Transaction {
     String returnTransDate();
+    String returnDescription();
+    String returnStatus();
     void execute();
     void undo();
 

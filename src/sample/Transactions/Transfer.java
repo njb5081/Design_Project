@@ -19,21 +19,20 @@ public class Transfer implements Serializable, Transaction {
     private CashAccount fromAccount;
     private double amount;
     private Logger log;
-    private String user;
     private Portfolio port;
-    private String status = "redone";
+    private String status = "undone";
     private String transDate = "";
+    private String description = "";
 
     /*
     * Initial the Transfer object to store the information
     * */
-    public Transfer(double amount, CashAccount toAccount, CashAccount fromAccount, Logger log, String user, Portfolio port){
+    public Transfer(double amount, CashAccount toAccount, CashAccount fromAccount, Logger log, Portfolio port){
 
         this.toAccount = toAccount;
         this.fromAccount = fromAccount;
         this.amount = amount;
         this.log = log;
-        this.user = user;
         this.port = port;
 
     }
@@ -53,12 +52,14 @@ public class Transfer implements Serializable, Transaction {
 
         transDate = date.toString();
 
-        log.addEntry("Transfer $" +
-                     Double.toString(amount) +
-                     " from " +
-                     fromAccount.toString() +
-                     " to " +
-                     toAccount.toString(), user);
+        this.description = "Transfer $" +
+                            Double.toString(amount) +
+                            " from " +
+                            fromAccount.toString() +
+                            " to " +
+                            toAccount.toString();
+
+        log.addEntry(description, port.getUserID());
 
     }
 
@@ -67,30 +68,28 @@ public class Transfer implements Serializable, Transaction {
     * */
     public void undo(){
 
-        if(status.equals("redone")){
-
-            toAccount.subtractFunds(amount);
-            fromAccount.addFunds(amount);
-            status = "undone";
-
-        }else if(status.equals("undone")){
-
-            toAccount.addFunds(amount);
-            fromAccount.subtractFunds(amount);
-            status = "redone";
-
-        }
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Date date = new Date();
-
         log.addEntry("This transaction has been " +
                      status +
                      ": Transfer $" + Double.toString(amount) +
                      " from " +
                      fromAccount.toString() +
                      " to " +
-                     toAccount.toString(), user);
+                     toAccount.toString(),
+                     port.getUserID());
+
+        if(status.equals("undone")){
+
+            toAccount.subtractFunds(amount);
+            fromAccount.addFunds(amount);
+            status = "redone";
+
+        }else if(status.equals("redone")){
+
+            toAccount.addFunds(amount);
+            fromAccount.subtractFunds(amount);
+            status = "undone";
+
+        }
 
     }
 
@@ -98,5 +97,14 @@ public class Transfer implements Serializable, Transaction {
         return transDate;
     }
 
+    public String returnDescription(){ return description; }
+
+    public String returnStatus(){
+        if(status.equals("undone")){
+            return "Undo";
+        }else{
+            return "Redo";
+        }
+    }
 
 }

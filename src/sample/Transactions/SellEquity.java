@@ -20,8 +20,9 @@ public class SellEquity implements Serializable, Transaction{
     private int amount;
     private Logger log;
     private Portfolio port;
-    private String status = "redone";
+    private String status = "undone";
     private String transDate = "";
+    private String description = "";
 
     public SellEquity(int amount, CashAccount funds, Asset asset, Logger log, Portfolio port){
 
@@ -49,36 +50,18 @@ public class SellEquity implements Serializable, Transaction{
 
         transDate = date.toString();
 
-        log.addEntry("Sold " +
-                Integer.toString(amount) +
-                " shares of " + asset.getName() +
-                " at " +
-                Double.toString(asset.getSharePrice()) +
-                " deposited into " + funds.toString() +
-                " cash account",
-                port.getUserID());
+        this.description = "Sold " +
+                            Integer.toString(amount) +
+                            " shares of " + asset.getName() +
+                            " at " +
+                            Double.toString(asset.getSharePrice()) +
+                            " deposited into " + funds.toString() +
+                            " cash account";
+
+        log.addEntry(description, port.getUserID());
     }
 
     public void undo(){
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Date date = new Date();
-
-        if(status.equals("redone")){
-
-            funds.subtractFunds(asset.getSharePrice() * ((double)amount));
-            port.updateCashAccount(funds);
-            port.addEquity(asset, amount);
-            status = "undone";
-
-        }else if(status.equals("undone")){
-
-            funds.addFunds(asset.getSharePrice() * ((double)amount));
-            port.updateCashAccount(funds);
-            port.subtractEquity(asset, amount);
-            status = "redone";
-
-        }
 
         log.addEntry("This transaction has been " +
                         status +
@@ -93,10 +76,16 @@ public class SellEquity implements Serializable, Transaction{
 
         if(status.equals("undone")){
 
+            funds.subtractFunds(asset.getSharePrice() * ((double)amount));
+            port.updateCashAccount(funds);
+            port.addEquity(asset, amount);
             status = "redone";
 
         }else if(status.equals("redone")){
 
+            funds.addFunds(asset.getSharePrice() * ((double)amount));
+            port.updateCashAccount(funds);
+            port.subtractEquity(asset, amount);
             status = "undone";
 
         }
@@ -105,6 +94,16 @@ public class SellEquity implements Serializable, Transaction{
 
     public String returnTransDate(){
         return transDate;
+    }
+
+    public String returnDescription(){ return description; }
+
+    public String returnStatus(){
+        if(status.equals("undone")){
+            return "Undo";
+        }else{
+            return "Redo";
+        }
     }
 
 

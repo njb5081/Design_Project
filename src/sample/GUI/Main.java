@@ -169,6 +169,9 @@ public class Main extends Application {
         undoGrid.setVgap(1);
         undoGrid.setPadding(new Insets(25, 25, 25, 25));
 
+        final Label undoInstructionLabel = new Label("Choose Action to Undo");
+        final Label description = new Label("None Selected");
+
         final ObservableList<String> undoableActions = FXCollections.observableArrayList();
         undoableActions.addAll(myPortfolio.getRecentTransactions());
 
@@ -176,7 +179,24 @@ public class Main extends Application {
 
         final ComboBox chooseActionBox = new ComboBox(undoableActions);
 
-        final Label undoInstructionLabel = new Label("Choose Action to Undo");
+        chooseActionBox.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio myPortfolioInner = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(user)){
+                        myPortfolioInner = p;
+                    }
+
+                   description.setText( myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).returnStatus() +
+                                        ": " +
+                                        myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).returnDescription() );
+                }
+
+            }
+        });
 
         portfolioButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -185,9 +205,9 @@ public class Main extends Application {
             }
         });
 
-        final Button undoButtion = new Button("Undo Selected Action");
+        final Button undoButton = new Button("Undo Selected Action");
 
-        undoButtion.setOnAction(new EventHandler<ActionEvent>() {
+        undoButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
 
@@ -202,6 +222,10 @@ public class Main extends Application {
                     myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).undo();
                     userData.updateLogger(log);
                     userData.updatePortfolioList(portList);
+                    undoInstructionLabel.setText("Action Successfully Undone");
+                    portfolioHandle.portfolioScene(mainStage, user);
+                }else{
+                    undoInstructionLabel.setText("Invalid Input");
                 }
 
             }
@@ -223,12 +247,15 @@ public class Main extends Application {
 
         box2Undo.getChildren().add(chooseActionBox);
 
-        box5Undo.getChildren().add(undoButtion);
+        box3Undo.getChildren().add(description);
+
+        box5Undo.getChildren().add(undoButton);
         box5Undo.getChildren().add(portfolioButton);
 
         undoGrid.add(box1Undo, 10, 10);
         undoGrid.add(box2Undo, 10, 20);
-        undoGrid.add(box5Undo, 10, 30);
+        undoGrid.add(box3Undo, 10, 30);
+        undoGrid.add(box5Undo, 10, 40);
 
         sceneUndo = new Scene(undoGrid, 400, 500);
         window.setScene(sceneUndo);
@@ -395,6 +422,7 @@ public class Main extends Application {
                         sellEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(tempSellEquity.getName())));
                         userData.updateLogger(log);
                         userData.updatePortfolioList(portList);
+                        portfolioHandle.portfolioScene(mainStage, user);
 
                     } else{
                         sellTransactionLabel.setText("Invalid Input");
@@ -444,6 +472,7 @@ public class Main extends Application {
                         buyEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(tempBuyEquity.getName())));
                         userData.updateLogger(log);
                         userData.updatePortfolioList(portList);
+                        portfolioHandle.portfolioScene(mainStage, user);
 
                     } else{
                         buyTransactionLabel.setText("Invalid Input");
@@ -479,7 +508,9 @@ public class Main extends Application {
 
                     if(tempFromAccount.getBalance() >= tempAmount) {
 
-                        Transfer cashTransfer = new Transfer(tempAmount, tempToAccount, tempFromAccount, log, user, myPortfolioInner);
+                        Transfer cashTransfer = new Transfer(tempAmount, myPortfolioInner.getCashAccountByName((toAccount.getValue().toString())),
+                                                                myPortfolioInner.getCashAccountByName((fromAccount.getValue().toString())),
+                                                                log, myPortfolioInner);
                         cashTransfer.execute();
 
                         toAccountNameLabel.setText("      Name: " + tempToAccount.toString());
@@ -490,6 +521,7 @@ public class Main extends Application {
                         userData.updatePortfolioList(portList);
 
                         transFundsLabel.setText("Transfer Successful");
+                        portfolioHandle.portfolioScene(mainStage, user);
 
                     } else{
                         transFundsLabel.setText("Invalid Input");

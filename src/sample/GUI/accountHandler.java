@@ -33,7 +33,7 @@ public class accountHandler {
      */
     public void loginScene(Stage mainStage){
         window = mainStage;
-        window.setTitle("Login page");
+        window.setTitle("Login Page");
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -41,20 +41,20 @@ public class accountHandler {
         grid.setVgap(15);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        scene1 = new Scene(grid, 300, 300);
+        scene1 = new Scene(grid, 500, 300);
 
 
 
-        Text sceneTitle = new Text("welcome");
+        Text sceneTitle = new Text("Welcome");
         sceneTitle.setFont(Font.font("Arial"));
         grid.add(sceneTitle, 0 , 0 ,2 ,1);
 
         //user input
-        final Label username = new Label("username");
+        final Label username = new Label("Username");
         grid.add(username, 0, 1);
         final TextField userField = new TextField();
         grid.add(userField, 1, 1);
-        final Label password = new Label("password");
+        final Label password = new Label("Password");
         grid.add(password, 0, 2);
         final PasswordField pwBox = new PasswordField();
         grid.add(pwBox, 1, 2);
@@ -76,7 +76,7 @@ public class accountHandler {
                 //if the user account has been created, then the user can login
                 if(userData.isUserExist(loginUser)){
                     message.setFill(Color.FIREBRICK);
-                    message.setText("successful sign in");
+                    message.setText("Sucessful Login");
                     portfolioHandle.portfolioScene(window, loginUser.username());
                 } else {
 
@@ -89,7 +89,7 @@ public class accountHandler {
         grid.add(box, 1 , 4);
 
         //add register account
-        Label noAccount = new Label("need new Account?");
+        Label noAccount = new Label("Need an account?");
         noAccount.autosize();
         grid.add(noAccount, 0, 5);
         Button register = new Button("Register");
@@ -117,7 +117,7 @@ public class accountHandler {
     public void registerScene(Stage mainStage){
         //scene 2 register
         window = mainStage;
-        window.setTitle("Register page");
+        window.setTitle("Register Page");
         //window.setScene(scene2);
         GridPane grid2 = new GridPane();
         grid2.setAlignment(Pos.CENTER);
@@ -125,22 +125,22 @@ public class accountHandler {
         grid2.setVgap(15);
         grid2.setPadding(new Insets(25, 25, 25, 25));
 
-        scene2 = new Scene(grid2, 300, 300);
+        scene2 = new Scene(grid2, 500, 300);
 
         Text registerSceneTitle = new Text("");
         registerSceneTitle.setFont(Font.font("Arial"));
         grid2.add(registerSceneTitle, 0 , 0 ,2 ,1);
 
         //user input
-        Label username = new Label("username");
+        Label username = new Label("Username");
         grid2.add(username, 0, 1);
         final TextField userField = new TextField();
         grid2.add(userField, 1, 1);
-        final Label password = new Label("password");
+        final Label password = new Label("Password");
         grid2.add(password, 0, 2);
         final PasswordField pwBox = new PasswordField();
         grid2.add(pwBox, 1, 2);
-        Label confirm = new Label("confirm password");
+        Label confirm = new Label("Confirm Password");
         grid2.add(confirm, 0, 3);
         final PasswordField confirmPw = new PasswordField();
         grid2.add(confirmPw, 1, 3);
@@ -153,22 +153,22 @@ public class accountHandler {
         HBox box = new HBox(10);
         box.setAlignment(Pos.BOTTOM_RIGHT);
 
-//        action for button
+        //action for button
         register.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //confirm the password for registation
+                //confirm the password for registration
                 if (pwBox.getText().equals(confirmPw.getText())){
                     User newAccount = new User(userField.getText(),pwBox.getText());
                     //check whether someone has used this username or not
                     if(!userData.usernameExist(newAccount.username())) {
                         userData.saveAccount(newAccount);
-                        message.setText("register success");
+                        message.setText("Successful Registration");
                     } else {
-                        message.setText("Account has been created");
+                        message.setText("Username is taken");
                     }
                 } else {
-                    message.setText("please confirm the password");
+                    message.setText("Please confirm the password");
 
                 }
             }
@@ -177,10 +177,10 @@ public class accountHandler {
         grid2.add(box, 1 , 4);
 
         //add register account
-        Label needLogin = new Label("need Login?");
+        Label needLogin = new Label("Have an account?");
         needLogin.autosize();
         grid2.add(needLogin, 0, 6);
-        Button login = new Button("login");
+        Button login = new Button("Login");
         //move to the login scene
         login.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -196,6 +196,5 @@ public class accountHandler {
         window.setScene(scene2);
         window.show();
     }
-
 
 }

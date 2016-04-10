@@ -92,6 +92,7 @@ public class portfolioHandler {
         transBox.setAlignment(Pos.TOP_LEFT);
         grid.add(transactionButton, 0, i);
         //TRANSACTION NAVIGATION END
+        i++;
 
         //Create a button that leads to the page to add an account
         Button addAccount = new Button("Add a Cash Account");
@@ -146,7 +147,7 @@ public class portfolioHandler {
                 main.simulationScene(window, port);
             }
         });
-        i++;
+        //i++;
 
         window.setScene(portScene);
         window.show();

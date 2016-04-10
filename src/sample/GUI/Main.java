@@ -540,7 +540,7 @@ public class Main extends Application {
         final Label searchTickerSymbolSell = new Label("Enter ticker symbol");
         final Label searchEquityNameSell = new Label("Enter Equity name");
         final TextField searchTickerSell = new TextField();
-        TextField searchEquitySell = new TextField();
+        final TextField searchEquitySell = new TextField();
         final ComboBox optionSell = new ComboBox(optionSearch);
         Button searchForSell = new Button("Search");
 
@@ -548,7 +548,7 @@ public class Main extends Application {
         final Label searchTickerSymbol = new Label("Enter ticker symbol");
         final Label searchEquityName = new Label("Enter Equity name");
         final TextField searchTicker = new TextField();
-        TextField searchEquity = new TextField();
+        final TextField searchEquity = new TextField();
         final ComboBox option = new ComboBox(optionSearch);
         Button search = new Button("Search");
 
@@ -565,7 +565,7 @@ public class Main extends Application {
                 if(optionSell.getValue() != null) {
                     optionSearch = (String) optionSell.getValue();
                 }
-                searchSymbolSellMatch = handler.searchEquity(searchTickerSell.getText().toUpperCase(),searchEquityNameSell.getText(),optionSearch,listOfSymbol);
+                searchSymbolSellMatch = handler.searchEquity(searchTickerSell.getText().toUpperCase(),searchEquitySell.getText(),optionSearch,listOfSymbol);
                 final ObservableList<String> list = FXCollections.observableArrayList();
                 list.addAll(searchSymbolSellMatch);
                 sellEquity.setItems(list);
@@ -610,7 +610,7 @@ public class Main extends Application {
                 if(option.getValue() != null) {
                      optionSearch = (String) option.getValue();
                 }
-                searchSymbolMatch = handler.searchEquity(searchTicker.getText().toUpperCase(),searchEquityName.getText(),optionSearch,listOfSymbol);
+                searchSymbolMatch = handler.searchEquity(searchTicker.getText().toUpperCase(),searchEquity.getText(),optionSearch,listOfSymbol);
                 final ObservableList<String> list = FXCollections.observableArrayList();
                 list.addAll(searchSymbolMatch);
                 buyEquity.setItems(list);
@@ -1340,8 +1340,8 @@ public class Main extends Application {
         }
         //equityHandler.searchEquity("FO","","begin with");
         equityHandler.parseEquityFile();
-        equityHandler.updateSharePrice();
-        equityHandler.updateSharePriceTimer(10);
+        //equityHandler.updateSharePrice();
+        //equityHandler.updateSharePriceTimer(10);
         launch(args);
     }
 }

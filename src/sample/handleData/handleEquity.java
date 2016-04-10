@@ -16,14 +16,14 @@ import java.util.*;
  * Created by minhduong on 4/3/16.
  * this class will handle parse the Equity file and update the current price of equity from the webservice
  */
-public class handleEquity implements ImportInfo{
+public class handleEquity {
 
     private shareEquity compareMachine;
     static data accountHandler = new data();
-    /*k
-* take the equities.csv file and parse the information into Equity object
-* Create 2 hashmap to store information about the Equity and its index or sector
-*/
+    /*
+    * take the equities.csv file and parse the information into Equity object
+    * Create 2 hashmap to store information about the Equity and its index or sector
+    */
     public void parseEquityFile(){
         //map contain the sector or index with the list of ticket symbol
         Map<String, List<String>> indexMap = new HashMap<String, List<String>>();

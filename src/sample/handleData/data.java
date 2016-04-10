@@ -46,12 +46,12 @@ public class  data  {
     */
     public void saveAccount(User newAccount){
 
-        //check wthether the account has been created or not
+        //check whether the account has been created or not
         if (!isUserExist(newAccount)) {
             //get the list of User account from the text file
             userList = this.listOfUser();
             userList.add(newAccount);
-            //open the text file and smave the new account
+            //open the text file and save the new account
             this.updateAccountList(userList);
             //create new PortfolioAccount
             this.savePortfolioAccount(newAccount.username());

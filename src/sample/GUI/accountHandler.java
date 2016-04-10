@@ -218,7 +218,7 @@ public class accountHandler {
         grid2.add(registerSceneTitle, 0 , 0 ,2 ,1);
 
         //user input
-        Label timer = new Label("SetTimer");
+        Label timer = new Label("Set Timer (seconds): ");
         grid2.add(timer, 0, 1);
         final TextField timeField= new TextField();
         grid2.add(timeField, 1, 1);

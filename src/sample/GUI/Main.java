@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import sample.GUI.accountHandler;
+import sun.jvm.hotspot.oops.Mark;
 /*
 * This class will display all the GUI for the system
 * */
@@ -177,19 +178,34 @@ public class Main extends Application {
         final Label equityOwnedLabel = new Label("      Amount Owned: None");
 
         final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
-        final HashMap<String, Equity> availableAssets = new HashMap<String, Equity>();
+        final HashMap<String, Asset> availableAssets = new HashMap<String, Asset>();
 
         for (int i = 0; i < myPortfolio.getCashAccounts().size(); i++){
             cashAccounts.put(myPortfolio.getCashAccounts().get(i).toString(),
                     myPortfolio.getCashAccounts().get(i));
         }
 
-        for (String s : myPortfolio.getSharesHeld().keySet()){
-            for (Equity e : equityHandler.getEquityMap().values()){
-                if (s.equals(e.getName())){
-                    availableAssets.put(e.getTickerSymbol(), e);
-                }
+        for(String equityName : equityMap.keySet()){
+
+            if(myPortfolio.getSharesHeldTickerSymbols().contains(equityName)) {
+                availableAssets.put(equityName, equityMap.get(equityName));
             }
+
+        }
+
+        for(String indexName : indexMap.keySet()){
+
+            ArrayList<Equity> tempEquities = new ArrayList<Equity>();
+
+            for(String equityName : indexMap.get(indexName)){
+                tempEquities.add(equityMap.get(equityName));
+            }
+
+            Asset tempMarketAverage = new MarketAverage(indexName, tempEquities);
+            if(myPortfolio.getSharesHeldTickerSymbols().contains(tempMarketAverage.getName())) {
+                availableAssets.put(tempMarketAverage.getName(), tempMarketAverage);
+            }
+
         }
 
         final ObservableList<String> optionsCashAccounts = FXCollections.observableArrayList();
@@ -224,7 +240,7 @@ public class Main extends Application {
                 }
 
                 equityNameLabel.setText("      Name: " + equityComboBox.getValue().toString());
-                equityValueLabel.setText("      Value: $" + availableAssets.get(equityComboBox.getValue().toString()).getSharePrice());
+                equityValueLabel.setText("      Value: $" + String.format("%.2f",availableAssets.get(equityComboBox.getValue().toString()).getSharePrice()));
                 try {
                     equityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(availableAssets.get(equityComboBox.getValue().toString()).getName())));
                 } catch(NullPointerException e){
@@ -479,6 +495,14 @@ public class Main extends Application {
 
                 }
             }
+
+            for (String  a : equityHandler.getIndexMap().keySet()){
+
+                if (s.equals(a)){
+                    ownedEquity.add( a );
+
+                }
+            }
         }
 
         optionsCashAccounts.addAll(cashAccounts.keySet());
@@ -523,7 +547,7 @@ public class Main extends Application {
         final Label searchTickerSymbolSell = new Label("Enter ticker symbol");
         final Label searchEquityNameSell = new Label("Enter Equity name");
         final TextField searchTickerSell = new TextField();
-        TextField searchEquitySell = new TextField();
+        final TextField searchEquitySell = new TextField();
         final ComboBox optionSell = new ComboBox(optionSearch);
         Button searchForSell = new Button("Search");
 
@@ -531,7 +555,7 @@ public class Main extends Application {
         final Label searchTickerSymbol = new Label("Enter ticker symbol");
         final Label searchEquityName = new Label("Enter Equity name");
         final TextField searchTicker = new TextField();
-        TextField searchEquity = new TextField();
+        final TextField searchEquity = new TextField();
         final ComboBox option = new ComboBox(optionSearch);
         Button search = new Button("Search");
 
@@ -548,7 +572,7 @@ public class Main extends Application {
                 if(optionSell.getValue() != null) {
                     optionSearch = (String) optionSell.getValue();
                 }
-                searchSymbolSellMatch = handler.searchEquity(searchTickerSell.getText().toUpperCase(),searchEquityNameSell.getText().toUpperCase(),optionSearch,listOfSymbol);
+                searchSymbolSellMatch = handler.searchEquity(searchTickerSell.getText().toUpperCase(),searchEquitySell.getText(),optionSearch,listOfSymbol);
                 final ObservableList<String> list = FXCollections.observableArrayList();
                 list.addAll(searchSymbolSellMatch);
                 sellEquity.setItems(list);
@@ -587,11 +611,13 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 String optionSearch = "";
                 handler = new handleEquity();
-                List<String> listOfSymbol = new ArrayList<String>(equityHandler.getEquityMap().keySet());
+                List<String> listOfSymbol = new ArrayList<String>();
+                listOfSymbol.addAll(indexMap.keySet());
+                listOfSymbol.addAll(equityMap.keySet());
                 if(option.getValue() != null) {
                      optionSearch = (String) option.getValue();
                 }
-                searchSymbolMatch = handler.searchEquity(searchTicker.getText().toUpperCase(),searchEquityName.getText().toUpperCase(),optionSearch,listOfSymbol);
+                searchSymbolMatch = handler.searchEquity(searchTicker.getText().toUpperCase(),searchEquity.getText(),optionSearch,listOfSymbol);
                 final ObservableList<String> list = FXCollections.observableArrayList();
                 list.addAll(searchSymbolMatch);
                 buyEquity.setItems(list);
@@ -800,7 +826,7 @@ public class Main extends Application {
                 }
 
                 buyEquityNameLabel.setText("      Name: " + buyEquity.getValue().toString());
-                buyEquityValueLabel.setText("      Value: $" + availableAssets.get(buyEquity.getValue().toString()).getSharePrice());
+                buyEquityValueLabel.setText("      Value: $" + String.format("%.2f", availableAssets.get(buyEquity.getValue().toString()).getSharePrice()));
                 try {
                     buyEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(availableAssets.get(buyEquity.getValue().toString()).getName())));
                 } catch(NullPointerException e){
@@ -822,7 +848,7 @@ public class Main extends Application {
                 }
 
                 sellEquityNameLabel.setText("      Name: " + sellEquity.getValue().toString());
-                sellEquityValueLabel.setText("      Value: $" + availableAssets.get(sellEquity.getValue().toString()).getSharePrice());
+                sellEquityValueLabel.setText("      Value: $" + String.format("%.2f", availableAssets.get(sellEquity.getValue().toString()).getSharePrice()));
                 try {
                     sellEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(availableAssets.get(sellEquity.getValue().toString()).getName())));
                 } catch(NullPointerException e){

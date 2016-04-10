@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -155,6 +156,18 @@ public class portfolioHandler {
             @Override
             public void handle(ActionEvent event) {
                 main.viewHoldingsScene(window);
+            }
+        });
+
+        i++;
+
+        Label file = new Label("Enter filename to import");
+        TextField filename = new TextField();
+        Button importFile = new Button("import");
+        importFile.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
             }
         });
 

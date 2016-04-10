@@ -16,14 +16,14 @@ import java.util.*;
  * Created by minhduong on 4/3/16.
  * this class will handle parse the Equity file and update the current price of equity from the webservice
  */
-public class handleEquity implements ImportInfo{
+public class handleEquity {
 
     private shareEquity compareMachine;
     static data accountHandler = new data();
-    /*k
-* take the equities.csv file and parse the information into Equity object
-* Create 2 hashmap to store information about the Equity and its index or sector
-*/
+    /*
+    * take the equities.csv file and parse the information into Equity object
+    * Create 2 hashmap to store information about the Equity and its index or sector
+    */
     public void parseEquityFile(){
         //map contain the sector or index with the list of ticket symbol
         Map<String, List<String>> indexMap = new HashMap<String, List<String>>();
@@ -173,7 +173,7 @@ public class handleEquity implements ImportInfo{
                             if (!childNodes.item(0).getTextContent().trim().isEmpty()) {
                                 temporaryEquity.setSharePrice((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
                                 mapNeedUpdate.put(ticketSymbol, temporaryEquity);
-                                System.out.println((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
+                                //System.out.println((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
                             }
                         }
                     }
@@ -258,10 +258,7 @@ public class handleEquity implements ImportInfo{
                 }
             }
         }
-        //return tickerSymbol;
-        for (String e: tickerSymbol){
-            System.out.println(e);
-        }
+
         return tickerSymbol;
     }
 

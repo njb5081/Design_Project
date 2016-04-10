@@ -195,9 +195,9 @@ public class handleEquity {
     *
     * this function will return the list of ticker symbol which match with the user input.
     * */
-    public List<String> searchEquity(String symbol, String name,String typeOfSearch){
+    public List<String> searchEquity(String symbol, String name,String typeOfSearch, List<String> listOfSymbol){
         List<String> tickerSymbol = new ArrayList<String>();
-        compareMachine = new shareEquity(symbol,name);
+        compareMachine = new shareEquity(symbol,name,listOfSymbol);
         typeOfSearch = typeOfSearch.toLowerCase();
         if("exact".contains(typeOfSearch)){
             typeOfSearch = "exact";

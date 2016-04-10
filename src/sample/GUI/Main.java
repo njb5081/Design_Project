@@ -58,6 +58,7 @@ public class Main extends Application {
     static handleEquity equityHandler = new handleEquity();
     static accountHandler accountHandle = new accountHandler();
     static portfolioHandler portfolioHandle = new portfolioHandler();
+    public List<String> searchSymbolMatch;
     TextField portValue;
     String user;
     Portfolio port;
@@ -286,6 +287,7 @@ public class Main extends Application {
 
         window = mainStage;
         window.setTitle("Transactions");
+        searchSymbolMatch = new ArrayList<String>();
 
         List<Portfolio> portList = userData.listOfPortfolio();
         Portfolio myPortfolio = portList.get(0);
@@ -340,8 +342,13 @@ public class Main extends Application {
         final ObservableList<String> optionsCashAccounts = FXCollections.observableArrayList();
         final ObservableList<String> optionsAssetsAvailable = FXCollections.observableArrayList();
         final ObservableList<String> optionsAssetsOwned = FXCollections.observableArrayList();
-
-        ArrayList<String> ownedEquity = new ArrayList<String>();
+        final ObservableList<String> optionSearch = FXCollections.observableArrayList();
+        List<String> optionSearchList = new ArrayList<String>();
+        optionSearchList.add("exact");
+        optionSearchList.add("contains");
+        optionSearchList.add("begin with");
+        optionSearch.addAll(optionSearchList);
+        final ArrayList<String> ownedEquity = new ArrayList<String>();
 
         for (String s : myPortfolio.getSharesHeld().keySet()){
             for (Equity e : equityHandler.getEquityMap().values()){
@@ -355,9 +362,8 @@ public class Main extends Application {
 
         optionsCashAccounts.addAll(cashAccounts.keySet());
         optionsAssetsAvailable.addAll(availableAssets.keySet());
-        optionsAssetsOwned.addAll( myPortfolio.getSharesHeldTickerSymbols());
         optionsAssetsOwned.addAll( ownedEquity );
-
+        optionsAssetsAvailable.addAll( searchSymbolMatch);
 
         final ComboBox fromAccount = new ComboBox(optionsCashAccounts);
         final ComboBox toAccount = new ComboBox(optionsCashAccounts);
@@ -375,7 +381,6 @@ public class Main extends Application {
 
         final Button transFunds = new Button("Transfer");
 
-
         final ComboBox sellCashAccount = new ComboBox(optionsCashAccounts);
         final ComboBox sellEquity = new ComboBox(optionsAssetsOwned);
 
@@ -392,6 +397,43 @@ public class Main extends Application {
         final Button sellEquityButton = new Button("Sell");
 
         final NumberTextField sellEquityAmount = new NumberTextField();
+
+        //search for ticker symbol from the list of portfolio to sell
+        final Label searchTickerSymbolSell = new Label("Enter ticker symbol");
+        final Label searchEquityNameSell = new Label("Enter Equity name");
+        final TextField searchTickerSell = new TextField();
+        TextField searchEquitySell = new TextField();
+        final ComboBox option = new ComboBox(optionSearch);
+
+        Button searchForSell = new Button("Search");
+
+        //search for ticker symbol
+        final Label searchTickerSymbol = new Label("Enter ticker symbol");
+        final Label searchEquityName = new Label("Enter Equity name");
+        final TextField searchTicker = new TextField();
+        TextField searchEquity = new TextField();
+
+        Button search = new Button("Search");
+
+        //perform action to search for ticker symbol to sell out
+        searchForSell.setOnAction(new EventHandler<ActionEvent>() {
+            private handleEquity handler;
+            @Override
+
+            public void handle(ActionEvent event) {
+                String optionSearch = "";
+                handler = new handleEquity();
+                List<String> listOfSymbol = new ArrayList<String>(ownedEquity);
+                if(option.getValue() != null) {
+                    optionSearch = (String) option.getValue();
+                }
+                searchSymbolMatch = handler.searchEquity(searchTickerSell.getText(),searchEquityNameSell.getText(),optionSearch,listOfSymbol);
+                final ObservableList<String> list = FXCollections.observableArrayList();
+                list.addAll(searchSymbolMatch);
+                sellEquity.setItems(list);
+            }
+        });
+
 
         final ComboBox buyCashAccount = new ComboBox(optionsCashAccounts);
         final ComboBox buyEquity = new ComboBox(optionsAssetsAvailable);
@@ -416,6 +458,25 @@ public class Main extends Application {
         final NumberTextField buyEquityAmount = new NumberTextField();
 
         final Button returnTrans = new Button("Return");
+
+        search.setOnAction(new EventHandler<ActionEvent>() {
+            private handleEquity handler;
+            @Override
+
+            public void handle(ActionEvent event) {
+                String optionSearch = "";
+                handler = new handleEquity();
+                List<String> listOfSymbol = new ArrayList<String>(equityHandler.getEquityMap().keySet());
+                if(option.getValue() != null) {
+                     optionSearch = (String) option.getValue();
+                }
+                searchSymbolMatch = handler.searchEquity(searchTicker.getText(),searchEquityName.getText(),optionSearch,listOfSymbol);
+                final ObservableList<String> list = FXCollections.observableArrayList();
+                list.addAll(searchSymbolMatch);
+                buyEquity.setItems(list);
+            }
+        });
+
 
         sellEquityButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -701,13 +762,19 @@ public class Main extends Application {
         transactionGrid.add(box4Trans, 1 , 60);
         transactionGrid.add(box5Trans, 1 , 120);
 
+        VBox boxSearchBuy = new VBox();
         HBox box1Buy = new HBox();
         VBox box2Buy = new VBox();
         VBox box3Buy = new VBox();
         VBox box4Buy = new VBox();
         HBox box5Buy = new HBox();
 
-        box1Buy.getChildren().add(buyTransactionLabel);
+        boxSearchBuy.getChildren().add(searchTickerSymbol); ////////////////////////////
+        boxSearchBuy.getChildren().add(searchTicker);
+        boxSearchBuy.getChildren().add(searchEquityName);
+        boxSearchBuy.getChildren().add(searchEquity);
+        box1Buy.getChildren().add(option);
+        boxSearchBuy.getChildren().add(search);
 
         box2Buy.getChildren().add(buyEquityLabel);
         box2Buy.getChildren().add(buyEquity);
@@ -726,6 +793,7 @@ public class Main extends Application {
 
         box5Buy.getChildren().add(buyEquityButton);
 
+        transactionGrid.add(boxSearchBuy, 200, 1);
         transactionGrid.add(box1Buy, 200 , 10);
         transactionGrid.add(box2Buy, 200 , 20);
         transactionGrid.add(box3Buy, 200 , 40);
@@ -784,7 +852,7 @@ public class Main extends Application {
         grid.setHgap(1);
         grid.setVgap(1);
         grid.setPadding(new Insets(25, 25, 25, 25));
-        Scene scene3 = new Scene(grid, 350, 450);
+        Scene scene3 = new Scene(grid, 400, 500);
 
         //TRANSACTION NAVIGATION START
         final Button transactionButton = new Button("Go to Transactions");

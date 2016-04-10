@@ -172,7 +172,7 @@ public class Main extends Application {
         final Label cashAccountBalanceLabel = new Label("      Balance: None");
         final Label cashAccountOpenDate = new Label("      Open Date: None");
 
-        final Label equityDescriptionLabel = new Label("Choose cash account to view:");
+        final Label equityDescriptionLabel = new Label("Choose asset to view:");
         final Label equityNameLabel = new Label("      Name: None");
         final Label equityValueLabel = new Label("      Value: None");
         final Label equityOwnedLabel = new Label("      Amount Owned: None");
@@ -508,7 +508,6 @@ public class Main extends Application {
         optionsCashAccounts.addAll(cashAccounts.keySet());
         optionsAssetsOwned.addAll( searchSymbolSellMatch );
         optionsAssetsAvailable.addAll( searchSymbolMatch);
-
 
         final ComboBox fromAccount = new ComboBox(optionsCashAccounts);
         final ComboBox toAccount = new ComboBox(optionsCashAccounts);

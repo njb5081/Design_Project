@@ -59,6 +59,7 @@ public class Main extends Application {
     static accountHandler accountHandle = new accountHandler();
     static portfolioHandler portfolioHandle = new portfolioHandler();
     private List<String> searchSymbolMatch;
+    //
     private List<String> searchSymbolSellMatch;
     TextField portValue;
     String user;

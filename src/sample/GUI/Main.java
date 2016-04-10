@@ -322,7 +322,7 @@ public class Main extends Application {
         createCashAccountGrid.setVgap(1);
         createCashAccountGrid.setPadding(new Insets(25, 25, 25, 25));
 
-        sceneTransaction = new Scene(transactionGrid, 900, 650);
+        sceneTransaction = new Scene(transactionGrid, 900, 725);
 
         final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
 
@@ -845,7 +845,7 @@ public class Main extends Application {
      */
     public void simulationScene (final Stage mainStage, final Portfolio port){
         window = mainStage;
-        window.setTitle("Market simulation");
+        window.setTitle("Market Simulation");
 
 
 
@@ -901,19 +901,19 @@ public class Main extends Application {
         grid.add(percentage, 1, 60);
 
 
-        Button bullSimulation = new Button("bull market");
+        Button bullSimulation = new Button("Bull Market");
         HBox box3 = new HBox(10);
         box3.setAlignment(Pos.BOTTOM_LEFT);
         box3.getChildren().add(bullSimulation);
         grid.add(box3, 0, 100);
 
-        Button bearSimulation = new Button("bear");
+        Button bearSimulation = new Button("Bear Market");
         HBox box = new HBox(10);
         box.setAlignment(Pos.BASELINE_CENTER);
         box.getChildren().add(bearSimulation);
         grid.add(box, 1, 100);
 
-        Button noSimulation = new Button("No growth");
+        Button noSimulation = new Button("No-Growth Market");
         HBox box5 = new HBox(10);
 //        box5.setAlignment(Pos.BASELINE_LEFT);
         box5.getChildren().add(noSimulation);
@@ -1159,7 +1159,7 @@ public class Main extends Application {
         });
         grid.add(confirm, 20, 5);
 
-        Button toPortfolio = new Button("Go to my Portfolio");
+        Button toPortfolio = new Button("Go to Portfolio");
         toPortfolio.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {

@@ -37,17 +37,7 @@ public class BullMarket implements MarketSimulation {
         ArrayList<Equity> ownedEquity = new ArrayList<Equity>();
       //  System.out.println(equityHandler.getIndexMap().values() + "indexes? ");
         for (String s : EQ.getSharesHeld().keySet()){
-            for (Equity e : equityHandler.getEquityMap().values()){
-              //  System.out.println(f.getSharePrice() + " PRICE OF EQUITY");
-              //  System.out.println(f.getName() + " NAME OF EQUITY");
-                if (s.equals(e.getName())){
-                    ownedEquity.add(e);
-                //    System.out.println(e.getSharePrice() + " Price of share");
-                   // System.out.println("MATCH " + e.getName());
-                    portVal += e.getSharePrice();
-                }
-              //  ownedEquity1 = ownedEquity;
-            }
+            for (Equity e : equityHandler.getEquityMap().values());
           //  System.out.println(s + " shares you own");
         }
 

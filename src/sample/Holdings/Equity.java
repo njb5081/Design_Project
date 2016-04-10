@@ -1,6 +1,6 @@
 package sample.Holdings;
+import sample.PortfolioMemento;
 import sample.AssetVisitor;
-import sample.EquityMemento;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,12 +42,12 @@ public class Equity implements Serializable, Asset {
         this.equityList = equityList;
     }
 
-    public EquityMemento saveToMemento(){
+    public PortfolioMemento saveToMemento(){
         System.out.println("Orginator saving to memento");
-        return new EquityMemento(this.equityList);
+        return new PortfolioMemento(this.equityList);
     }
 
-    public void RestoreFromEquityMemento(EquityMemento m) {
+    public void RestoreFromEquityMemento(PortfolioMemento m) {
         System.out.println("FBDNFBBERIJBIBNERINBIE");
         this.equityList = m.getEquityList();
         for (Equity EEE : this.equityList) {

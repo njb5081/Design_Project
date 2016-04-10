@@ -1,39 +1,36 @@
 package sample;
 
+import java.util.Date;
+
 /**
  * Created by Nick on 4/3/2016.
  */
-public class WatchedAsset {
+public interface WatchedAsset {
+    //String name;
+    //if either trigger value is -1, then there was no trigger specified
+    //double lowTrigger;
 
-    private String name;
-    private double lowTrigger;
-    private double highTrigger;
+    //double highTrigger;
 
-    public WatchedAsset(String name, double low, double high){
-        //if there is no low trigger or no high trigger, the parameter should be -1
-        this.name = name;
-        this.lowTrigger = low;
-        this.highTrigger = high;
-    }
+    boolean lowIsTripped();
 
-    public boolean hasLowTrigger() {
-        return (this.lowTrigger != -1);
-    }
-    public boolean hasHighTrigger() {
-        return (this.highTrigger != -1);
-    }
+    boolean highIsTripped();
 
-    public void editTriggers(double low, double high) {
-        this.lowTrigger = low;
-        this.highTrigger = high;
-    }
+    boolean hasLowTrigger();
 
-    public String getName(){ return this.name; }
+    boolean hasHighTrigger();
 
-    public double getLowTrigger() { return this.lowTrigger; }
+    void editTriggers(double low, double high);
 
-    public double getHighTrigger() { return this.highTrigger; }
+    String getName();
 
-    public String toString() { return this.name; }
+    double getLowTrigger();
 
+    double getHighTrigger();
+
+    //void checkTriggers(Double price);
+
+    String toString();
+
+    void accept(AssetVisitor v);
 }

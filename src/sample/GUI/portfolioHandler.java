@@ -75,7 +75,7 @@ public class portfolioHandler {
         });
         HBox logBox = new HBox();
         logBox.setAlignment(Pos.TOP_LEFT);
-        grid.add(logButton, 1, 300);
+        grid.add(logButton, 1, i);
         //LOGGER NAVIGATION END
 
         //TRANSACTION NAVIGATION START
@@ -89,7 +89,53 @@ public class portfolioHandler {
         HBox transBox = new HBox();
         transBox.setAlignment(Pos.TOP_LEFT);
         grid.add(transactionButton, 0, i);
+        i++;
         //TRANSACTION NAVIGATION END
+
+        //Create a button that leads to the page to add an account
+        Button addAccount = new Button("Add a Cash Account");
+        addAccount.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                main.addCashAccountScene(window, userID);
+            }
+        });
+
+        grid.add(addAccount, 0, i);
+
+        Button deleteAccount = new Button("Delete a Cash Account");
+        deleteAccount.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                main.deleteCashAccountScene(window);
+            }
+        });
+        grid.add(deleteAccount, 1, i);
+
+        i++;
+
+        //Create a button that leads to the page to undo an action
+        Button undoAction = new Button("Undo Recent Action");
+        undoAction.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                main.undoScene(window);
+            }
+        });
+        grid.add(undoAction, 0, i);
+        i++;
+
+        //Create a button to lead to the page to let user update shareprice in the interval time
+        Button updatePriceInterval = new Button("Set time interval");
+        updatePriceInterval.setOnAction(new EventHandler<ActionEvent>() {
+            private accountHandler handlerAccount;
+            @Override
+            public void handle(ActionEvent event) {
+                handlerAccount = new accountHandler();
+                handlerAccount.timeIntervalUpdate(window,userID);
+            }
+        });
+        grid.add(updatePriceInterval,0,i);
 
         //Create a button that leads to the simulation screen
         Button marketSimulation = new Button("Market Simulations");
@@ -102,52 +148,6 @@ public class portfolioHandler {
         });
         i++;
 
-        //Create a button that leads to the page to add an account
-        Button addAccount = new Button("Add a Cash Account");
-        addAccount.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                main.addCashAccountScene(window, userID);
-            }
-        });
-
-        grid.add(addAccount, 0, i);
-        i++;
-
-        //Create a button that leads to the page to undo an action
-        Button undoAction = new Button("Undo Recent Action");
-        undoAction.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                main.undoScene(window);
-            }
-        });
-
-        grid.add(undoAction, 0, i);
-
-        Button deleteAccount = new Button("Delete a Cash Account");
-        deleteAccount.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                main.deleteCashAccountScene(window);
-            }
-        });
-        grid.add(deleteAccount, 1, i);
-        i++;
-        //Create a button to lead to the page to let user update shareprice in the interval time
-        Button updatePriceInterval = new Button("Set time interval");
-        updatePriceInterval.setOnAction(new EventHandler<ActionEvent>() {
-            private accountHandler handlerAccount;
-            @Override
-            public void handle(ActionEvent event) {
-                handlerAccount = new accountHandler();
-                handlerAccount.timeIntervalUpdate(window,userID);
-            }
-        });
-
-
-
-        grid.add(updatePriceInterval,0,i);
         window.setScene(portScene);
         window.show();
     }

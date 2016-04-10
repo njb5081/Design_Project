@@ -1,4 +1,5 @@
 package sample.Holdings;
+import sample.AssetVisitor;
 import sample.EquityMemento;
 import java.io.Serializable;
 import java.util.ArrayList;

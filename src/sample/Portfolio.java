@@ -263,9 +263,16 @@ public class Portfolio implements Serializable {
 //       this.equities = updatedEquities;
 //    }
 
-    public void addToWatchlist(String name, double lowTrigger, double highTrigger) {
-        WatchedAsset newAsset = new WatchedAsset(name, lowTrigger, highTrigger);
-        watchlist.add(newAsset);
+    public void addToWatchlist(String name, double lowTrigger, double highTrigger, boolean isEquity) {
+        //isEquity true when an equity, false when a market average
+        if (isEquity) {
+            WatchedEquity newEquity = new WatchedEquity(name, lowTrigger, highTrigger);
+            watchlist.add(newEquity);
+        } else {
+            //Then it is a market average, not an equity
+            WatchedMarketAverage newMarketAvg = new WatchedMarketAverage(name, lowTrigger, highTrigger);
+            watchlist.add(newMarketAvg);
+        }
     }
 
     public void deleteFromWatchlist(String name){

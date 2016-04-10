@@ -405,6 +405,7 @@ public class Main extends Application {
         final TextField searchTickerSell = new TextField();
         TextField searchEquitySell = new TextField();
         final ComboBox option = new ComboBox(optionSearch);
+        final ComboBox optionSell = new ComboBox(optionSearch);
 
         Button searchForSell = new Button("Search");
 
@@ -724,7 +725,6 @@ public class Main extends Application {
         HBox simBox = new HBox();
         simBox.setAlignment(Pos.TOP_LEFT);
         transactionGrid.add(portfolioButton, 1, 150);
-        //PORTFOLIO NAVIGATION END
 
         HBox box1Trans = new HBox();
         VBox box2Trans = new VBox();
@@ -770,12 +770,14 @@ public class Main extends Application {
         VBox box4Buy = new VBox();
         HBox box5Buy = new HBox();
 
-        boxSearchBuy.getChildren().add(searchTickerSymbol); ////////////////////////////
+        boxSearchBuy.getChildren().add(searchTickerSymbol);
         boxSearchBuy.getChildren().add(searchTicker);
         boxSearchBuy.getChildren().add(searchEquityName);
         boxSearchBuy.getChildren().add(searchEquity);
-        box1Buy.getChildren().add(option);
         boxSearchBuy.getChildren().add(search);
+        boxSearchBuy.getChildren().add(option);
+
+        box1Buy.getChildren().add(buyTransactionLabel);
 
         box2Buy.getChildren().add(buyEquityLabel);
         box2Buy.getChildren().add(buyEquity);
@@ -801,11 +803,19 @@ public class Main extends Application {
         transactionGrid.add(box4Buy, 200 , 60);
         transactionGrid.add(box5Buy, 200 , 120);
 
+        VBox boxSearchSell = new VBox();
         HBox box1Sell = new HBox();
         VBox box2Sell = new VBox();
         VBox box3Sell = new VBox();
         VBox box4Sell = new VBox();
         HBox box5Sell = new HBox();
+
+        boxSearchSell.getChildren().add(searchTickerSymbolSell);
+        boxSearchSell.getChildren().add(searchTickerSell);
+        boxSearchSell.getChildren().add(searchEquityNameSell);
+        boxSearchSell.getChildren().add(searchEquitySell);
+        boxSearchSell.getChildren().add(searchForSell);
+        boxSearchSell.getChildren().add(optionSell);
 
         box1Sell.getChildren().add(sellTransactionLabel);
 
@@ -826,6 +836,7 @@ public class Main extends Application {
 
         box5Sell.getChildren().add(sellEquityButton);
 
+        transactionGrid.add(boxSearchSell, 100, 1);
         transactionGrid.add(box1Sell, 100 , 10);
         transactionGrid.add(box2Sell, 100 , 20);
         transactionGrid.add(box3Sell, 100 , 40);

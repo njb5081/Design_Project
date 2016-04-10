@@ -195,7 +195,8 @@ public class Main extends Application {
             for (String  a : equityHandler.getIndexMap().keySet()){
 
                 if (s.equals(a)){
-                    //availableAssets.add( a );
+
+                    //availableAssets.add( MarketAverage() );
 
                 }
             }

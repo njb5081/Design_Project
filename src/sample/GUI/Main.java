@@ -548,7 +548,7 @@ public class Main extends Application {
                 if(optionSell.getValue() != null) {
                     optionSearch = (String) optionSell.getValue();
                 }
-                searchSymbolSellMatch = handler.searchEquity(searchTickerSell.getText().toUpperCase(),searchEquityNameSell.getText().toUpperCase(),optionSearch,listOfSymbol);
+                searchSymbolSellMatch = handler.searchEquity(searchTickerSell.getText().toUpperCase(),searchEquityNameSell.getText(),optionSearch,listOfSymbol);
                 final ObservableList<String> list = FXCollections.observableArrayList();
                 list.addAll(searchSymbolSellMatch);
                 sellEquity.setItems(list);
@@ -591,7 +591,7 @@ public class Main extends Application {
                 if(option.getValue() != null) {
                      optionSearch = (String) option.getValue();
                 }
-                searchSymbolMatch = handler.searchEquity(searchTicker.getText().toUpperCase(),searchEquityName.getText().toUpperCase(),optionSearch,listOfSymbol);
+                searchSymbolMatch = handler.searchEquity(searchTicker.getText().toUpperCase(),searchEquityName.getText(),optionSearch,listOfSymbol);
                 final ObservableList<String> list = FXCollections.observableArrayList();
                 list.addAll(searchSymbolMatch);
                 buyEquity.setItems(list);
@@ -1321,8 +1321,8 @@ public class Main extends Application {
         }
         //equityHandler.searchEquity("FO","","begin with");
         equityHandler.parseEquityFile();
-        //equityHandler.updateSharePrice();
-        //equityHandler.updateSharePriceTimer(10);
+        equityHandler.updateSharePrice();
+        equityHandler.updateSharePriceTimer(10);
         launch(args);
     }
 }

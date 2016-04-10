@@ -77,7 +77,7 @@ public class portfolioHandler {
         });
         HBox logBox = new HBox();
         logBox.setAlignment(Pos.TOP_LEFT);
-        grid.add(logButton, 1, i);
+        grid.add(logButton, 0, i);
         //LOGGER NAVIGATION END
 
         //TRANSACTION NAVIGATION START
@@ -90,7 +90,7 @@ public class portfolioHandler {
         });
         HBox transBox = new HBox();
         transBox.setAlignment(Pos.TOP_LEFT);
-        grid.add(transactionButton, 0, i);
+        grid.add(transactionButton, 1, i);
         //TRANSACTION NAVIGATION END
         i++;
 
@@ -104,7 +104,6 @@ public class portfolioHandler {
         });
 
         grid.add(addAccount, 0, i);
-        i++;
 
         //Create a button that leads to the page to undo an action
         Button undoAction = new Button("Undo Recent Action");
@@ -115,7 +114,8 @@ public class portfolioHandler {
             }
         });
 
-        grid.add(undoAction, 0, i);
+        grid.add(undoAction, 1, i);
+        i++;
 
         Button deleteAccount = new Button("Delete a Cash Account");
         deleteAccount.setOnAction(new EventHandler<ActionEvent>() {
@@ -124,8 +124,8 @@ public class portfolioHandler {
                 main.deleteCashAccountScene(window);
             }
         });
-        grid.add(deleteAccount, 1, i);
-        i++;
+        grid.add(deleteAccount, 0, i);
+
         //Create a button to lead to the page to let user update shareprice in the interval time
         Button updatePriceInterval = new Button("Set time interval");
         updatePriceInterval.setOnAction(new EventHandler<ActionEvent>() {
@@ -136,18 +136,18 @@ public class portfolioHandler {
                 handlerAccount.timeIntervalUpdate(window,userID);
             }
         });
-        grid.add(updatePriceInterval,0,i);
+        grid.add(updatePriceInterval,1,i);
+        i++;
 
         //Create a button that leads to the simulation screen
         Button marketSimulation = new Button("Market Simulations");
-        grid.add(marketSimulation, 1, i);
+        grid.add(marketSimulation, 0, i);
         marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 main.simulationScene(window, port);
             }
         });
-        //i++;
 
         window.setScene(portScene);
         window.show();

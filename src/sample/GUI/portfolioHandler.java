@@ -31,7 +31,7 @@ public class portfolioHandler {
      * Shows the portfolio summary information after loggin in
      * @param stage the stage for the window
      * @param userID the id of the user logged in
-    s */
+     */
     public void portfolioScene(final Stage stage, final String userID){
         window = stage;
         window.setTitle("My Portfolio");
@@ -61,9 +61,11 @@ public class portfolioHandler {
         for (CashAccount c : myPortfolio.getCashAccounts()) {
             totalMoney += (c.getBalance());
         }
-        Label total = new Label("Total Account Balance:  " + String.valueOf(totalMoney));
+        Label total = new Label("Total Account Balance:  " +  String.format("%.2f", totalMoney)); // String.valueOf(totalMoney));
         grid.add(total, 0, i);
         i++;
+
+        //String.format("%.2f", tempSellAccount.getBalance()));
 
         //LOGGER NAVIGATION START
         final Button logButton = new Button("Go to Logger");
@@ -89,7 +91,6 @@ public class portfolioHandler {
         HBox transBox = new HBox();
         transBox.setAlignment(Pos.TOP_LEFT);
         grid.add(transactionButton, 0, i);
-        i++;
         //TRANSACTION NAVIGATION END
 
         //Create a button that leads to the page to add an account
@@ -102,16 +103,6 @@ public class portfolioHandler {
         });
 
         grid.add(addAccount, 0, i);
-
-        Button deleteAccount = new Button("Delete a Cash Account");
-        deleteAccount.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                main.deleteCashAccountScene(window);
-            }
-        });
-        grid.add(deleteAccount, 1, i);
-
         i++;
 
         //Create a button that leads to the page to undo an action
@@ -122,9 +113,18 @@ public class portfolioHandler {
                 main.undoScene(window);
             }
         });
-        grid.add(undoAction, 0, i);
-        i++;
 
+        grid.add(undoAction, 0, i);
+
+        Button deleteAccount = new Button("Delete a Cash Account");
+        deleteAccount.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                main.deleteCashAccountScene(window);
+            }
+        });
+        grid.add(deleteAccount, 1, i);
+        i++;
         //Create a button to lead to the page to let user update shareprice in the interval time
         Button updatePriceInterval = new Button("Set time interval");
         updatePriceInterval.setOnAction(new EventHandler<ActionEvent>() {

@@ -331,7 +331,7 @@ public class Main extends Application {
         createCashAccountGrid.setVgap(1);
         createCashAccountGrid.setPadding(new Insets(25, 25, 25, 25));
 
-        sceneTransaction = new Scene(transactionGrid, 900, 600);
+        sceneTransaction = new Scene(transactionGrid, 900, 650);
 
         final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
 

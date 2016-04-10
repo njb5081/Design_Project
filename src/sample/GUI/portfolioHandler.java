@@ -61,9 +61,11 @@ public class portfolioHandler {
         for (CashAccount c : myPortfolio.getCashAccounts()) {
             totalMoney += (c.getBalance());
         }
-        Label total = new Label("Total Account Balance:  " + String.valueOf(totalMoney));
+        Label total = new Label("Total Account Balance:  " +  String.format("%.2f", totalMoney)); // String.valueOf(totalMoney));
         grid.add(total, 0, i);
         i++;
+
+        //String.format("%.2f", tempSellAccount.getBalance()));
 
         //LOGGER NAVIGATION START
         final Button logButton = new Button("Go to Logger");

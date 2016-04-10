@@ -77,7 +77,7 @@ public class accountHandler {
                 //if the user account has been created, then the user can login
                 if(userData.isUserExist(loginUser)){
                     message.setFill(Color.FIREBRICK);
-                    message.setText("Sucessful Login");
+                    message.setText("Successful Login");
                     portfolioHandle.portfolioScene(window, loginUser.username());
                 } else {
 
@@ -233,10 +233,10 @@ public class accountHandler {
         setTimer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //confirm the password for registation
+                //confirm the password for registration
                 int time = Integer.parseInt(timeField.getText());
                 if(time < 8){
-                    message.setText("you need to enter a minimum of 8 second for the program to run");
+                    message.setText("Enter at least 8 seconds for the program to run");
                 } else {
                     handler.updateSharePriceTimer(time);
                     portfolioHandle.portfolioScene(window,username);

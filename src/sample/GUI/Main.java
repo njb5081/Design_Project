@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import sample.GUI.accountHandler;
+import sun.jvm.hotspot.oops.Mark;
 /*
 * This class will display all the GUI for the system
 * */
@@ -188,6 +189,14 @@ public class Main extends Application {
             for (Equity e : equityHandler.getEquityMap().values()){
                 if (s.equals(e.getName())){
                     availableAssets.put(e.getTickerSymbol(), e);
+                }
+            }
+
+            for (String  a : equityHandler.getIndexMap().keySet()){
+
+                if (s.equals(a)){
+                    //availableAssets.add( a );
+
                 }
             }
         }
@@ -479,6 +488,14 @@ public class Main extends Application {
 
                 }
             }
+
+            for (String  a : equityHandler.getIndexMap().keySet()){
+
+                if (s.equals(a)){
+                    ownedEquity.add( a );
+
+                }
+            }
         }
 
         optionsCashAccounts.addAll(cashAccounts.keySet());
@@ -587,7 +604,9 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 String optionSearch = "";
                 handler = new handleEquity();
-                List<String> listOfSymbol = new ArrayList<String>(equityHandler.getEquityMap().keySet());
+                List<String> listOfSymbol = new ArrayList<String>();
+                listOfSymbol.addAll(indexMap.keySet());
+                listOfSymbol.addAll(equityMap.keySet());
                 if(option.getValue() != null) {
                      optionSearch = (String) option.getValue();
                 }
@@ -800,7 +819,7 @@ public class Main extends Application {
                 }
 
                 buyEquityNameLabel.setText("      Name: " + buyEquity.getValue().toString());
-                buyEquityValueLabel.setText("      Value: $" + availableAssets.get(buyEquity.getValue().toString()).getSharePrice());
+                buyEquityValueLabel.setText("      Value: $" + String.format("%.2f", availableAssets.get(buyEquity.getValue().toString()).getSharePrice()));
                 try {
                     buyEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(availableAssets.get(buyEquity.getValue().toString()).getName())));
                 } catch(NullPointerException e){
@@ -822,7 +841,7 @@ public class Main extends Application {
                 }
 
                 sellEquityNameLabel.setText("      Name: " + sellEquity.getValue().toString());
-                sellEquityValueLabel.setText("      Value: $" + availableAssets.get(sellEquity.getValue().toString()).getSharePrice());
+                sellEquityValueLabel.setText("      Value: $" + String.format("%.2f", availableAssets.get(sellEquity.getValue().toString()).getSharePrice()));
                 try {
                     sellEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(availableAssets.get(sellEquity.getValue().toString()).getName())));
                 } catch(NullPointerException e){

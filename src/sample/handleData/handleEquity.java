@@ -173,7 +173,7 @@ public class handleEquity implements ImportInfo{
                             if (!childNodes.item(0).getTextContent().trim().isEmpty()) {
                                 temporaryEquity.setSharePrice((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
                                 mapNeedUpdate.put(ticketSymbol, temporaryEquity);
-                                System.out.println((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
+                                //System.out.println((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
                             }
                         }
                     }
@@ -258,10 +258,7 @@ public class handleEquity implements ImportInfo{
                 }
             }
         }
-        //return tickerSymbol;
-        for (String e: tickerSymbol){
-            System.out.println(e);
-        }
+
         return tickerSymbol;
     }
 

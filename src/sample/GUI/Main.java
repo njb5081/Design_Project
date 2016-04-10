@@ -101,7 +101,6 @@ public class Main extends Application {
         final Label logDescription = new Label("Choose Entry to View");
         final Label entryDescription = new Label("     Entry Description:");
 
-        //PORTFOLIO NAVIGATION START
         final Button portButton = new Button("Go to Portfolio");
 
         portButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -110,7 +109,6 @@ public class Main extends Application {
                 portfolioHandle.portfolioScene(mainStage, user);
             }
         });
-        //PORTFOLIO NAVIGATION END
 
         sceneLog = new Scene(logGrid, 600, 250);
 
@@ -227,20 +225,12 @@ public class Main extends Application {
                     }
                 }
                 if(chooseActionBox.getValue() != null) {
-                    /*
-                    if(myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).isValid()) {
-                        myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).undo();
-                        userData.updatePortfolioList(portList);
-                        undoInstructionLabel.setText("Action Successfully Undone");
-                        portfolioHandle.portfolioScene(mainStage, user);
-                    }else {
-                        undoInstructionLabel.setText("Action has become invalid due to change in system state, choose another.");
-                    }
-                    */
+
                     myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).undo();
                     userData.updatePortfolioList(portList);
                     undoInstructionLabel.setText("Action Successfully Undone");
                     portfolioHandle.portfolioScene(mainStage, user);
+
                 }else{
                     undoInstructionLabel.setText("Invalid Input");
                 }
@@ -274,7 +264,7 @@ public class Main extends Application {
         undoGrid.add(box3Undo, 10, 30);
         undoGrid.add(box5Undo, 10, 40);
 
-        sceneUndo = new Scene(undoGrid, 400, 500);
+        sceneUndo = new Scene(undoGrid, 600, 200);
         window.setScene(sceneUndo);
         window.show();
 
@@ -1127,10 +1117,10 @@ public class Main extends Application {
         window.setTitle("Delete an Account");
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        Scene deleteAccScene = new Scene(grid, 500, 500);
+        Scene deleteAccScene = new Scene(grid, 350, 200);
 
         Label select = new Label("Select an account to delete: ");
-        grid.add(select, 0, 0);
+        grid.add(select, 10, 0);
 
         List<Portfolio> portList = userData.listOfPortfolio();
         Portfolio myPortfolio = portList.get(0);
@@ -1147,7 +1137,7 @@ public class Main extends Application {
         final ObservableList<String> optionsAccounts = FXCollections.observableArrayList();
         optionsAccounts.addAll(cashAccounts.keySet());
         final ComboBox account = new ComboBox(optionsAccounts);
-        grid.add(account, 1, 0);
+        grid.add(account, 20, 0);
 
         Button confirm = new Button("Delete Account");
         confirm.setOnAction(new EventHandler<ActionEvent>() {
@@ -1166,7 +1156,7 @@ public class Main extends Application {
                 portfolioHandle.portfolioScene(window, user);
             }
         });
-        grid.add(confirm, 1, 1);
+        grid.add(confirm, 20, 5);
 
         Button toPortfolio = new Button("Go to my Portfolio");
         toPortfolio.setOnAction(new EventHandler<ActionEvent>() {
@@ -1175,7 +1165,7 @@ public class Main extends Application {
                 portfolioHandle.portfolioScene(window, user);
             }
         });
-        grid.add(toPortfolio, 1, 2 );
+        grid.add(toPortfolio, 20, 7 );
 
 
         window.setScene(deleteAccScene);

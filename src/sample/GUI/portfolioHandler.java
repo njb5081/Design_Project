@@ -149,6 +149,15 @@ public class portfolioHandler {
             }
         });
 
+        Button viewHoldings = new Button("View Holdings");
+        grid.add(viewHoldings, 1, i);
+        viewHoldings.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                main.viewHoldingsScene(window);
+            }
+        });
+
         window.setScene(portScene);
         window.show();
     }

@@ -50,7 +50,7 @@ public class Main extends Application {
     /*
     * define multiple scene to display different GUI
     * */
-    Scene  scene1,scene2,scene3, sceneTransaction, sceneLog, sceneUndo;
+    Scene  scene1,scene2,scene3, sceneTransaction, sceneLog, sceneUndo, sceneViewHoldings;
     /*
     * Initialize the data class to access different function in order to creeate,save, delete account
     * */
@@ -151,6 +151,135 @@ public class Main extends Application {
 
         window.setScene(sceneLog);
         window.show();
+    }
+
+    public void viewHoldingsScene(final Stage mainStage){
+
+        window = mainStage;
+        window.setTitle("View Holdings");
+
+        List<Portfolio> portList = userData.listOfPortfolio();
+        Portfolio myPortfolio = portList.get(0);
+        for (Portfolio p : portList) {
+            if (p.getUserID().equals(user)){
+                myPortfolio = p;
+            }
+        }
+
+        final Label cashAccountDescriptionLabel = new Label("Choose cash account to view:");
+        final Label cashAccountNameLabel = new Label("      Name: None");
+        final Label cashAccountBalanceLabel = new Label("      Balance: None");
+        final Label cashAccountOpenDate = new Label("      Open Date: None");
+
+        final Label equityDescriptionLabel = new Label("Choose cash account to view:");
+        final Label equityNameLabel = new Label("      Name: None");
+        final Label equityValueLabel = new Label("      Value: None");
+        final Label equityOwnedLabel = new Label("      Amount Owned: None");
+
+        final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
+        final HashMap<String, Equity> availableAssets = new HashMap<String, Equity>();
+
+        for (int i = 0; i < myPortfolio.getCashAccounts().size(); i++){
+            cashAccounts.put(myPortfolio.getCashAccounts().get(i).toString(),
+                    myPortfolio.getCashAccounts().get(i));
+        }
+
+        for (String s : myPortfolio.getSharesHeld().keySet()){
+            for (Equity e : equityHandler.getEquityMap().values()){
+                if (s.equals(e.getName())){
+                    availableAssets.put(e.getTickerSymbol(), e);
+                }
+            }
+        }
+
+        final ObservableList<String> optionsCashAccounts = FXCollections.observableArrayList();
+        final ObservableList<String> assetsOwned = FXCollections.observableArrayList();
+
+        optionsCashAccounts.addAll(cashAccounts.keySet());
+        assetsOwned.addAll(availableAssets.keySet());
+
+        final ComboBox cashAccountsComboBox = new ComboBox(optionsCashAccounts);
+
+        cashAccountsComboBox.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                cashAccountNameLabel.setText("      Name: " + cashAccountsComboBox.getValue().toString());
+                cashAccountBalanceLabel.setText("      Balance: $" + String.format("%.2f", cashAccounts.get(cashAccountsComboBox.getValue().toString()).getBalance()));
+                cashAccountOpenDate.setText("      Open Date: " + cashAccounts.get(cashAccountsComboBox.getValue().toString()).getOpenDate());
+            }
+        });
+
+        final ComboBox equityComboBox = new ComboBox(assetsOwned);
+
+        equityComboBox.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio myPortfolioInner = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(user)){
+                        myPortfolioInner = p;
+                    }
+                }
+
+                equityNameLabel.setText("      Name: " + equityComboBox.getValue().toString());
+                equityValueLabel.setText("      Value: $" + availableAssets.get(equityComboBox.getValue().toString()).getSharePrice());
+                try {
+                    equityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(availableAssets.get(equityComboBox.getValue().toString()).getName())));
+                } catch(NullPointerException e){
+                    equityOwnedLabel.setText("      Amount Owned: 0");
+                }
+
+            }
+        });
+
+        final Button portfolioButton = new Button("Go to Portfolio");
+
+        portfolioButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                portfolioHandle.portfolioScene(mainStage, user);
+            }
+        });
+
+        final GridPane viewGrid = new GridPane();
+        viewGrid.setAlignment(Pos.TOP_LEFT);
+        viewGrid.setHgap(1);
+        viewGrid.setVgap(1);
+        viewGrid.setPadding(new Insets(25, 25, 25, 25));
+
+        VBox cashAccountBox = new VBox();
+        VBox equityBox = new VBox();
+        HBox portfolioBox = new HBox();
+
+        cashAccountBox.setAlignment(Pos.TOP_LEFT);
+        equityBox.setAlignment(Pos.TOP_LEFT);
+        portfolioBox.setAlignment(Pos.TOP_LEFT);
+
+        cashAccountBox.getChildren().add(cashAccountDescriptionLabel);
+        cashAccountBox.getChildren().add(cashAccountsComboBox);
+        cashAccountBox.getChildren().add(cashAccountNameLabel);
+        cashAccountBox.getChildren().add(cashAccountBalanceLabel);
+        cashAccountBox.getChildren().add(cashAccountOpenDate);
+
+        equityBox.getChildren().add(equityDescriptionLabel);
+        equityBox.getChildren().add(equityComboBox);
+        equityBox.getChildren().add(equityNameLabel);
+        equityBox.getChildren().add(equityValueLabel);
+        equityBox.getChildren().add(equityOwnedLabel);
+
+        portfolioBox.getChildren().add(portfolioButton);
+
+        viewGrid.add(cashAccountBox, 10, 10);
+        viewGrid.add(equityBox, 100, 10);
+        viewGrid.add(portfolioBox, 10, 50);
+
+        sceneViewHoldings = new Scene(viewGrid, 600, 225);
+        window.setScene(sceneViewHoldings);
+        window.show();
+
+
     }
 
     /**
@@ -322,7 +451,7 @@ public class Main extends Application {
         createCashAccountGrid.setVgap(1);
         createCashAccountGrid.setPadding(new Insets(25, 25, 25, 25));
 
-        sceneTransaction = new Scene(transactionGrid, 900, 650);
+        sceneTransaction = new Scene(transactionGrid, 900, 725);
 
         final HashMap<String, CashAccount> cashAccounts =  new HashMap<String, CashAccount>();
 
@@ -353,7 +482,6 @@ public class Main extends Application {
         }
 
         optionsCashAccounts.addAll(cashAccounts.keySet());
-        //optionsAssetsAvailable.addAll(availableAssets.keySet());
         optionsAssetsOwned.addAll( searchSymbolSellMatch );
         optionsAssetsAvailable.addAll( searchSymbolMatch);
 
@@ -845,7 +973,7 @@ public class Main extends Application {
      */
     public void simulationScene (final Stage mainStage, final Portfolio port){
         window = mainStage;
-        window.setTitle("Market simulation");
+        window.setTitle("Market Simulation");
 
 
 
@@ -901,19 +1029,19 @@ public class Main extends Application {
         grid.add(percentage, 1, 60);
 
 
-        Button bullSimulation = new Button("bull market");
+        Button bullSimulation = new Button("Bull Market");
         HBox box3 = new HBox(10);
         box3.setAlignment(Pos.BOTTOM_LEFT);
         box3.getChildren().add(bullSimulation);
         grid.add(box3, 0, 100);
 
-        Button bearSimulation = new Button("bear");
+        Button bearSimulation = new Button("Bear Market");
         HBox box = new HBox(10);
         box.setAlignment(Pos.BASELINE_CENTER);
         box.getChildren().add(bearSimulation);
         grid.add(box, 1, 100);
 
-        Button noSimulation = new Button("No growth");
+        Button noSimulation = new Button("No-Growth Market");
         HBox box5 = new HBox(10);
 //        box5.setAlignment(Pos.BASELINE_LEFT);
         box5.getChildren().add(noSimulation);
@@ -1159,7 +1287,7 @@ public class Main extends Application {
         });
         grid.add(confirm, 20, 5);
 
-        Button toPortfolio = new Button("Go to my Portfolio");
+        Button toPortfolio = new Button("Go to Portfolio");
         toPortfolio.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -1193,8 +1321,8 @@ public class Main extends Application {
         }
         //equityHandler.searchEquity("FO","","begin with");
         equityHandler.parseEquityFile();
-        //equityHandler.updateSharePrice();
-        //equityHandler.updateSharePriceTimer(10);
+        equityHandler.updateSharePrice();
+        equityHandler.updateSharePriceTimer(10);
         launch(args);
     }
 }

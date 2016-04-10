@@ -1302,6 +1302,62 @@ public class Main extends Application {
 
     }
 
+    public void watchlistScene(Stage stage, final String userid) {
+        window = stage;
+        window.setTitle("Your Watchlist");
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        Scene watchScene = new Scene(grid, 500, 500);
+
+        int i = 0;
+
+        Button addWatch = new Button("Add to Your Watchlist");
+        addWatch.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                addToWatchlistScene(window, userid);
+            }
+        });
+        grid.add(addWatch, 0, i);
+
+        Button toPortfolio = new Button("Go to Portfolio");
+        toPortfolio.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                portfolioHandle.portfolioScene(window, userid);
+            }
+        });
+        grid.add(toPortfolio, 1, i);
+        i++;
+
+        window.setScene(watchScene);
+        window.show();
+
+    }
+
+    public void addToWatchlistScene(Stage stage, final String userid) {
+        window = stage;
+        window.setTitle("Select Equity to Add");
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        Scene addToWatchScene = new Scene(grid, 500, 500);
+
+        int i = 0;
+
+        Button toWatch = new Button("Back to Watchlist");
+        toWatch.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                watchlistScene(window, userid);
+            }
+        });
+        grid.add(toWatch, 0, i);
+        i++;
+
+        window.setScene(addToWatchScene);
+        window.show();
+    }
+
     /**
      * Launches the JavaFX GUI and allows for deleting users on the command line
      * @param args initial arguments

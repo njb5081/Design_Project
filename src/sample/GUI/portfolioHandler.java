@@ -158,6 +158,16 @@ public class portfolioHandler {
             }
         });
 
+        //add a button to go to watchlist
+        Button toWatchlist = new Button("View Watchlist");
+        toWatchlist.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                main.watchlistScene(window, userID);
+            }
+        });
+        grid.add(toWatchlist, 0, i);
+
         window.setScene(portScene);
         window.show();
     }

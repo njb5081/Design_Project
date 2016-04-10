@@ -16,14 +16,14 @@ import java.util.*;
  * Created by minhduong on 4/3/16.
  * this class will handle parse the Equity file and update the current price of equity from the webservice
  */
-public class handleEquity implements ImportInfo{
+public class handleEquity {
 
     private shareEquity compareMachine;
     static data accountHandler = new data();
-    /*k
-* take the equities.csv file and parse the information into Equity object
-* Create 2 hashmap to store information about the Equity and its index or sector
-*/
+    /*
+    * take the equities.csv file and parse the information into Equity object
+    * Create 2 hashmap to store information about the Equity and its index or sector
+    */
     public void parseEquityFile(){
         //map contain the sector or index with the list of ticket symbol
         Map<String, List<String>> indexMap = new HashMap<String, List<String>>();
@@ -173,7 +173,6 @@ public class handleEquity implements ImportInfo{
                             if (!childNodes.item(0).getTextContent().trim().isEmpty()) {
                                 temporaryEquity.setSharePrice((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
                                 mapNeedUpdate.put(ticketSymbol, temporaryEquity);
-                                System.out.println((Double.parseDouble(childNodes.item(0).getTextContent().trim())));
                             }
                         }
                     }
@@ -217,17 +216,17 @@ public class handleEquity implements ImportInfo{
             if(!symbol.isEmpty()){
                 //the result match the input
                 if (typeOfSearch.equals("exact")) {
-                    if (symbol.equals(result)) {
+                    if (symbol.toUpperCase().equals(result)) {
                         tickerSymbol.add(result);
                     }
 
                 } else if (typeOfSearch.equals("begin with")) {
-                    if (result.startsWith(symbol)) {
+                    if (result.startsWith(symbol.toUpperCase())) {
                         tickerSymbol.add(result);
                     }
 
                 } else if (typeOfSearch.equals("contains")) {
-                    if (result.contains(symbol)) {
+                    if (result.contains(symbol.toUpperCase())) {
                         tickerSymbol.add(result);
                     }
 
@@ -239,17 +238,17 @@ public class handleEquity implements ImportInfo{
 
                     //if the input name is part of the equity name
                     if (typeOfSearch.equals("exact")) {
-                        if (equityName.equals(name)) {
+                        if (equityName.toUpperCase().equals(name)) {
                             tickerSymbol.add(result);
                         }
 
                     } else if (typeOfSearch.equals("begin with")) {
-                        if (equityName.startsWith(name)) {
+                        if (equityName.toUpperCase().startsWith(name)) {
                             tickerSymbol.add(result);
                         }
 
                     } else if (typeOfSearch.equals("contains")) {
-                        if (equityName.contains(name)) {
+                        if (equityName.toUpperCase().contains(name)) {
                             tickerSymbol.add(result);
                         }
 

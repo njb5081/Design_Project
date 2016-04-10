@@ -1,0 +1,48 @@
+package sample.handleData;
+import sample.Holdings.Equity;
+import sample.Portfolio;
+import sample.handleData.importFile;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import sample.Holdings.CashAccount;
+/**
+ * Created by minhduong on 4/10/16.
+ */
+public class importFile implements ImportInfo {
+
+    public void parseImportFile(String filename, Portfolio currentAccount){
+        FileReader input = null;
+        try {
+            input = new FileReader(filename);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        BufferedReader bufRead = new BufferedReader(input);
+
+        String myLine = null;
+        try {
+            while ((myLine = bufRead.readLine()) != null) {
+                String [] cashAccountList = myLine.split(",");
+                if(cashAccountList[0].equals("cash account")){
+                    for (CashAccount e: currentAccount.getCashAccounts()){
+                        if(e.toString().equals(cashAccountList[1])){
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+}

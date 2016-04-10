@@ -58,7 +58,8 @@ public class Main extends Application {
     static handleEquity equityHandler = new handleEquity();
     static accountHandler accountHandle = new accountHandler();
     static portfolioHandler portfolioHandle = new portfolioHandler();
-    public List<String> searchSymbolMatch;
+    private List<String> searchSymbolMatch;
+    private List<String> searchSymbolSellMatch;
     TextField portValue;
     String user;
     Portfolio port;
@@ -288,7 +289,7 @@ public class Main extends Application {
         window = mainStage;
         window.setTitle("Transactions");
         searchSymbolMatch = new ArrayList<String>();
-
+        searchSymbolSellMatch = new ArrayList<String>();
         List<Portfolio> portList = userData.listOfPortfolio();
         Portfolio myPortfolio = portList.get(0);
         for (Portfolio p : portList) {
@@ -362,7 +363,7 @@ public class Main extends Application {
 
         optionsCashAccounts.addAll(cashAccounts.keySet());
         //optionsAssetsAvailable.addAll(availableAssets.keySet());
-        optionsAssetsOwned.addAll( ownedEquity );
+        optionsAssetsOwned.addAll( searchSymbolSellMatch );
         optionsAssetsAvailable.addAll( searchSymbolMatch);
 
 
@@ -404,9 +405,7 @@ public class Main extends Application {
         final Label searchEquityNameSell = new Label("Enter Equity name");
         final TextField searchTickerSell = new TextField();
         TextField searchEquitySell = new TextField();
-        final ComboBox option = new ComboBox(optionSearch);
         final ComboBox optionSell = new ComboBox(optionSearch);
-
         Button searchForSell = new Button("Search");
 
         //search for ticker symbol
@@ -414,10 +413,11 @@ public class Main extends Application {
         final Label searchEquityName = new Label("Enter Equity name");
         final TextField searchTicker = new TextField();
         TextField searchEquity = new TextField();
-
+        final ComboBox option = new ComboBox(optionSearch);
         Button search = new Button("Search");
 
         //perform action to search for ticker symbol to sell out
+        //final Portfolio finalMyPortfolio = myPortfolio;
         searchForSell.setOnAction(new EventHandler<ActionEvent>() {
             private handleEquity handler;
             @Override
@@ -425,13 +425,13 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 String optionSearch = "";
                 handler = new handleEquity();
-                List<String> listOfSymbol = new ArrayList<String>(ownedEquity);
-                if(option.getValue() != null) {
-                    optionSearch = (String) option.getValue();
+                List<String> listOfSymbol = ownedEquity;
+                if(optionSell.getValue() != null) {
+                    optionSearch = (String) optionSell.getValue();
                 }
-                searchSymbolMatch = handler.searchEquity(searchTickerSell.getText(),searchEquityNameSell.getText(),optionSearch,listOfSymbol);
+                searchSymbolSellMatch = handler.searchEquity(searchTickerSell.getText(),searchEquityNameSell.getText(),optionSearch,listOfSymbol);
                 final ObservableList<String> list = FXCollections.observableArrayList();
-                list.addAll(searchSymbolMatch);
+                list.addAll(searchSymbolSellMatch);
                 sellEquity.setItems(list);
             }
         });

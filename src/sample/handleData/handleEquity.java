@@ -216,17 +216,17 @@ public class handleEquity {
             if(!symbol.isEmpty()){
                 //the result match the input
                 if (typeOfSearch.equals("exact")) {
-                    if (symbol.toUpperCase().equals(result)) {
+                    if (symbol.equals(result)) {
                         tickerSymbol.add(result);
                     }
 
                 } else if (typeOfSearch.equals("begin with")) {
-                    if (result.startsWith(symbol.toUpperCase())) {
+                    if (result.startsWith(symbol)) {
                         tickerSymbol.add(result);
                     }
 
                 } else if (typeOfSearch.equals("contains")) {
-                    if (result.contains(symbol.toUpperCase())) {
+                    if (result.contains(symbol)) {
                         tickerSymbol.add(result);
                     }
 
@@ -238,17 +238,17 @@ public class handleEquity {
 
                     //if the input name is part of the equity name
                     if (typeOfSearch.equals("exact")) {
-                        if (equityName.toUpperCase().equals(name)) {
+                        if (equityName.equals(name)) {
                             tickerSymbol.add(result);
                         }
 
                     } else if (typeOfSearch.equals("begin with")) {
-                        if (equityName.toUpperCase().startsWith(name)) {
+                        if (equityName.startsWith(name)) {
                             tickerSymbol.add(result);
                         }
 
                     } else if (typeOfSearch.equals("contains")) {
-                        if (equityName.toUpperCase().contains(name)) {
+                        if (equityName.contains(name)) {
                             tickerSymbol.add(result);
                         }
 

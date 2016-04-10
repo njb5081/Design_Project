@@ -194,6 +194,8 @@ public class handleEquity implements ImportInfo{
     /*
     *
     * this function will return the list of ticker symbol which match with the user input.
+    * Input:
+    *
     * */
     public List<String> searchEquity(String symbol, String name,String typeOfSearch, List<String> listOfSymbol){
         List<String> tickerSymbol = new ArrayList<String>();
@@ -205,6 +207,8 @@ public class handleEquity implements ImportInfo{
             typeOfSearch = "start with";
         } else if ("contains".contains(typeOfSearch)){
             typeOfSearch = "contains";
+        } else if (typeOfSearch.isEmpty() || (name.isEmpty() && symbol.isEmpty())){
+            return tickerSymbol;
         }
         for (Iterator it = compareMachine.iterator(); it.hasNext();){
             String result = (String) it.next();
@@ -263,6 +267,8 @@ public class handleEquity implements ImportInfo{
 
     /*
     * allow the user to enter the timer interval to update the shareprice from the website
+    * The input represent the time in term of seconds.
+    * The function will run the update share price base on the input interval
     * */
     public void updateSharePriceTimer(int time){
         TimerTask task = new TimerTask() {
@@ -271,9 +277,7 @@ public class handleEquity implements ImportInfo{
             public void run() {
                 // task to run goes here
                 handler = new handleEquity();
-                //System.out.println("start---");
                 handler.updateSharePrice();
-                //System.out.println("finish ------------");
             }
         };
         Timer timer = new Timer();
@@ -285,8 +289,6 @@ public class handleEquity implements ImportInfo{
         // schedules the task to be run in an interval
         timer.scheduleAtFixedRate(task, delay,
                 intevalPeriod);
-    } // end of main
+    }
 
-
-    //private List<String> searchSupport(String type)
 }

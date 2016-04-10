@@ -58,7 +58,8 @@ public class Main extends Application {
     static handleEquity equityHandler = new handleEquity();
     static accountHandler accountHandle = new accountHandler();
     static portfolioHandler portfolioHandle = new portfolioHandler();
-    public List<String> searchSymbolMatch;
+    private List<String> searchSymbolMatch;
+    private List<String> searchSymbolSellMatch;
     TextField portValue;
     String user;
     Portfolio port;
@@ -288,7 +289,7 @@ public class Main extends Application {
         window = mainStage;
         window.setTitle("Transactions");
         searchSymbolMatch = new ArrayList<String>();
-
+        searchSymbolSellMatch = new ArrayList<String>();
         List<Portfolio> portList = userData.listOfPortfolio();
         Portfolio myPortfolio = portList.get(0);
         for (Portfolio p : portList) {
@@ -361,9 +362,10 @@ public class Main extends Application {
         }
 
         optionsCashAccounts.addAll(cashAccounts.keySet());
-        optionsAssetsAvailable.addAll(availableAssets.keySet());
-        optionsAssetsOwned.addAll( ownedEquity );
+        //optionsAssetsAvailable.addAll(availableAssets.keySet());
+        optionsAssetsOwned.addAll( searchSymbolSellMatch );
         optionsAssetsAvailable.addAll( searchSymbolMatch);
+
 
         final ComboBox fromAccount = new ComboBox(optionsCashAccounts);
         final ComboBox toAccount = new ComboBox(optionsCashAccounts);
@@ -403,8 +405,7 @@ public class Main extends Application {
         final Label searchEquityNameSell = new Label("Enter Equity name");
         final TextField searchTickerSell = new TextField();
         TextField searchEquitySell = new TextField();
-        final ComboBox option = new ComboBox(optionSearch);
-
+        final ComboBox optionSell = new ComboBox(optionSearch);
         Button searchForSell = new Button("Search");
 
         //search for ticker symbol
@@ -412,10 +413,11 @@ public class Main extends Application {
         final Label searchEquityName = new Label("Enter Equity name");
         final TextField searchTicker = new TextField();
         TextField searchEquity = new TextField();
-
+        final ComboBox option = new ComboBox(optionSearch);
         Button search = new Button("Search");
 
         //perform action to search for ticker symbol to sell out
+        //final Portfolio finalMyPortfolio = myPortfolio;
         searchForSell.setOnAction(new EventHandler<ActionEvent>() {
             private handleEquity handler;
             @Override
@@ -423,13 +425,13 @@ public class Main extends Application {
             public void handle(ActionEvent event) {
                 String optionSearch = "";
                 handler = new handleEquity();
-                List<String> listOfSymbol = new ArrayList<String>(ownedEquity);
-                if(option.getValue() != null) {
-                    optionSearch = (String) option.getValue();
+                List<String> listOfSymbol = ownedEquity;
+                if(optionSell.getValue() != null) {
+                    optionSearch = (String) optionSell.getValue();
                 }
-                searchSymbolMatch = handler.searchEquity(searchTickerSell.getText(),searchEquityNameSell.getText(),optionSearch,listOfSymbol);
+                searchSymbolSellMatch = handler.searchEquity(searchTickerSell.getText(),searchEquityNameSell.getText(),optionSearch,listOfSymbol);
                 final ObservableList<String> list = FXCollections.observableArrayList();
-                list.addAll(searchSymbolMatch);
+                list.addAll(searchSymbolSellMatch);
                 sellEquity.setItems(list);
             }
         });
@@ -723,7 +725,6 @@ public class Main extends Application {
         HBox simBox = new HBox();
         simBox.setAlignment(Pos.TOP_LEFT);
         transactionGrid.add(portfolioButton, 1, 150);
-        //PORTFOLIO NAVIGATION END
 
         HBox box1Trans = new HBox();
         VBox box2Trans = new VBox();
@@ -769,12 +770,14 @@ public class Main extends Application {
         VBox box4Buy = new VBox();
         HBox box5Buy = new HBox();
 
-        boxSearchBuy.getChildren().add(searchTickerSymbol); ////////////////////////////
+        boxSearchBuy.getChildren().add(searchTickerSymbol);
         boxSearchBuy.getChildren().add(searchTicker);
         boxSearchBuy.getChildren().add(searchEquityName);
         boxSearchBuy.getChildren().add(searchEquity);
-        box1Buy.getChildren().add(option);
         boxSearchBuy.getChildren().add(search);
+        boxSearchBuy.getChildren().add(option);
+
+        box1Buy.getChildren().add(buyTransactionLabel);
 
         box2Buy.getChildren().add(buyEquityLabel);
         box2Buy.getChildren().add(buyEquity);
@@ -800,11 +803,19 @@ public class Main extends Application {
         transactionGrid.add(box4Buy, 200 , 60);
         transactionGrid.add(box5Buy, 200 , 120);
 
+        VBox boxSearchSell = new VBox();
         HBox box1Sell = new HBox();
         VBox box2Sell = new VBox();
         VBox box3Sell = new VBox();
         VBox box4Sell = new VBox();
         HBox box5Sell = new HBox();
+
+        boxSearchSell.getChildren().add(searchTickerSymbolSell);
+        boxSearchSell.getChildren().add(searchTickerSell);
+        boxSearchSell.getChildren().add(searchEquityNameSell);
+        boxSearchSell.getChildren().add(searchEquitySell);
+        boxSearchSell.getChildren().add(searchForSell);
+        boxSearchSell.getChildren().add(optionSell);
 
         box1Sell.getChildren().add(sellTransactionLabel);
 
@@ -825,6 +836,7 @@ public class Main extends Application {
 
         box5Sell.getChildren().add(sellEquityButton);
 
+        transactionGrid.add(boxSearchSell, 100, 1);
         transactionGrid.add(box1Sell, 100 , 10);
         transactionGrid.add(box2Sell, 100 , 20);
         transactionGrid.add(box3Sell, 100 , 40);

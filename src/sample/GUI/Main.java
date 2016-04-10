@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import sample.GUI.accountHandler;
-import sun.jvm.hotspot.oops.Mark;
+//import sun.jvm.hotspot.oops.Mark;
 /*
 * This class will display all the GUI for the system
 * */
@@ -848,7 +848,7 @@ public class Main extends Application {
                 }
 
                 sellEquityNameLabel.setText("      Name: " + sellEquity.getValue().toString());
-                sellEquityValueLabel.setText("      Value: $" + String.format("%.2f", availableAssets.get(sellEquity.getValue().toString()).getSharePrice()));
+                sellEquityValueLabel.setText("      Value: $" + availableAssets.get(sellEquity.getValue().toString()).getSharePrice());
                 try {
                     sellEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(availableAssets.get(sellEquity.getValue().toString()).getName())));
                 } catch(NullPointerException e){
@@ -1337,6 +1337,32 @@ public class Main extends Application {
 
         int i = 0;
 
+        List<Portfolio> portList = userData.listOfPortfolio();
+        Portfolio myPortfolio = portList.get(0);
+        for (Portfolio p : portList) {
+            if (p.getUserID().equals(userid)){
+                myPortfolio = p;
+                //port = p;
+            }
+        }
+
+        grid.add(new Label("Ticker:"), 0, i);
+        grid.add(new Label("Name:"), 1, i);
+        grid.add(new Label("Share Price:"), 2, i);
+        i++;
+
+        for(WatchedAsset a : myPortfolio.getWatchlist()) {
+            Map<String, Equity> equities = equityHandler.getEquityMap();
+            Equity e = equities.get(a.getName());
+            Label ticker = new Label(e.getTickerSymbol());
+            grid.add(ticker, 0, i);
+            Label name = new Label(e.getName());
+            grid.add(name, 1, i);
+            Label sharePrice = new Label(" $" + e.getSharePrice().toString());
+            grid.add(sharePrice, 2, i);
+            i++;
+        }
+
         Button addWatch = new Button("Add to Your Watchlist");
         addWatch.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -1370,6 +1396,127 @@ public class Main extends Application {
 
         int i = 0;
 
+        searchSymbolMatch = new ArrayList<String>();
+
+        final ObservableList<String> optionSearch = FXCollections.observableArrayList();
+        List<String> optionSearchList = new ArrayList<String>();
+        optionSearchList.add("exact");
+        optionSearchList.add("contains");
+        optionSearchList.add("begin with");
+        optionSearch.addAll(optionSearchList);
+
+        final ObservableList<String> optionsAssetsAvailable = FXCollections.observableArrayList();
+
+        optionsAssetsAvailable.addAll( searchSymbolMatch);
+
+        //search for ticker symbol from the list of portfolio to sell
+//        final Label searchTickerSymbolSell = new Label("Enter ticker symbol");
+//        final Label searchEquityNameSell = new Label("Enter Equity name");
+//        final TextField searchTickerSell = new TextField();
+//        TextField searchEquitySell = new TextField();
+//        final ComboBox optionSell = new ComboBox(optionSearch);
+//        Button searchForSell = new Button("Search");
+
+        //search for ticker symbol
+        final Label searchTickerSymbol = new Label("Enter ticker symbol");
+        final Label searchEquityName = new Label("Enter Equity name");
+        final TextField searchTicker = new TextField();
+        TextField searchEquity = new TextField();
+        final ComboBox option = new ComboBox(optionSearch);
+        Button search = new Button("Search");
+        final ComboBox buyEquity = new ComboBox(optionsAssetsAvailable);
+
+        search.setOnAction(new EventHandler<ActionEvent>() {
+            private handleEquity handler;
+            @Override
+
+            public void handle(ActionEvent event) {
+                String optionSearch = "";
+                handler = new handleEquity();
+                List<String> listOfSymbol = new ArrayList<String>(equityHandler.getEquityMap().keySet());
+                if(option.getValue() != null) {
+                    optionSearch = (String) option.getValue();
+                }
+                searchSymbolMatch = handler.searchEquity(searchTicker.getText().toUpperCase(),searchEquityName.getText().toUpperCase(),optionSearch,listOfSymbol);
+                final ObservableList<String> list = FXCollections.observableArrayList();
+                list.addAll(searchSymbolMatch);
+                buyEquity.setItems(list);
+            }
+        });
+
+        grid.add(searchTickerSymbol, 0, i);
+        grid.add(searchTicker, 1, i);
+        i++;
+        grid.add(searchEquityName, 0, i);
+        grid.add(searchEquity, 1, i);
+        i++;
+        grid.add(option, 0, i);
+        i++;
+        grid.add(search, 0, i);
+        i++;
+        grid.add(buyEquity, 0, i);
+        i++;
+
+        Label lowLabel = new Label("Enter a low trigger value:");
+        grid.add(lowLabel, 0, i);
+
+        final TextField enterLow = new TextField();
+        grid.add(enterLow, 1, i);
+        i++;
+
+        final Label highLabel = new Label("Enter a high trigger value:");
+        grid.add(highLabel, 0, i);
+
+        final TextField enterHigh = new TextField();
+        grid.add(enterHigh, 1, i);
+        i++;
+
+        Button add = new Button("Add Equity");
+        add.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //System.out.println(buyEquity.getValue());
+
+                double lowTrigger;
+                double highTrigger;
+
+                if (enterLow.getText().equals("")) {
+                    //System.out.println("Its and empty string");
+                    lowTrigger = -1;
+                } else {
+                    lowTrigger = Double.parseDouble(enterLow.getText());
+                }
+                if (enterHigh.getText().equals("")) {
+                    highTrigger = -1;
+                } else {
+                    highTrigger = Double.parseDouble(enterHigh.getText());
+                }
+
+                Map<String, Equity> equities = equityHandler.getEquityMap();
+                Equity e = equities.get(buyEquity.getValue());
+
+                //WatchedEquity watched = new WatchedEquity(e.getName(), lowTrigger, highTrigger);
+
+                //find user information from the user text file
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio myPortfolio = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(userid)){
+                        myPortfolio = p;
+                        //port = p;
+                    }
+                }
+
+                myPortfolio.addToWatchlist(e.getTickerSymbol(), lowTrigger, highTrigger, true);
+                userData.updatePortfolioList(portList);
+
+                System.out.println(myPortfolio.getWatchlist());
+            }
+        });
+
+        grid.add(add, 0, i);
+        i++;
+
         Button toWatch = new Button("Back to Watchlist");
         toWatch.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -1379,6 +1526,29 @@ public class Main extends Application {
         });
         grid.add(toWatch, 0, i);
         i++;
+
+
+
+        //perform action to search for ticker symbol to sell out
+        //final Portfolio finalMyPortfolio = myPortfolio;
+//        searchForSell.setOnAction(new EventHandler<ActionEvent>() {
+//            private handleEquity handler;
+//            @Override
+//
+//            public void handle(ActionEvent event) {
+//                String optionSearch = "";
+//                handler = new handleEquity();
+//                List<String> listOfSymbol = ownedEquity;
+//                if(optionSell.getValue() != null) {
+//                    optionSearch = (String) optionSell.getValue();
+//                }
+//                searchSymbolSellMatch = handler.searchEquity(searchTickerSell.getText().toUpperCase(),searchEquityNameSell.getText().toUpperCase(),optionSearch,listOfSymbol);
+//                final ObservableList<String> list = FXCollections.observableArrayList();
+//                list.addAll(searchSymbolSellMatch);
+//                sellEquity.setItems(list);
+//            }
+//        });
+
 
         window.setScene(addToWatchScene);
         window.show();

@@ -1,12 +1,13 @@
 package sample;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 
 /**
  * Created by Nick on 4/8/2016.
  */
-public class WatchedMarketAverage implements WatchedAsset {
+public class WatchedMarketAverage implements WatchedAsset, Serializable {
 
     private String name;
 

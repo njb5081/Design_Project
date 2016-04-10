@@ -1088,6 +1088,16 @@ public class Main extends Application {
         });
         grid.add(confirm, 1, 1);
 
+        Button toPortfolio = new Button("Go to my Portfolio");
+        toPortfolio.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                portfolioHandle.portfolioScene(window, user);
+            }
+        });
+        grid.add(toPortfolio, 1, 2 );
+
+
         window.setScene(deleteAccScene);
         window.show();
 

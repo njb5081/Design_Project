@@ -39,7 +39,7 @@ public class portfolioHandler {
         //create the grid being shown in the scene
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        Scene portScene = new Scene(grid, 500, 500);
+        Scene portScene = new Scene(grid, 500, 300);
 
         //find user information from the user text file
         List<Portfolio> portList = userData.listOfPortfolio();
@@ -75,11 +75,11 @@ public class portfolioHandler {
         });
         HBox logBox = new HBox();
         logBox.setAlignment(Pos.TOP_LEFT);
-        grid.add(logButton, 1, 300);
+        grid.add(logButton, 1, i);
         //LOGGER NAVIGATION END
 
         //TRANSACTION NAVIGATION START
-        final Button transactionButton = new Button("Go to Transactions");
+        final Button transactionButton = new Button("Transactions");
         transactionButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -90,17 +90,6 @@ public class portfolioHandler {
         transBox.setAlignment(Pos.TOP_LEFT);
         grid.add(transactionButton, 0, i);
         //TRANSACTION NAVIGATION END
-
-        //Create a button that leads to the simulation screen
-        Button marketSimulation = new Button("MarketSimulation");
-        grid.add(marketSimulation, 1, i);
-        marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                main.simulationScene(window, port);
-            }
-        });
-        i++;
 
         //Create a button that leads to the page to add an account
         Button addAccount = new Button("Add a Cash Account");
@@ -144,12 +133,23 @@ public class portfolioHandler {
                 handlerAccount.timeIntervalUpdate(window,userID);
             }
         });
-
-
-
         grid.add(updatePriceInterval,0,i);
+
+        //Create a button that leads to the simulation screen
+        Button marketSimulation = new Button("Market Simulations");
+        grid.add(marketSimulation, 1, i);
+        marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                main.simulationScene(window, port);
+            }
+        });
+        i++;
+
         window.setScene(portScene);
         window.show();
     }
+
+
 
 }

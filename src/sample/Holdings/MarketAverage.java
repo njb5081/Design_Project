@@ -1,5 +1,6 @@
 package sample.Holdings;
 
+import sample.AssetVisitor;
 import sample.Holdings.Asset;
 import sample.Holdings.Equity;
 

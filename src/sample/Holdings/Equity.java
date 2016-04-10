@@ -1,6 +1,6 @@
 package sample.Holdings;
 import sample.PortfolioMemento;
-
+import sample.AssetVisitor;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;

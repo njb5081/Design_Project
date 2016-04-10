@@ -243,9 +243,21 @@ public class accountHandler {
                 }
             }
         });
+
+        //add button to go back to the profile page
+        Button toPortfolio = new Button("Go to Portfolio");
+        toPortfolio.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                portfolioHandle.portfolioScene(window, username);
+            }
+        });
+
         box.getChildren().add(setTimer);
+        box.getChildren().add(toPortfolio);
         grid2.add(box, 1 , 4);
         grid2.add(message,1,6);
+
         window.setScene(scene2);
         window.show();
     }

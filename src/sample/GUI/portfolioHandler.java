@@ -189,6 +189,7 @@ public class portfolioHandler {
             }
         });
         grid.add(toWatchlist, 0, i);
+        i++;
 
         grid.add(file,0,i);
         grid.add(filename,1,i);

@@ -1530,60 +1530,63 @@ public class Main extends Application {
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Map<String, Equity> equities = equityHandler.getEquityMap();
-                boolean isEquity;
-                if (equities.keySet().contains(buyEquity.getValue())) {
-                    isEquity = true;
+                if (!enterLow.getText().equals("") && !enterHigh.getText().equals("") && (Double.parseDouble(enterLow.getText()) > Double.parseDouble(enterHigh.getText()))) {
+                    System.out.println("Please enter a low trigger value less than the high trigger value");
                 } else {
-                    isEquity = false;
-                }
-
-                double lowTrigger;
-                double highTrigger;
-
-                if (enterLow.getText().equals("")) {
-                    lowTrigger = -1;
-                } else {
-                    lowTrigger = Double.parseDouble(enterLow.getText());
-                }
-                if (enterHigh.getText().equals("")) {
-                    highTrigger = -1;
-                } else {
-                    highTrigger = Double.parseDouble(enterHigh.getText());
-                }
-
-                //find user information from the user text file
-                List<Portfolio> portList = userData.listOfPortfolio();
-                Portfolio myPortfolio = portList.get(0);
-                for (Portfolio p : portList) {
-                    if (p.getUserID().equals(userid)){
-                        myPortfolio = p;
+                    Map<String, Equity> equities = equityHandler.getEquityMap();
+                    boolean isEquity;
+                    if (equities.keySet().contains(buyEquity.getValue())) {
+                        isEquity = true;
+                    } else {
+                        isEquity = false;
                     }
-                }
 
-                if (isEquity) { //Want to add an equity to watchlist
-                    Equity e = equities.get(buyEquity.getValue());
-                    myPortfolio.addToWatchlist(e.getTickerSymbol(), lowTrigger, highTrigger, true);
-                } else { //want to add a market average to watchlist
-                    final HashMap<String, MarketAverage> availableAssets = new HashMap<String, MarketAverage>();
-                    for(String indexName : indexMap.keySet()){
+                    double lowTrigger;
+                    double highTrigger;
+                    if (enterLow.getText().equals("")) {
+                        lowTrigger = -1;
+                    } else {
+                        lowTrigger = Double.parseDouble(enterLow.getText());
+                    }
+                    if (enterHigh.getText().equals("")) {
+                        highTrigger = -1;
+                    } else {
+                        highTrigger = Double.parseDouble(enterHigh.getText());
+                    }
 
-                        ArrayList<Equity> tempEquities = new ArrayList<Equity>();
-
-                        for(String equityName : indexMap.get(indexName)){
-                            tempEquities.add(equityMap.get(equityName));
+                    //find user information from the user text file
+                    List<Portfolio> portList = userData.listOfPortfolio();
+                    Portfolio myPortfolio = portList.get(0);
+                    for (Portfolio p : portList) {
+                        if (p.getUserID().equals(userid)){
+                            myPortfolio = p;
                         }
-
-                        MarketAverage tempMarketAverage = new MarketAverage(indexName, tempEquities);
-                        availableAssets.put(tempMarketAverage.getName(), tempMarketAverage);
-
                     }
-                    MarketAverage a = availableAssets.get(buyEquity.getValue());
-                    myPortfolio.addToWatchlist(a.getTickerSymbol(), lowTrigger, highTrigger, false);
-                }
 
-                userData.updatePortfolioList(portList);
-                watchlistScene(window, userid);
+                    if (isEquity) { //Want to add an equity to watchlist
+                        Equity e = equities.get(buyEquity.getValue());
+                        myPortfolio.addToWatchlist(e.getTickerSymbol(), lowTrigger, highTrigger, true);
+                    } else { //want to add a market average to watchlist
+                        final HashMap<String, MarketAverage> availableAssets = new HashMap<String, MarketAverage>();
+                        for(String indexName : indexMap.keySet()){
+
+                            ArrayList<Equity> tempEquities = new ArrayList<Equity>();
+
+                            for(String equityName : indexMap.get(indexName)){
+                                tempEquities.add(equityMap.get(equityName));
+                            }
+
+                            MarketAverage tempMarketAverage = new MarketAverage(indexName, tempEquities);
+                            availableAssets.put(tempMarketAverage.getName(), tempMarketAverage);
+
+                        }
+                        MarketAverage a = availableAssets.get(buyEquity.getValue());
+                        myPortfolio.addToWatchlist(a.getTickerSymbol(), lowTrigger, highTrigger, false);
+                    }
+
+                    userData.updatePortfolioList(portList);
+                    watchlistScene(window, userid);
+                }
             }
         });
         grid.add(add, 1, i);
@@ -1668,28 +1671,34 @@ public class Main extends Application {
         editTriggers.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                List<Portfolio> portList = userData.listOfPortfolio();
-                Portfolio myPortfolio = portList.get(0);
-                for (Portfolio p : portList) {
-                    if (p.getUserID().equals(userid)){
-                        myPortfolio = p;
+                if (!newLowField.getText().equals("") && !newHighField.getText().equals("") && (Double.parseDouble(newLowField.getText()) > Double.parseDouble(newHighField.getText()))) {
+                    System.out.println("Please enter a low trigger value less than the high trigger value");
+                } else if (removeBox.getValue() == null){
+                    System.out.println("Please select an equity");
+                } else {
+                    List<Portfolio> portList = userData.listOfPortfolio();
+                    Portfolio myPortfolio = portList.get(0);
+                    for (Portfolio p : portList) {
+                        if (p.getUserID().equals(userid)){
+                            myPortfolio = p;
+                        }
                     }
+                    double newLowTrigger;
+                    double newHighTrigger;
+                    if (newLowField.getText().equals("")) {
+                        newLowTrigger = -1;
+                    } else {
+                        newLowTrigger = Double.parseDouble(newLowField.getText());
+                    }
+                    if (newHighField.getText().equals("")) {
+                        newHighTrigger = -1;
+                    } else {
+                        newHighTrigger = Double.parseDouble(newHighField.getText());
+                    }
+                    myPortfolio.editWatchlistTriggers(removeBox.getValue().toString(), newLowTrigger, newHighTrigger);
+                    userData.updatePortfolioList(portList);
+                    watchlistScene(window, userid);
                 }
-                double newLowTrigger;
-                double newHighTrigger;
-                if (newLowField.getText().equals("")) {
-                    newLowTrigger = -1;
-                } else {
-                    newLowTrigger = Double.parseDouble(newLowField.getText());
-                }
-                if (newHighField.getText().equals("")) {
-                    newHighTrigger = -1;
-                } else {
-                    newHighTrigger = Double.parseDouble(newHighField.getText());
-                }
-                myPortfolio.editWatchlistTriggers(removeBox.getValue().toString(), newLowTrigger, newHighTrigger);
-                userData.updatePortfolioList(portList);
-                watchlistScene(window, userid);
             }
         });
         grid.add(editTriggers, 1, i);

@@ -17,6 +17,8 @@ import sample.handleData.data;
 
 import java.util.List;
 import sample.GUI.accountHandler;
+import sample.handleData.ImportInfo;
+import sample.handleData.*;
 /**
  * Created by minhduong on 4/4/16.
  */
@@ -27,6 +29,7 @@ public class portfolioHandler {
     Portfolio tempPort;
     static data userData = new data();
     static Main main = new Main();
+    private ImportInfo importHandler;
 
     /**
      * Shows the portfolio summary information after loggin in
@@ -43,7 +46,7 @@ public class portfolioHandler {
         Scene portScene = new Scene(grid, 500, 300);
 
         //find user information from the user text file
-        List<Portfolio> portList = userData.listOfPortfolio();
+        final List<Portfolio> portList = userData.listOfPortfolio();
         Portfolio myPortfolio = portList.get(0);
         for (Portfolio p : portList) {
             if (p.getUserID().equals(userID)){
@@ -162,12 +165,18 @@ public class portfolioHandler {
         i++;
 
         Label file = new Label("Enter filename to import");
-        TextField filename = new TextField();
+        final TextField filename = new TextField();
         Button importFile = new Button("import");
+        final Portfolio finalMyPortfolio = myPortfolio;
         importFile.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
+                System.out.println("get into the function");
+                importHandler = new importFile();
+                if(!filename.getText().isEmpty()) {
+                    System.out.println("check to see if file exist");
+                    importHandler.parseImportFile(filename.getText(), userID);
+                }
             }
         });
 
@@ -181,6 +190,10 @@ public class portfolioHandler {
         });
         grid.add(toWatchlist, 0, i);
 
+        grid.add(file,0,i);
+        grid.add(filename,1,i);
+        i++;
+        grid.add(importFile,0,i);
         window.setScene(portScene);
         window.show();
     }

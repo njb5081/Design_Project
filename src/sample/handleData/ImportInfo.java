@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by Nicholas on 4/8/2016.
  */
 public interface ImportInfo {
-    public void parseImportFile(String filename, Portfolio currentAcoount);
+    public void parseImportFile(String filename, String ID);
 
     //public Map<String, List<String>> getMap(String filename);
 

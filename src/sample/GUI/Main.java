@@ -63,8 +63,8 @@ public class Main extends Application {
     //
     private List<String> searchSymbolSellMatch;
     TextField portValue;
-    String user;
-    Portfolio port;
+    //String user;
+    //Portfolio port;
     Portfolio tempPort;
     MarketSimulation marketSim;
 
@@ -81,12 +81,12 @@ public class Main extends Application {
      * Shows logs for previous actions
      * @param mainStage stage for the window
      */
-    public void loggerScene(final Stage mainStage){
+    public void loggerScene(final Stage mainStage, final String userID){
 
         List<Portfolio> portList = userData.listOfPortfolio();
         Portfolio myPortfolio = portList.get(0);
         for (Portfolio p : portList) {
-            if (p.getUserID().equals(user)){
+            if (p.getUserID().equals(userID)){
                 myPortfolio = p;
             }
         }
@@ -108,7 +108,7 @@ public class Main extends Application {
         portButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                portfolioHandle.portfolioScene(mainStage, user);
+                portfolioHandle.portfolioScene(mainStage, userID);
             }
         });
 
@@ -154,7 +154,7 @@ public class Main extends Application {
         window.show();
     }
 
-    public void viewHoldingsScene(final Stage mainStage){
+    public void viewHoldingsScene(final Stage mainStage, final String userID){
 
         window = mainStage;
         window.setTitle("View Holdings");
@@ -162,7 +162,7 @@ public class Main extends Application {
         List<Portfolio> portList = userData.listOfPortfolio();
         Portfolio myPortfolio = portList.get(0);
         for (Portfolio p : portList) {
-            if (p.getUserID().equals(user)){
+            if (p.getUserID().equals(userID)){
                 myPortfolio = p;
             }
         }
@@ -234,7 +234,7 @@ public class Main extends Application {
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio myPortfolioInner = portList.get(0);
                 for (Portfolio p : portList) {
-                    if (p.getUserID().equals(user)){
+                    if (p.getUserID().equals(userID)){
                         myPortfolioInner = p;
                     }
                 }
@@ -255,7 +255,7 @@ public class Main extends Application {
         portfolioButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                portfolioHandle.portfolioScene(mainStage, user);
+                portfolioHandle.portfolioScene(mainStage, userID);
             }
         });
 
@@ -302,7 +302,7 @@ public class Main extends Application {
      * Shows a page that allows the user to undo the five most recent actions
      * @param mainStage stage for the window
      */
-    public void undoScene(final Stage mainStage){
+    public void undoScene(final Stage mainStage, final String userID){
 
         window = mainStage;
         window.setTitle("Undo");
@@ -310,7 +310,7 @@ public class Main extends Application {
         List<Portfolio> portList = userData.listOfPortfolio();
         Portfolio myPortfolio = portList.get(0);
         for (Portfolio p : portList) {
-            if (p.getUserID().equals(user)){
+            if (p.getUserID().equals(userID)){
                 myPortfolio = p;
             }
         }
@@ -338,7 +338,7 @@ public class Main extends Application {
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio myPortfolioInner = portList.get(0);
                 for (Portfolio p : portList) {
-                    if (p.getUserID().equals(user)){
+                    if (p.getUserID().equals(userID)){
                         myPortfolioInner = p;
                     }
 
@@ -353,7 +353,7 @@ public class Main extends Application {
         portfolioButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                portfolioHandle.portfolioScene(mainStage, user);
+                portfolioHandle.portfolioScene(mainStage, userID);
             }
         });
 
@@ -366,7 +366,7 @@ public class Main extends Application {
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio myPortfolioInner = portList.get(0);
                 for (Portfolio p : portList) {
-                    if (p.getUserID().equals(user)){
+                    if (p.getUserID().equals(userID)){
                         myPortfolioInner = p;
                     }
                 }
@@ -375,7 +375,7 @@ public class Main extends Application {
                     myPortfolioInner.getActionByDate(chooseActionBox.getValue().toString()).undo();
                     userData.updatePortfolioList(portList);
                     undoInstructionLabel.setText("Action Successfully Undone");
-                    portfolioHandle.portfolioScene(mainStage, user);
+                    portfolioHandle.portfolioScene(mainStage, userID);
 
                 }else{
                     undoInstructionLabel.setText("Invalid Input");
@@ -420,7 +420,7 @@ public class Main extends Application {
      * Shows a page that allows transferring funds and buying and selling equities
      * @param mainStage stage for the window
      */
-    public void transactionScene(final Stage mainStage){
+    public void transactionScene(final Stage mainStage, final String userID){
 
         window = mainStage;
         window.setTitle("Transactions");
@@ -429,7 +429,7 @@ public class Main extends Application {
         List<Portfolio> portList = userData.listOfPortfolio();
         Portfolio myPortfolio = portList.get(0);
         for (Portfolio p : portList) {
-            if (p.getUserID().equals(user)){
+            if (p.getUserID().equals(userID)){
                 myPortfolio = p;
             }
         }
@@ -632,7 +632,7 @@ public class Main extends Application {
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio myPortfolioInner = portList.get(0);
                 for (Portfolio p : portList) {
-                    if (p.getUserID().equals(user)){
+                    if (p.getUserID().equals(userID)){
                         myPortfolioInner = p;
                     }
                 }
@@ -658,7 +658,7 @@ public class Main extends Application {
                         sellAccountOpenDateLabel.setText("      Open Date: " + tempSellAccount.getOpenDate());
                         sellEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(tempSellEquity.getName())));
                         userData.updatePortfolioList(portList);
-                        portfolioHandle.portfolioScene(mainStage, user);
+                        portfolioHandle.portfolioScene(mainStage, userID);
 
                     } else{
                         sellTransactionLabel.setText("Invalid Input");
@@ -678,7 +678,7 @@ public class Main extends Application {
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio myPortfolioInner = portList.get(0);
                 for (Portfolio p : portList) {
-                    if (p.getUserID().equals(user)){
+                    if (p.getUserID().equals(userID)){
                         myPortfolioInner = p;
                     }
                 }
@@ -707,7 +707,7 @@ public class Main extends Application {
                         buyAccountOpenDateLabel.setText("      Open Date: " + cashAccounts.get(buyCashAccount.getValue().toString()).getOpenDate());
                         buyEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(tempBuyEquity.getName())));
                         userData.updatePortfolioList(portList);
-                        portfolioHandle.portfolioScene(mainStage, user);
+                        portfolioHandle.portfolioScene(mainStage, userID);
 
                     } else{
                         buyTransactionLabel.setText("Invalid Input");
@@ -726,7 +726,7 @@ public class Main extends Application {
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio myPortfolioInner = portList.get(0);
                 for (Portfolio p : portList) {
-                    if (p.getUserID().equals(user)){
+                    if (p.getUserID().equals(userID)){
                         myPortfolioInner = p;
                     }
                 }
@@ -755,7 +755,7 @@ public class Main extends Application {
                         userData.updatePortfolioList(portList);
 
                         transFundsLabel.setText("Transfer Successful");
-                        portfolioHandle.portfolioScene(mainStage, user);
+                        portfolioHandle.portfolioScene(mainStage, userID);
 
                     } else{
                         transFundsLabel.setText("Invalid Input");
@@ -819,7 +819,7 @@ public class Main extends Application {
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio myPortfolioInner = portList.get(0);
                 for (Portfolio p : portList) {
-                    if (p.getUserID().equals(user)){
+                    if (p.getUserID().equals(userID)){
                         myPortfolioInner = p;
                     }
                 }
@@ -841,13 +841,13 @@ public class Main extends Application {
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio myPortfolioInner = portList.get(0);
                 for (Portfolio p : portList) {
-                    if (p.getUserID().equals(user)){
+                    if (p.getUserID().equals(userID)){
                         myPortfolioInner = p;
                     }
                 }
 
                 sellEquityNameLabel.setText("      Name: " + sellEquity.getValue().toString());
-                sellEquityValueLabel.setText("      Value: $" + availableAssets.get(sellEquity.getValue().toString()).getSharePrice());
+                sellEquityValueLabel.setText("      Value: $" + String.format("%.2f",availableAssets.get(sellEquity.getValue().toString()).getSharePrice()));
                 try {
                     sellEquityOwnedLabel.setText("      Amount Owned: " + Integer.toString(myPortfolioInner.getSharesHeld().get(availableAssets.get(sellEquity.getValue().toString()).getName())));
                 } catch(NullPointerException e){
@@ -862,7 +862,7 @@ public class Main extends Application {
         portfolioButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                portfolioHandle.portfolioScene(mainStage, user);
+                portfolioHandle.portfolioScene(mainStage, userID);
             }
         });
 
@@ -994,9 +994,9 @@ public class Main extends Application {
     /**
      * Shows the simulation page and allows for showing simulations on future holdings
      * @param mainStage stage for the window
-     * @param port the portfolio being simulated
+     * @param userID the portfolio ID being simulated
      */
-    public void simulationScene (final Stage mainStage, final Portfolio port){
+    public void simulationScene (final Stage mainStage, final String userID){
         window = mainStage;
         window.setTitle("Market Simulation");
 
@@ -1016,7 +1016,7 @@ public class Main extends Application {
         transactionButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                transactionScene(mainStage);
+                transactionScene(mainStage, userID);
             }
         });
 
@@ -1030,7 +1030,7 @@ public class Main extends Application {
         portButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                portfolioHandle.portfolioScene(window, user);
+                portfolioHandle.portfolioScene(window, userID);
             }
         });
 
@@ -1090,7 +1090,7 @@ public class Main extends Application {
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio port = portList.get(0);
                 for (Portfolio p : portList) {
-                    if (p.getUserID().equals(user)){
+                    if (p.getUserID().equals(userID)){
                         port = p;
                     }
                 }
@@ -1112,7 +1112,7 @@ public class Main extends Application {
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio port = portList.get(0);
                 for (Portfolio p : portList) {
-                    if (p.getUserID().equals(user)){
+                    if (p.getUserID().equals(userID)){
                         port = p;
                     }
                 }
@@ -1140,7 +1140,7 @@ public class Main extends Application {
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio port = portList.get(0);
                 for (Portfolio p : portList) {
-                    if (p.getUserID().equals(user)){
+                    if (p.getUserID().equals(userID)){
                         port = p;
                     }
                 }
@@ -1169,7 +1169,7 @@ public class Main extends Application {
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio port = portList.get(0);
                 for (Portfolio p : portList) {
-                    if (p.getUserID().equals(user)){
+                    if (p.getUserID().equals(userID)){
                         port = p;
                     }
                 }
@@ -1266,7 +1266,7 @@ public class Main extends Application {
      * Shows a screen to delete a cash account from the portfolio
      * @param stage the stage for the window
      */
-    public void deleteCashAccountScene(Stage stage) {
+    public void deleteCashAccountScene(Stage stage, final String userID) {
         window = stage;
         window.setTitle("Delete an Account");
         GridPane grid = new GridPane();
@@ -1279,7 +1279,7 @@ public class Main extends Application {
         List<Portfolio> portList = userData.listOfPortfolio();
         Portfolio myPortfolio = portList.get(0);
         for (Portfolio p : portList) {
-            if (p.getUserID().equals(user)){
+            if (p.getUserID().equals(userID)){
                 myPortfolio = p;
             }
         }
@@ -1300,14 +1300,14 @@ public class Main extends Application {
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio myPortfolio = portList.get(0);
                 for (Portfolio p : portList) {
-                    if (p.getUserID().equals(user)){
+                    if (p.getUserID().equals(userID)){
                         myPortfolio = p;
                     }
                 }
                 myPortfolio.getCashAccountByName(account.getValue().toString()).update();
                 myPortfolio.deleteCashAccount(account.getValue().toString());
                 userData.updatePortfolioList(portList);
-                portfolioHandle.portfolioScene(window, user);
+                portfolioHandle.portfolioScene(window, userID);
             }
         });
         grid.add(confirm, 20, 5);
@@ -1316,7 +1316,7 @@ public class Main extends Application {
         toPortfolio.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                portfolioHandle.portfolioScene(window, user);
+                portfolioHandle.portfolioScene(window, userID);
             }
         });
         grid.add(toPortfolio, 20, 7 );

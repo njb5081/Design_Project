@@ -22,7 +22,7 @@ import sample.GUI.accountHandler;
  */
 public class portfolioHandler {
     Stage window;
-    String user;
+    //String user;
     Portfolio port;
     Portfolio tempPort;
     static data userData = new data();
@@ -73,7 +73,7 @@ public class portfolioHandler {
         logButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                main.loggerScene(stage);
+                main.loggerScene(stage, userID);
             }
         });
         HBox logBox = new HBox();
@@ -86,7 +86,7 @@ public class portfolioHandler {
         transactionButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                main.transactionScene(stage);
+                main.transactionScene(stage, userID);
             }
         });
         HBox transBox = new HBox();
@@ -111,7 +111,7 @@ public class portfolioHandler {
         undoAction.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                main.undoScene(window);
+                main.undoScene(window, userID);
             }
         });
 
@@ -122,7 +122,7 @@ public class portfolioHandler {
         deleteAccount.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                main.deleteCashAccountScene(window);
+                main.deleteCashAccountScene(window, userID);
             }
         });
         grid.add(deleteAccount, 0, i);
@@ -134,7 +134,7 @@ public class portfolioHandler {
             @Override
             public void handle(ActionEvent event) {
                 handlerAccount = new accountHandler();
-                handlerAccount.timeIntervalUpdate(window,userID);
+                handlerAccount.timeIntervalUpdate(window, userID);
             }
         });
         grid.add(updatePriceInterval,1,i);
@@ -146,7 +146,7 @@ public class portfolioHandler {
         marketSimulation.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                main.simulationScene(window, port);
+                main.simulationScene(window, userID);
             }
         });
 
@@ -155,7 +155,7 @@ public class portfolioHandler {
         viewHoldings.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                main.viewHoldingsScene(window);
+                main.viewHoldingsScene(window, userID);
             }
         });
 

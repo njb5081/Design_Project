@@ -88,6 +88,16 @@ public class WatchedMarketAverage implements WatchedAsset, Serializable {
     }
 
     @Override
+    public HashMap<Date, Double> getTriggers() {
+        return this.triggers;
+    }
+
+    @Override
+    public void clearTriggers() {
+        this.triggers.clear();
+    }
+
+    @Override
     public void accept(AssetVisitor v) {
         v.visit(this);
     }

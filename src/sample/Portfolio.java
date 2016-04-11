@@ -276,11 +276,13 @@ public class Portfolio implements Serializable {
     }
 
     public void deleteFromWatchlist(String name){
+        WatchedAsset asset = this.watchlist.get(0);
         for (WatchedAsset w : this.watchlist) {
             if (w.getName().equals(name)){
-                this.watchlist.remove(w);
+                asset = w;
             }
         }
+        this.watchlist.remove(asset);
     }
 
     public void editWatchlistTriggers(String name, double low, double high) {

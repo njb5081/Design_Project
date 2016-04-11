@@ -5,6 +5,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import sample.Holdings.Equity;
+import sample.Portfolio;
+import sample.WatchTriggerVisitor;
+import sample.WatchedAsset;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -189,6 +192,17 @@ public class handleEquity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //call visitor on all portfolio watchlists
+        WatchTriggerVisitor triggerVisitor = new WatchTriggerVisitor();
+        List<Portfolio> portfolios = accountHandler.listOfPortfolio();
+        for (Portfolio p : portfolios) {
+            ArrayList<WatchedAsset> assets = p.getWatchlist();
+            for (WatchedAsset w : assets) {
+                w.accept(triggerVisitor);
+            }
+        }
+        accountHandler.updatePortfolioList(portfolios);
     }
 
     /*

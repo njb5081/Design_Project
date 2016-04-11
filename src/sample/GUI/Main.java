@@ -32,10 +32,9 @@ import sample.Transactions.Transfer;
 import sample.Transactions.Transaction;
 import sample.handleData.data;
 import sample.handleData.handleEquity;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
+
 import sample.GUI.accountHandler;
 
 /*
@@ -1201,7 +1200,7 @@ public class Main extends Application {
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        Scene sceneAddAcc = new Scene(grid, 500, 500);
+        Scene sceneAddAcc = new Scene(grid, 600, 600);
 
         final Label accName = new Label("Enter Account Name:");
         grid.add(accName, 0,0);
@@ -1271,7 +1270,7 @@ public class Main extends Application {
         window.setTitle("Delete an Account");
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        Scene deleteAccScene = new Scene(grid, 350, 200);
+        Scene deleteAccScene = new Scene(grid, 600, 600);
 
         Label select = new Label("Select an account to delete: ");
         grid.add(select, 10, 0);
@@ -1328,11 +1327,21 @@ public class Main extends Application {
     }
 
     public void watchlistScene(Stage stage, final String userid) {
+        WatchTriggerVisitor triggerVisitor = new WatchTriggerVisitor();
+        List<Portfolio> portfolios = userData.listOfPortfolio();
+        for (Portfolio p : portfolios) {
+            ArrayList<WatchedAsset> assets = p.getWatchlist();
+            for (WatchedAsset w : assets) {
+                w.accept(triggerVisitor);
+            }
+        }
+        userData.updatePortfolioList(portfolios);
+
         window = stage;
         window.setTitle("Your Watchlist");
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        Scene watchScene = new Scene(grid, 500, 500);
+        Scene watchScene = new Scene(grid, 600, 600);
 
         int i = 0;
 
@@ -1345,21 +1354,63 @@ public class Main extends Application {
             }
         }
 
+        grid.add(new Label("Watchlist Alerts:"), 0, i);
+        i++;
+
+        for (WatchedAsset w : myPortfolio.getWatchlist()) {
+            for (Date d : w.getTriggers().keySet()) {
+                Label triggerDisplay = new Label(w.getName() + " was at $" + w.getTriggers().get(d).toString() + " on " + d.toString());
+                grid.add(triggerDisplay, 0, i, 3, 1);
+                i++;
+            }
+            w.clearTriggers();
+            userData.updatePortfolioList(portList);
+        }
+
+        grid.add(new Label(""), 0, i);
+        i++;
+        grid.add(new Label("Your Watchlist:"), 0, i);
+        i++;
         grid.add(new Label("Ticker:"), 0, i);
         grid.add(new Label("Name:"), 1, i);
         grid.add(new Label("Share Price:"), 2, i);
         i++;
 
         for(WatchedAsset a : myPortfolio.getWatchlist()) {
-            Map<String, Equity> equities = equityHandler.getEquityMap();
-            Equity e = equities.get(a.getName());
-            Label ticker = new Label(e.getTickerSymbol());
-            grid.add(ticker, 0, i);
-            Label name = new Label(e.getName());
-            grid.add(name, 1, i);
-            Label sharePrice = new Label(" $" + e.getSharePrice().toString());
-            grid.add(sharePrice, 2, i);
-            i++;
+            if (a instanceof WatchedEquity) { //object in watchlist is an equity
+                Map<String, Equity> equities = equityHandler.getEquityMap();
+                Equity e = equities.get(a.getName());
+                Label ticker = new Label(e.getTickerSymbol());
+                grid.add(ticker, 0, i);
+                Label name = new Label(e.getName());
+                grid.add(name, 1, i);
+                Label sharePrice = new Label(" $" + e.getSharePrice().toString());
+                grid.add(sharePrice, 2, i);
+                i++;
+            }
+            else { //it is a market average
+                final HashMap<String, MarketAverage> availableAssets = new HashMap<String, MarketAverage>();
+                for(String indexName : indexMap.keySet()){
+
+                    ArrayList<Equity> tempEquities = new ArrayList<Equity>();
+
+                    for(String equityName : indexMap.get(indexName)){
+                        tempEquities.add(equityMap.get(equityName));
+                    }
+
+                    MarketAverage tempMarketAverage = new MarketAverage(indexName, tempEquities);
+                    availableAssets.put(tempMarketAverage.getName(), tempMarketAverage);
+
+                }
+                MarketAverage avg = availableAssets.get(a.getName());
+                Label ticker = new Label(avg.getTickerSymbol());
+                grid.add(ticker, 0, i);
+                Label name = new Label(avg.getName());
+                grid.add(name, 1, i);
+                Label sharePrice = new Label(" $" + String.format("%.2f", avg.getSharePrice()));
+                grid.add(sharePrice, 2, i);
+                i++;
+            }
         }
 
         Button addWatch = new Button("Add to Your Watchlist");
@@ -1371,14 +1422,23 @@ public class Main extends Application {
         });
         grid.add(addWatch, 0, i);
 
-        Button toPortfolio = new Button("Go to Portfolio");
+        Button edit = new Button("Edit Watchlist");
+        edit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                editWatchlistScene(window, userid);
+            }
+        });
+        grid.add(edit, 1, i);
+
+        Button toPortfolio = new Button("Back to Portfolio");
         toPortfolio.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 portfolioHandle.portfolioScene(window, userid);
             }
         });
-        grid.add(toPortfolio, 1, i);
+        grid.add(toPortfolio, 2, i);
         i++;
 
         window.setScene(watchScene);
@@ -1388,10 +1448,10 @@ public class Main extends Application {
 
     public void addToWatchlistScene(Stage stage, final String userid) {
         window = stage;
-        window.setTitle("Select Equity to Add");
+        window.setTitle("Add to Your Watchlist");
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        Scene addToWatchScene = new Scene(grid, 500, 500);
+        Scene addToWatchScene = new Scene(grid, 600, 600);
 
         int i = 0;
 
@@ -1408,17 +1468,9 @@ public class Main extends Application {
 
         optionsAssetsAvailable.addAll( searchSymbolMatch);
 
-        //search for ticker symbol from the list of portfolio to sell
-//        final Label searchTickerSymbolSell = new Label("Enter ticker symbol");
-//        final Label searchEquityNameSell = new Label("Enter Equity name");
-//        final TextField searchTickerSell = new TextField();
-//        TextField searchEquitySell = new TextField();
-//        final ComboBox optionSell = new ComboBox(optionSearch);
-//        Button searchForSell = new Button("Search");
-
         //search for ticker symbol
-        final Label searchTickerSymbol = new Label("Enter ticker symbol");
-        final Label searchEquityName = new Label("Enter Equity name");
+        final Label searchTickerSymbol = new Label("Enter Ticker Symbol");
+        final Label searchEquityName = new Label("or Equity Name");
         final TextField searchTicker = new TextField();
         TextField searchEquity = new TextField();
         final ComboBox option = new ComboBox(optionSearch);
@@ -1433,6 +1485,8 @@ public class Main extends Application {
                 String optionSearch = "";
                 handler = new handleEquity();
                 List<String> listOfSymbol = new ArrayList<String>(equityHandler.getEquityMap().keySet());
+                listOfSymbol.addAll(indexMap.keySet());
+                listOfSymbol.addAll(equityMap.keySet());
                 if(option.getValue() != null) {
                     optionSearch = (String) option.getValue();
                 }
@@ -1449,38 +1503,45 @@ public class Main extends Application {
         grid.add(searchEquityName, 0, i);
         grid.add(searchEquity, 1, i);
         i++;
-        grid.add(option, 0, i);
+        grid.add(new Label("Select Search Criteria: "), 0, i);
+        grid.add(option, 1, i);
         i++;
-        grid.add(search, 0, i);
+        grid.add(search, 2, i);
         i++;
-        grid.add(buyEquity, 0, i);
+        grid.add(new Label("Matching Equities Found: "), 0, i);
+        grid.add(buyEquity, 1, i);
         i++;
 
-        Label lowLabel = new Label("Enter a low trigger value:");
+        Label lowLabel = new Label("Enter a low trigger value: ");
         grid.add(lowLabel, 0, i);
 
         final TextField enterLow = new TextField();
         grid.add(enterLow, 1, i);
         i++;
 
-        final Label highLabel = new Label("Enter a high trigger value:");
+        final Label highLabel = new Label("Enter a high trigger value: ");
         grid.add(highLabel, 0, i);
 
         final TextField enterHigh = new TextField();
         grid.add(enterHigh, 1, i);
         i++;
 
-        Button add = new Button("Add Equity");
+        Button add = new Button("Add to Watchlist");
         add.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //System.out.println(buyEquity.getValue());
+                Map<String, Equity> equities = equityHandler.getEquityMap();
+                boolean isEquity;
+                if (equities.keySet().contains(buyEquity.getValue())) {
+                    isEquity = true;
+                } else {
+                    isEquity = false;
+                }
 
                 double lowTrigger;
                 double highTrigger;
 
                 if (enterLow.getText().equals("")) {
-                    //System.out.println("Its and empty string");
                     lowTrigger = -1;
                 } else {
                     lowTrigger = Double.parseDouble(enterLow.getText());
@@ -1491,29 +1552,41 @@ public class Main extends Application {
                     highTrigger = Double.parseDouble(enterHigh.getText());
                 }
 
-                Map<String, Equity> equities = equityHandler.getEquityMap();
-                Equity e = equities.get(buyEquity.getValue());
-
-                //WatchedEquity watched = new WatchedEquity(e.getName(), lowTrigger, highTrigger);
-
                 //find user information from the user text file
                 List<Portfolio> portList = userData.listOfPortfolio();
                 Portfolio myPortfolio = portList.get(0);
                 for (Portfolio p : portList) {
                     if (p.getUserID().equals(userid)){
                         myPortfolio = p;
-                        //port = p;
                     }
                 }
 
-                myPortfolio.addToWatchlist(e.getTickerSymbol(), lowTrigger, highTrigger, true);
-                userData.updatePortfolioList(portList);
+                if (isEquity) { //Want to add an equity to watchlist
+                    Equity e = equities.get(buyEquity.getValue());
+                    myPortfolio.addToWatchlist(e.getTickerSymbol(), lowTrigger, highTrigger, true);
+                } else { //want to add a market average to watchlist
+                    final HashMap<String, MarketAverage> availableAssets = new HashMap<String, MarketAverage>();
+                    for(String indexName : indexMap.keySet()){
 
-                System.out.println(myPortfolio.getWatchlist());
+                        ArrayList<Equity> tempEquities = new ArrayList<Equity>();
+
+                        for(String equityName : indexMap.get(indexName)){
+                            tempEquities.add(equityMap.get(equityName));
+                        }
+
+                        MarketAverage tempMarketAverage = new MarketAverage(indexName, tempEquities);
+                        availableAssets.put(tempMarketAverage.getName(), tempMarketAverage);
+
+                    }
+                    MarketAverage a = availableAssets.get(buyEquity.getValue());
+                    myPortfolio.addToWatchlist(a.getTickerSymbol(), lowTrigger, highTrigger, false);
+                }
+
+                userData.updatePortfolioList(portList);
+                watchlistScene(window, userid);
             }
         });
-
-        grid.add(add, 0, i);
+        grid.add(add, 1, i);
         i++;
 
         Button toWatch = new Button("Back to Watchlist");
@@ -1523,33 +1596,119 @@ public class Main extends Application {
                 watchlistScene(window, userid);
             }
         });
-        grid.add(toWatch, 0, i);
+        grid.add(toWatch, 1, i);
         i++;
 
-
-
-        //perform action to search for ticker symbol to sell out
-        //final Portfolio finalMyPortfolio = myPortfolio;
-//        searchForSell.setOnAction(new EventHandler<ActionEvent>() {
-//            private handleEquity handler;
-//            @Override
-//
-//            public void handle(ActionEvent event) {
-//                String optionSearch = "";
-//                handler = new handleEquity();
-//                List<String> listOfSymbol = ownedEquity;
-//                if(optionSell.getValue() != null) {
-//                    optionSearch = (String) optionSell.getValue();
-//                }
-//                searchSymbolSellMatch = handler.searchEquity(searchTickerSell.getText().toUpperCase(),searchEquityNameSell.getText().toUpperCase(),optionSearch,listOfSymbol);
-//                final ObservableList<String> list = FXCollections.observableArrayList();
-//                list.addAll(searchSymbolSellMatch);
-//                sellEquity.setItems(list);
-//            }
-//        });
-
-
         window.setScene(addToWatchScene);
+        window.show();
+    }
+
+    public void editWatchlistScene(Stage stage, final String userid) {
+        window = stage;
+        window.setTitle("Edit Your Watchlist");
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        Scene editWatchScene = new Scene(grid, 600, 600);
+
+        //find user information from the user text file
+        List<Portfolio> portList = userData.listOfPortfolio();
+        Portfolio myPortfolio = portList.get(0);
+        for (Portfolio p : portList) {
+            if (p.getUserID().equals(userid)){
+                myPortfolio = p;
+            }
+        }
+        ArrayList<WatchedAsset> watchlist = myPortfolio.getWatchlist();
+
+        int i = 0;
+        grid.add(new Label("Select Equity to Edit:  "), 0, i);
+        final ObservableList<String> removeOptions = FXCollections.observableArrayList();
+        for (WatchedAsset w : watchlist) {
+            removeOptions.add(w.getName());
+        }
+        final ComboBox removeBox = new ComboBox(removeOptions);
+        grid.add(removeBox, 1, i);
+        i++;
+
+        grid.add(new Label(""), 0, i);
+        i++;
+
+        Button removeButton = new Button("Remove Equity");
+        removeButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio myPortfolio = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(userid)){
+                        myPortfolio = p;
+                    }
+                }
+                myPortfolio.deleteFromWatchlist(removeBox.getValue().toString());
+                userData.updatePortfolioList(portList);
+                watchlistScene(window, userid);
+            }
+        });
+        grid.add(removeButton, 1, i);
+        i++;
+
+        grid.add(new Label(""), 0, i);
+        i++;
+
+        grid.add(new Label("Enter New Low Trigger Value"), 0, i);
+        final TextField newLowField = new TextField();
+        grid.add(newLowField, 1, i);
+        i++;
+        grid.add(new Label("Enter New High Trigger Value"), 0, i);
+        final TextField newHighField = new TextField();
+        grid.add(newHighField, 1, i);
+        i++;
+
+        Button editTriggers = new Button("Change Trigger Values");
+        editTriggers.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                List<Portfolio> portList = userData.listOfPortfolio();
+                Portfolio myPortfolio = portList.get(0);
+                for (Portfolio p : portList) {
+                    if (p.getUserID().equals(userid)){
+                        myPortfolio = p;
+                    }
+                }
+                double newLowTrigger;
+                double newHighTrigger;
+                if (newLowField.getText().equals("")) {
+                    newLowTrigger = -1;
+                } else {
+                    newLowTrigger = Double.parseDouble(newLowField.getText());
+                }
+                if (newHighField.getText().equals("")) {
+                    newHighTrigger = -1;
+                } else {
+                    newHighTrigger = Double.parseDouble(newHighField.getText());
+                }
+                myPortfolio.editWatchlistTriggers(removeBox.getValue().toString(), newLowTrigger, newHighTrigger);
+                userData.updatePortfolioList(portList);
+                watchlistScene(window, userid);
+            }
+        });
+        grid.add(editTriggers, 1, i);
+        i++;
+
+        grid.add(new Label(""), 0, i);
+        i++;
+
+        Button toWatchlist = new Button("Back to Watchlist");
+        toWatchlist.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                watchlistScene(window, userid);
+            }
+        });
+        grid.add(toWatchlist, 1, i);
+        i++;
+
+        window.setScene(editWatchScene);
         window.show();
     }
 

@@ -43,7 +43,7 @@ public class portfolioHandler {
         //create the grid being shown in the scene
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        Scene portScene = new Scene(grid, 500, 300);
+        Scene portScene = new Scene(grid, 600, 600);
 
         //find user information from the user text file
         final List<Portfolio> portList = userData.listOfPortfolio();
@@ -59,14 +59,18 @@ public class portfolioHandler {
         Label welcome = new Label("Welcome,  " + myPortfolio.getUserID());
         grid.add(welcome, 0, i);
         i++;
+        grid.add(new Label(""), 0, i);
+        i++;
 
         //display the total amount of money in all cash accounts
         double totalMoney = 0;
         for (CashAccount c : myPortfolio.getCashAccounts()) {
             totalMoney += (c.getBalance());
         }
-        Label total = new Label("Total Account Balance:  " +  String.format("%.2f", totalMoney)); // String.valueOf(totalMoney));
+        Label total = new Label("Total Account Balance:  $" +  String.format("%.2f", totalMoney)); // String.valueOf(totalMoney));
         grid.add(total, 0, i);
+        i++;
+        grid.add(new Label(""), 0, i);
         i++;
 
         //String.format("%.2f", tempSellAccount.getBalance()));
@@ -97,6 +101,8 @@ public class portfolioHandler {
         grid.add(transactionButton, 1, i);
         //TRANSACTION NAVIGATION END
         i++;
+        grid.add(new Label(""), 0, i);
+        i++;
 
         //Create a button that leads to the page to add an account
         Button addAccount = new Button("Add a Cash Account");
@@ -120,6 +126,8 @@ public class portfolioHandler {
 
         grid.add(undoAction, 1, i);
         i++;
+        grid.add(new Label(""), 0, i);
+        i++;
 
         Button deleteAccount = new Button("Delete a Cash Account");
         deleteAccount.setOnAction(new EventHandler<ActionEvent>() {
@@ -142,6 +150,8 @@ public class portfolioHandler {
         });
         grid.add(updatePriceInterval,1,i);
         i++;
+        grid.add(new Label(""), 0, i);
+        i++;
 
         //Create a button that leads to the simulation screen
         Button marketSimulation = new Button("Market Simulations");
@@ -161,7 +171,8 @@ public class portfolioHandler {
                 main.viewHoldingsScene(window, userID);
             }
         });
-
+        i++;
+        grid.add(new Label(""), 0, i);
         i++;
 
         Label file = new Label("Enter filename to import");

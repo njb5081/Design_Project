@@ -1,6 +1,7 @@
 package sample;
 
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Created by Nick on 4/3/2016.
@@ -28,7 +29,9 @@ public interface WatchedAsset {
 
     double getHighTrigger();
 
-    //void checkTriggers(Double price);
+    HashMap<Date, Double> getTriggers();
+
+    void clearTriggers();
 
     String toString();
 

@@ -73,20 +73,30 @@ public class WatchedEquity implements WatchedAsset, Serializable {
     }
 
     public void checkEquityTriggers(Double price) {
-        if (price >= this.highTrigger) {
+        if (price >= this.highTrigger && this.hasHighTrigger()) {
             this.highCurrentlyTripped = true;
             Date date = new Date();
             this.triggers.put(date, price);
         } else {
             this.highCurrentlyTripped = false;
         }
-        if (price <= this.lowTrigger) {
+        if (price <= this.lowTrigger && this.hasLowTrigger()) {
             this.lowCurrentlyTripped = true;
             Date date = new Date();
             this.triggers.put(date, price);
         } else {
             this.lowCurrentlyTripped = false;
         }
+    }
+
+    @Override
+    public HashMap<Date, Double> getTriggers() {
+        return this.triggers;
+    }
+
+    @Override
+    public void clearTriggers() {
+        this.triggers.clear();
     }
 
     @Override
